@@ -1,0 +1,252 @@
+/* =========================================================
+   LUMIÈRE HOME & BEAUTY — Global Design System
+   ========================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap');
+
+/* ── CSS Variables ─────────────────────────────────────── */
+:root {
+  /* Colors */
+  --bg-primary:      #0a0a0a;
+  --bg-secondary:    #111111;
+  --bg-card:         #161616;
+  --bg-glass:        rgba(255, 255, 255, 0.04);
+  --border-subtle:   rgba(255,255,255,0.08);
+  --border-accent:   rgba(201,149,108,0.35);
+
+  --gold:            #c9956c;
+  --gold-light:      #e8b990;
+  --gold-dark:       #a87852;
+  --cream:           #f5ede4;
+  --rose:            #d4a0a0;
+
+  --text-primary:    #f0ece8;
+  --text-secondary:  #a09890;
+  --text-muted:      #6a6360;
+
+  /* Typography */
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body:    'Inter', system-ui, sans-serif;
+
+  /* Spacing */
+  --space-xs:   0.25rem;
+  --space-sm:   0.5rem;
+  --space-md:   1rem;
+  --space-lg:   1.5rem;
+  --space-xl:   2.5rem;
+  --space-2xl:  4rem;
+  --space-3xl:  6rem;
+
+  /* Radii */
+  --radius-sm:  6px;
+  --radius-md:  12px;
+  --radius-lg:  20px;
+  --radius-xl:  32px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-card:  0 4px 24px rgba(0,0,0,0.4);
+  --shadow-glow:  0 0 40px rgba(201,149,108,0.12);
+  --shadow-hover: 0 8px 40px rgba(0,0,0,0.6);
+
+  /* Transitions */
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --duration: 0.3s;
+
+  /* Layout */
+  --max-width: 1320px;
+  --nav-height: 72px;
+}
+
+/* ── Reset ─────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+ul, ol {
+  list-style: none;
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+}
+
+/* ── Layout Utilities ──────────────────────────────────── */
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--space-xl);
+}
+
+.section {
+  padding: var(--space-3xl) 0;
+}
+
+.section-sm {
+  padding: var(--space-2xl) 0;
+}
+
+.flex { display: flex; }
+.flex-center { display: flex; align-items: center; justify-content: center; }
+.flex-between { display: flex; align-items: center; justify-content: space-between; }
+.flex-col { display: flex; flex-direction: column; }
+.gap-sm { gap: var(--space-sm); }
+.gap-md { gap: var(--space-md); }
+.gap-lg { gap: var(--space-lg); }
+.gap-xl { gap: var(--space-xl); }
+
+.grid { display: grid; }
+.grid-2 { grid-template-columns: repeat(2, 1fr); }
+.grid-3 { grid-template-columns: repeat(3, 1fr); }
+.grid-4 { grid-template-columns: repeat(4, 1fr); }
+
+.text-center { text-align: center; }
+.text-gold { color: var(--gold); }
+.text-muted { color: var(--text-secondary); }
+.text-sm { font-size: 0.875rem; }
+.text-xs { font-size: 0.75rem; }
+
+/* ── Typography ────────────────────────────────────────── */
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+h1 { font-size: clamp(2.4rem, 5vw, 4.5rem); }
+h2 { font-size: clamp(1.8rem, 3vw, 2.8rem); }
+h3 { font-size: clamp(1.2rem, 2vw, 1.6rem); }
+h4 { font-size: 1.1rem; }
+
+.display-serif {
+  font-family: var(--font-display);
+  font-style: italic;
+}
+
+/* ── Section Headers ───────────────────────────────────── */
+.section-header {
+  text-align: center;
+  margin-bottom: var(--space-2xl);
+}
+
+.section-tag {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  background: rgba(201,149,108,0.1);
+  border: 1px solid rgba(201,149,108,0.25);
+  padding: 0.35rem 1rem;
+  border-radius: var(--radius-full);
+  margin-bottom: var(--space-md);
+}
+
+.section-title {
+  margin-bottom: var(--space-sm);
+}
+
+.section-subtitle {
+  color: var(--text-secondary);
+  font-size: 1.05rem;
+  max-width: 540px;
+  margin: 0 auto;
+  font-weight: 300;
+}
+
+/* ── Divider ───────────────────────────────────────────── */
+.divider {
+  width: 48px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--gold), transparent);
+  margin: var(--space-md) auto;
+}
+
+/* ── Scrollbar ─────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-secondary); }
+::-webkit-scrollbar-thumb { background: var(--gold-dark); border-radius: var(--radius-full); }
+
+/* ── Selection ─────────────────────────────────────────── */
+::selection {
+  background: rgba(201,149,108,0.3);
+  color: var(--cream);
+}
+
+/* ── Animations ────────────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(201,149,108,0.2); }
+  50%       { box-shadow: 0 0 40px rgba(201,149,108,0.4); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-8px); }
+}
+
+.animate-fade-up { animation: fadeUp 0.6s var(--ease) both; }
+.animate-fade-up-delay-1 { animation: fadeUp 0.6s 0.1s var(--ease) both; }
+.animate-fade-up-delay-2 { animation: fadeUp 0.6s 0.2s var(--ease) both; }
+.animate-fade-up-delay-3 { animation: fadeUp 0.6s 0.3s var(--ease) both; }
+
+/* ── Responsive ────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .container { padding: 0 var(--space-lg); }
+  .grid-4 { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+  :root { --nav-height: 60px; }
+  .container { padding: 0 var(--space-md); }
+  .grid-2, .grid-3 { grid-template-columns: 1fr; }
+  .grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .section { padding: var(--space-2xl) 0; }
+}
+
+@media (max-width: 480px) {
+  .grid-4 { grid-template-columns: 1fr; }
+}

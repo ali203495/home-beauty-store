@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caisse — Marrakech Luxe Home</title>
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar scrolled">
+        <div class="container">
+            <a href="index.html" class="nav-logo">MARRAKECH <span>LUXE</span></a>
+        </div>
+    </nav>
+
+    <section class="section" style="padding-top: calc(var(--nav-height) + var(--space-2xl))">
+        <div class="container">
+            <div class="breadcrumb">
+                <a href="index.html">Accueil</a>
+                <span class="breadcrumb-sep">/</span>
+                <a href="cart.html">Panier</a>
+                <span class="breadcrumb-sep">/</span>
+                <span>Caisse</span>
+            </div>
+
+            <div class="cart-layout" style="margin-top: var(--space-xl)">
+                <!-- Left: Delivery Form -->
+                <div class="cart-main">
+                    <div class="admin-content-card" style="padding: 2.5rem">
+                        <h2 style="margin-bottom: 2rem">Coordonnées de Livraison</h2>
+                        <form id="checkout-form">
+                            <div
+                                style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem">
+                                <div class="form-group">
+                                    <label class="form-label">Prénom</label>
+                                    <input type="text" name="firstname" class="form-input" placeholder="Ex: Ahmed"
+                                        required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Nom</label>
+                                    <input type="text" name="lastname" class="form-input" placeholder="Ex: Alami"
+                                        required>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Téléphone (Mobile/WhatsApp)</label>
+                                <input type="tel" name="phone" class="form-input" placeholder="06XXXXXXXX" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Adresse de livraison</label>
+                                <textarea name="address" class="form-input" rows="3"
+                                    placeholder="N° de maison, Rue, Appartement..." required></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Quartier (Marrakech)</label>
+                                <select name="neighborhood" class="form-input" required>
+                                    <option value="" disabled selected>Sélectionner votre quartier</option>
+                                    <option value="Guéliz">Guéliz</option>
+                                    <option value="Hivernage">Hivernage</option>
+                                    <option value="Médina">Médina</option>
+                                    <option value="Daoudiate">Daoudiate</option>
+                                    <option value="M'hamid">M'hamid</option>
+                                    <option value="Sidi Youssef Ben Ali">Sidi Youssef Ben Ali</option>
+                                    <option value="Targa">Targa</option>
+                                    <option value="Massira">Massira</option>
+                                    <option value="Autre / Hors Marrakech">Autre / Hors Marrakech</option>
+                                </select>
+                            </div>
+
+                            <div
+                                style="background: rgba(46, 204, 113, 0.05); padding: 1.5rem; border-radius: 8px; border: 1px solid rgba(46, 204, 113, 0.2); margin-top: 2rem">
+                                <p
+                                    style="display: flex; align-items: center; gap: 10px; color: #2ecc71; font-weight: 600">
+                                    <i class="fas fa-truck"></i> Mode de paiement : Paiement à la livraison (Cash on
+                                    Delivery)
+                                </p>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-lg"
+                                style="width: 100%; margin-top: 2rem; font-size: 1.1rem">
+                                Confirmer ma commande (Total: <span id="submit-total">0</span> DH)
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Right: Order Summary (Sticky) -->
+                <aside class="cart-summary" style="position: sticky; top: calc(var(--nav-height) + 2rem)">
+                    <h3>Votre Commande</h3>
+                    <div id="checkout-summary-items" style="margin: 1.5rem 0; max-height: 400px; overflow-y: auto">
+                        <!-- Items injected here -->
+                    </div>
+
+                    <div style="border-top: 1px solid var(--border-subtle); padding-top: 1.5rem">
+                        <div class="summary-row">
+                            <span>Sous-total</span>
+                            <span id="summary-subtotal">0 DH</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Livraison</span>
+                            <span class="text-gold">Gratuite</span>
+                        </div>
+                        <div class="summary-row total">
+                            <span>Total à payer</span>
+                            <span class="summary-val" id="summary-total">0 DH</span>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </section>
+
+    <!-- Success Modal -->
+    <div class="modal-overlay" id="success-modal">
+        <div class="modal">
+            <div class="modal-icon text-gold" style="font-size: 4rem; margin-bottom: 1.5rem">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h2 class="modal-title">Commande Confirmée !</h2>
+            <p class="modal-text" style="color: var(--text-muted); margin-bottom: 2rem">
+                Merci de votre confiance. Notre service client vous contactera par téléphone pour confirmer la
+                livraison.
+            </p>
+            <button class="btn btn-primary" style="width:100%" onclick="window.location.href='index.html'">Retour à la
+                Boutique</button>
+        </div>
+    </div>
+
+    <script src="js/products.js"></script>
+    <script src="js/cart.js"></script>
+    <script>
+        function renderCheckout() {
+            const items = Cart.items;
+            if (items.length === 0) {
+                window.location.href = 'cart.html';
+                return;
+            }
+
+            const list = document.getElementById('checkout-summary-items');
+            list.innerHTML = items.map(item => `
+                <div style="display: flex; gap: 1rem; padding: 1rem 0; border-bottom: 1px solid rgba(255,255,255,0.05)">
+                    <img src="${item.image}" alt="${item.name}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 4px">
+                    <div style="flex: 1">
+                        <h4 style="font-size: 0.9rem; margin-bottom: 0.2rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden">
+                            ${item.name}
+                        </h4>
+                        <div style="font-size: 0.8rem; color: var(--text-muted)">
+                            ${item.quantity} x ${item.price} DH
+                        </div>
+                    </div>
+                    <div style="font-weight: 600; font-size: 0.9rem">
+                        ${item.price * item.quantity} DH
+                    </div>
+                </div>
+            `).join('');
+
+            const total = Cart.getTotal();
+            document.getElementById('summary-subtotal').textContent = `${total} DH`;
+            document.getElementById('summary-total').textContent = `${total} DH`;
+            document.getElementById('submit-total').textContent = total;
+        }
+
+        document.getElementById('checkout-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+
+            const orderData = {
+                id: 'ORD-' + Date.now().toString().slice(-6),
+                date: new Date().toISOString(),
+                customer: {
+                    name: formData.get('firstname') + ' ' + formData.get('lastname'),
+                    phone: formData.get('phone'),
+                    address: formData.get('address'),
+                    neighborhood: formData.get('neighborhood')
+                },
+                items: JSON.parse(JSON.stringify(Cart.items)), // Deep copy to prevent reference issues
+                total: Cart.getTotal(),
+                status: 'Nouveau'
+            };
+
+            // Save via OrderDB (from products.js)
+            if (typeof OrderDB !== 'undefined') {
+                OrderDB.saveOrder(orderData);
+            } else {
+                const orders = JSON.parse(localStorage.getItem('mlh_orders')) || [];
+                orders.unshift(orderData);
+                localStorage.setItem('mlh_orders', JSON.stringify(orders));
+            }
+
+            // Show success
+            document.getElementById('success-modal').classList.add('open');
+
+            // Clear cart
+            Cart.clear();
+        });
+
+        document.addEventListener('DOMContentLoaded', renderCheckout);
+    </script>
+</body>
+
+</html>

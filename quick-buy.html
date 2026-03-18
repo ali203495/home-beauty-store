@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Achat Rapide — Marrakech Luxe Home</title>
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-quick: #0a0a0a;
+        }
+
+        body {
+            background: var(--bg-quick);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+        }
+
+        .quick-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-accent);
+            border-radius: var(--radius-2xl);
+            width: 100%;
+            max-width: 500px;
+            padding: 2.5rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .quick-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .quick-logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: white;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 1rem;
+        }
+
+        .quick-logo span {
+            color: var(--gold);
+        }
+
+        .product-preview {
+            display: flex;
+            gap: 1.5rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: var(--radius-lg);
+            margin-bottom: 2rem;
+            align-items: center;
+        }
+
+        .product-preview img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: var(--radius-md);
+        }
+
+        .product-preview-info h4 {
+            color: white;
+            margin-bottom: 0.3rem;
+        }
+
+        .product-preview-info p {
+            color: var(--gold);
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .btn-confirm {
+            background: var(--gold);
+            color: black;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 1.2rem;
+            width: 100%;
+            border: none;
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            margin-top: 1.5rem;
+            transition: all 0.3s var(--ease);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-confirm:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(212, 175, 55, 0.3);
+            filter: brightness(1.1);
+        }
+
+        .cod-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(46, 204, 113, 0.1);
+            color: #2ecc71;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .success-overlay {
+            position: fixed;
+            inset: 0;
+            background: var(--bg-quick);
+            z-index: 100;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .success-icon {
+            font-size: 5rem;
+            color: var(--gold);
+            margin-bottom: 1.5rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="quick-card">
+        <div class="quick-header">
+            <a href="index.html" class="quick-logo">MARRAKECH <span>LUXE</span></a>
+            <div class="cod-badge">
+                <i class="fas fa-truck"></i> Paiement à la livraison (COD)
+            </div>
+            <h3>Finaliser votre commande</h3>
+        </div>
+
+        <div id="quick-product-preview" class="product-preview">
+            <!-- Populated by JS -->
+        </div>
+
+        <form id="quick-order-form">
+            <div class="form-group">
+                <label class="form-label">Nom Complet</label>
+                <input type="text" name="name" class="form-input" placeholder="Ex: Ahmed Alami" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Téléphone (WhatsApp)</label>
+                <input type="tel" name="phone" class="form-input" placeholder="06XXXXXXXX" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Adresse de Livraison</label>
+                <textarea name="address" class="form-input" rows="2" placeholder="Ex: Rue 12, Appartement 5"
+                    required></textarea>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Quartier (Marrakech)</label>
+                <select name="neighborhood" class="form-input" required>
+                    <option value="Guéliz">Guéliz</option>
+                    <option value="Hivernage">Hivernage</option>
+                    <option value="Médina">Médina</option>
+                    <option value="Daudiate">Daudiate</option>
+                    <option value="M'hamid">M'hamid</option>
+                    <option value="Sidi Youssef Ben Ali">Sidi Youssef Ben Ali</option>
+                    <option value="Targa">Targa</option>
+                    <option value="Massira">Massira</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn-confirm">
+                Confirmer la Commande <i class="fas fa-check-circle"></i>
+            </button>
+            <p style="text-align: center; margin-top: 1rem; color: var(--text-muted); font-size: 0.8rem">
+                Une fois confirmé, nous vous contacterons pour finaliser la livraison.
+            </p>
+        </form>
+    </div>
+
+    <!-- Success Screen -->
+    <div class="success-overlay" id="success-screen">
+        <div class="success-icon"><i class="fas fa-crown"></i></div>
+        <h1 style="margin-bottom: 1rem">Merci pour votre confiance !</h1>
+        <p style="color: var(--text-muted); max-width: 400px; margin-bottom: 2.5rem">
+            Votre commande a été reçue avec succès. Notre équipe vous contactera dans les plus brefs délais sur votre
+            numéro WhatsApp.
+        </p>
+        <button class="btn btn-primary" onclick="window.location.href='index.html'">Retour à la Boutique</button>
+    </div>
+
+    <script src="js/products.js"></script>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const productId = params.get('id');
+        const product = PRODUCTS.find(p => p.id === productId);
+
+        if (!product) {
+            window.location.href = 'index.html';
+        }
+
+        // Render preview
+        document.getElementById('quick-product-preview').innerHTML = `
+            <img src="${product.image}" alt="${product.name}">
+            <div class="product-preview-info">
+                <h4>${product.name}</h4>
+                <p>${product.price} DH</p>
+            </div>
+        `;
+
+        // Handle Order
+        document.getElementById('quick-order-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+
+            const orderData = {
+                id: 'QUICK-' + Date.now().toString().slice(-6),
+                date: new Date().toISOString(),
+                customer: {
+                    name: formData.get('name'),
+                    phone: formData.get('phone'),
+                    address: formData.get('address'),
+                    neighborhood: formData.get('neighborhood')
+                },
+                items: [{
+                    id: product.id,
+                    name: product.name,
+                    price: product.price,
+                    quantity: 1,
+                    category: product.category,
+                    image: product.image
+                }],
+                total: product.price,
+                status: 'Nouveau',
+                type: 'Achat Rapide'
+            };
+
+            // Save via OrderDB
+            if (typeof OrderDB !== 'undefined') {
+                OrderDB.saveOrder(orderData);
+            } else {
+                // Fallback for standalone test
+                const orders = JSON.parse(localStorage.getItem('mlh_orders')) || [];
+                orders.unshift(orderData);
+                localStorage.setItem('mlh_orders', JSON.stringify(orders));
+            }
+
+            // Show success
+            document.getElementById('success-screen').style.display = 'flex';
+        });
+    </script>
+</body>
+
+</html>
