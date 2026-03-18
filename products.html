@@ -129,9 +129,10 @@
         let currentProducts = [...PRODUCTS];
 
         function initPage() {
-            // Get category from URL
+            // Get params from URL
             const params = new URLSearchParams(window.location.search);
             const catParam = params.get('cat');
+            const searchParam = params.get('search');
 
             // Inject Category Radios
             const catContainer = document.getElementById('category-filters');
@@ -141,17 +142,26 @@
                 const div = document.createElement('div');
                 div.className = 'filter-option';
                 div.innerHTML = `
-          <input type="radio" name="cat" id="cat-${cat}" value="${cat}" ${catParam === cat ? 'checked' : ''}>
-          <label for="cat-${cat}">${cat}</label>
-        `;
+                  <input type="radio" name="cat" id="cat-${cat}" value="${cat}" ${catParam === cat ? 'checked' : ''}>
+                  <label for="cat-${cat}">${cat}</label>
+                `;
                 div.querySelector('input').addEventListener('change', updateFilters);
                 catContainer.appendChild(div);
             });
+
+            // If searched, pre-fill search inputs if they exist or just filter
+            if (searchParam) {
+                const searchInputs = document.querySelectorAll('.search-bar input');
+                searchInputs.forEach(input => input.value = searchParam);
+            }
 
             updateFilters();
         }
 
         function updateFilters() {
+            const params = new URLSearchParams(window.location.search);
+            const searchParam = params.get('search') ? params.get('search').toLowerCase() : '';
+
             const selectedCat = document.querySelector('input[name="cat"]:checked').value;
             const minPrice = parseInt(document.getElementById('min-price').value) || 0;
             const maxPrice = parseInt(document.getElementById('max-price').value) || Infinity;
@@ -161,7 +171,10 @@
             let filtered = PRODUCTS.filter(p => {
                 const catMatch = selectedCat === 'all' || p.category === selectedCat;
                 const priceMatch = p.price >= minPrice && p.price <= maxPrice;
-                return catMatch && priceMatch;
+                const searchMatch = !searchParam ||
+                    p.name.toLowerCase().includes(searchParam) ||
+                    p.category.toLowerCase().includes(searchParam);
+                return catMatch && priceMatch && searchMatch;
             });
 
             // Sort

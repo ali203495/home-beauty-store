@@ -12,6 +12,7 @@ const App = {
     this.handleMobileNav();
     this.setupWhatsAppButton();
     this.setupSocialSharing();
+    this.initSearch();
     this.updateCurrentYear();
   },
 
@@ -140,6 +141,20 @@ const App = {
   updateCurrentYear() {
     const el = document.getElementById('current-year');
     if (el) el.textContent = new Date().getFullYear();
+  },
+
+  initSearch() {
+    const searchInputs = document.querySelectorAll('.search-bar input');
+    searchInputs.forEach(input => {
+      input.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          const query = e.target.value.trim();
+          if (query) {
+            window.location.href = `products.html?search=${encodeURIComponent(query)}`;
+          }
+        }
+      });
+    });
   }
 };
 

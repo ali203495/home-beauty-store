@@ -263,12 +263,24 @@ const Admin = {
                 </div>
             </div>
             
-            <div style="display: flex; gap: 1rem">
+            <div style="margin-top: 2rem; border-top: 1px solid var(--border-subtle); padding-top: 1.5rem">
+                <h4 style="margin-bottom: 1rem">Communication WhatsApp</h4>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem">
+                    <button class="btn btn-secondary btn-sm" onclick="Admin.sendWATemplate('${o.id}', 'confirm')">
+                        <i class="fas fa-check"></i> Confirmation
+                    </button>
+                    <button class="btn btn-secondary btn-sm" onclick="Admin.sendWATemplate('${o.id}', 'shipping')">
+                        <i class="fas fa-truck"></i> En livraison
+                    </button>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 1rem; margin-top: 2rem">
                 <button class="btn btn-primary" style="flex: 1" onclick="window.open('https://wa.me/${o.customer.phone.replace(/\s+/g, '')}', '_blank')">
-                    <i class="fab fa-whatsapp"></i> Contacter via WhatsApp
+                    <i class="fab fa-whatsapp"></i> Chat Libre
                 </button>
-                <button class="btn btn-secondary" style="flex: 1" onclick="Admin.deleteOrder('${o.id}')">
-                    <i class="fas fa-trash"></i> Supprimer la Commande
+                <button class="btn btn-secondary" style="flex: 1; color: var(--rose)" onclick="Admin.deleteOrder('${o.id}')">
+                    <i class="fas fa-trash"></i> Supprimer
                 </button>
             </div>
         `;
@@ -278,6 +290,22 @@ const Admin = {
 
     closeOrderModal() {
         document.getElementById('order-modal').style.display = 'none';
+    },
+
+    sendWATemplate(orderId, type) {
+        const o = OrderDB.getOrders().find(ord => ord.id === orderId);
+        if (!o) return;
+
+        let message = '';
+        if (type === 'confirm') {
+            message = `Bonjour ${o.customer.name}, c'est Marrakech Luxe Home. Nous confirmons votre commande #${o.id} de ${o.total} DH. Nous préparons votre livraison. Merci !`;
+        } else if (type === 'shipping') {
+            message = `Bonjour ${o.customer.name}, votre commande #${o.id} est actuellement en cours de livraison. Notre livreur vous contactera sous peu. À bientôt !`;
+        }
+
+        const phone = o.customer.phone.replace(/\D/g, '');
+        const finalPhone = phone.startsWith('0') ? '212' + phone.slice(1) : phone;
+        window.open(`https://wa.me/${finalPhone}?text=${encodeURIComponent(message)}`, '_blank');
     },
 
     deleteOrder(id) {
