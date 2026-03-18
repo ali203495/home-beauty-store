@@ -16,54 +16,63 @@
     <nav class="navbar scrolled">
         <div class="container">
             <a href="index.html" class="nav-logo">MARRAKECH <span>LUXE</span></a>
+            <div class="nav-actions">
+                <div class="lang-switcher">
+                    <button class="lang-btn" onclick="I18n.setLang('fr')" id="lang-fr">FR</button>
+                    <button class="lang-btn" onclick="I18n.setLang('ar')" id="lang-ar">AR</button>
+                </div>
+            </div>
         </div>
     </nav>
 
     <section class="section" style="padding-top: calc(var(--nav-height) + var(--space-2xl))">
         <div class="container">
             <div class="breadcrumb">
-                <a href="index.html">Accueil</a>
+                <a href="index.html" data-i18n="nav_home">Accueil</a>
                 <span class="breadcrumb-sep">/</span>
-                <a href="cart.html">Panier</a>
+                <a href="cart.html" data-i18n="nav_cart">Panier</a>
                 <span class="breadcrumb-sep">/</span>
-                <span>Caisse</span>
+                <span data-i18n="checkout_title">Caisse</span>
             </div>
 
             <div class="cart-layout" style="margin-top: var(--space-xl)">
                 <!-- Left: Delivery Form -->
                 <div class="cart-main">
                     <div class="admin-content-card" style="padding: 2.5rem">
-                        <h2 style="margin-bottom: 2rem">Coordonnées de Livraison</h2>
+                        <h2 style="margin-bottom: 2rem" data-i18n="checkout_form_header">Coordonnées de Livraison</h2>
                         <form id="checkout-form">
                             <div
                                 style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem">
                                 <div class="form-group">
-                                    <label class="form-label">Prénom</label>
-                                    <input type="text" name="firstname" class="form-input" placeholder="Ex: Ahmed"
-                                        required>
+                                    <label class="form-label" data-i18n="form_fname">Prénom</label>
+                                    <input type="text" name="firstname" class="form-input" data-i18n="form_fname_ph"
+                                        placeholder="Ex: Ahmed" required>
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label">Nom</label>
-                                    <input type="text" name="lastname" class="form-input" placeholder="Ex: Alami"
-                                        required>
+                                    <label class="form-label" data-i18n="form_lname">Nom</label>
+                                    <input type="text" name="lastname" class="form-input" data-i18n="form_lname_ph"
+                                        placeholder="Ex: Alami" required>
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label class="form-label">Téléphone (Mobile/WhatsApp)</label>
+                                <label class="form-label" data-i18n="form_phone_label">Téléphone
+                                    (Mobile/WhatsApp)</label>
                                 <input type="tel" name="phone" class="form-input" placeholder="06XXXXXXXX" required>
                             </div>
 
                             <div class="form-group">
-                                <label class="form-label">Adresse de livraison</label>
-                                <textarea name="address" class="form-input" rows="3"
+                                <label class="form-label" data-i18n="form_address_label">Adresse de livraison</label>
+                                <textarea name="address" class="form-input" rows="3" data-i18n="form_address_ph"
                                     placeholder="N° de maison, Rue, Appartement..." required></textarea>
                             </div>
 
                             <div class="form-group">
-                                <label class="form-label">Quartier (Marrakech)</label>
+                                <label class="form-label" data-i18n="form_neighborhood_label">Quartier
+                                    (Marrakech)</label>
                                 <select name="neighborhood" class="form-input" required>
-                                    <option value="" disabled selected>Sélectionner votre quartier</option>
+                                    <option value="" disabled selected data-i18n="form_neighborhood_ph">Sélectionner
+                                        votre quartier</option>
                                     <option value="Guéliz">Guéliz</option>
                                     <option value="Hivernage">Hivernage</option>
                                     <option value="Médina">Médina</option>
@@ -78,8 +87,8 @@
 
                             <div
                                 style="background: rgba(46, 204, 113, 0.05); padding: 1.5rem; border-radius: 8px; border: 1px solid rgba(46, 204, 113, 0.2); margin-top: 2rem">
-                                <p
-                                    style="display: flex; align-items: center; gap: 10px; color: #2ecc71; font-weight: 600">
+                                <p style="display: flex; align-items: center; gap: 10px; color: #2ecc71; font-weight: 600"
+                                    data-i18n="pay_mode_cod">
                                     <i class="fas fa-truck"></i> Mode de paiement : Paiement à la livraison (Cash on
                                     Delivery)
                                 </p>
@@ -87,7 +96,8 @@
 
                             <button type="submit" class="btn btn-primary btn-lg"
                                 style="width: 100%; margin-top: 2rem; font-size: 1.1rem">
-                                Confirmer ma commande (Total: <span id="submit-total">0</span> DH)
+                                <span data-i18n="checkout_confirm">Confirmer ma commande</span> (Total: <span
+                                    id="submit-total">0</span> DH)
                             </button>
                         </form>
                     </div>
@@ -95,22 +105,22 @@
 
                 <!-- Right: Order Summary (Sticky) -->
                 <aside class="cart-summary" style="position: sticky; top: calc(var(--nav-height) + 2rem)">
-                    <h3>Votre Commande</h3>
+                    <h3 data-i18n="checkout_summary">Votre Commande</h3>
                     <div id="checkout-summary-items" style="margin: 1.5rem 0; max-height: 400px; overflow-y: auto">
                         <!-- Items injected here -->
                     </div>
 
                     <div style="border-top: 1px solid var(--border-subtle); padding-top: 1.5rem">
                         <div class="summary-row">
-                            <span>Sous-total</span>
+                            <span data-i18n="checkout_subtotal">Sous-total</span>
                             <span id="summary-subtotal">0 DH</span>
                         </div>
                         <div class="summary-row">
-                            <span>Livraison</span>
-                            <span class="text-gold">Gratuite</span>
+                            <span data-i18n="checkout_delivery">Livraison</span>
+                            <span class="text-gold" data-i18n="cart_delivery_free">Gratuite</span>
                         </div>
                         <div class="summary-row total">
-                            <span>Total à payer</span>
+                            <span data-i18n="checkout_total_label">Total à payer</span>
                             <span class="summary-val" id="summary-total">0 DH</span>
                         </div>
                     </div>
@@ -125,18 +135,21 @@
             <div class="modal-icon text-gold" style="font-size: 4rem; margin-bottom: 1.5rem">
                 <i class="fas fa-check-circle"></i>
             </div>
-            <h2 class="modal-title">Commande Confirmée !</h2>
-            <p class="modal-text" style="color: var(--text-muted); margin-bottom: 2rem">
+            <h2 class="modal-title" data-i18n="modal_order_confirmed_title">Commande Confirmée !</h2>
+            <p class="modal-text" style="color: var(--text-muted); margin-bottom: 2rem"
+                data-i18n="modal_order_confirmed_text">
                 Merci de votre confiance. Notre service client vous contactera par téléphone pour confirmer la
                 livraison.
             </p>
-            <button class="btn btn-primary" style="width:100%" onclick="window.location.href='index.html'">Retour à la
+            <button class="btn btn-primary" style="width:100%" onclick="window.location.href='index.html'"
+                data-i18n="modal_back_to_shop_btn">Retour à la
                 Boutique</button>
         </div>
     </div>
 
     <script src="js/products.js"></script>
     <script src="js/cart.js"></script>
+    <script src="js/i18n.js"></script>
     <script>
         function renderCheckout() {
             const items = Cart.items;

@@ -21,12 +21,28 @@
                 <a href="products.html">Produits</a>
                 <a href="contact.html">Contact</a>
             </div>
+            <div class="nav-actions">
+                <!-- Language Switcher -->
+                <div class="lang-switcher">
+                    <button class="lang-btn" onclick="I18n.setLang('fr')" id="lang-fr">FR</button>
+                    <button class="lang-btn" onclick="I18n.setLang('ar')" id="lang-ar">AR</button>
+                </div>
+
+                <div class="search-bar">
+                    <i class="fas fa-search search-bar-icon"></i>
+                    <input type="text" data-i18n="nav_search" placeholder="Rechercher...">
+                </div>
+                <button class="nav-icon-btn" onclick="window.location.href='cart.html'">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span class="cart-count">0</span>
+                </button>
+            </div>
         </div>
     </nav>
 
     <section class="section" style="padding-top: calc(var(--nav-height) + var(--space-2xl))">
         <div class="container">
-            <h1 class="section-title">Votre <em>Panier</em></h1>
+            <h1 class="page-title" data-i18n="cart_title">Votre Panier</h1>
 
             <div id="cart-container" class="cart-layout" style="display:none">
                 <div id="cart-main-content">
@@ -36,31 +52,32 @@
                 </div>
 
                 <aside class="cart-summary">
-                    <h3>Résumé de la commande</h3>
+                    <h3 data-i18n="cart_summary_title">Résumé de la commande</h3>
                     <div class="summary-row">
-                        <span>Sous-total</span>
+                        <span data-i18n="cart_subtotal">Sous-total</span>
                         <span id="subtotal">0 DH</span>
                     </div>
                     <div class="summary-row">
-                        <span>Livraison (Marrakech)</span>
-                        <span class="text-gold">Gratuite</span>
+                        <span data-i18n="cart_delivery_marrakech">Livraison (Marrakech)</span>
+                        <span class="text-gold" data-i18n="cart_delivery_free">Gratuite</span>
                     </div>
                     <div class="summary-row total">
-                        <span>Total</span>
+                        <span data-i18n="cart_total">Total</span>
                         <span class="summary-val" id="total">0 DH</span>
                     </div>
 
                     <button class="btn btn-primary btn-lg" style="width:100%; margin-top: 1.5rem"
-                        onclick="window.location.href='checkout.html'">
+                        onclick="window.location.href='checkout.html'" data-i18n="cart_checkout_btn">
                         Passer à la Caisse <i class="fas fa-chevron-right"
                             style="margin-left: 10px; font-size: 0.8rem"></i>
                     </button>
 
                     <div style="margin-top: 2rem; border-top: 1px solid var(--border-subtle); padding-top: 1.5rem">
-                        <h4 style="font-size: 0.8rem; text-transform: uppercase; margin-bottom: 1rem">Besoin d'aide ?
+                        <h4 style="font-size: 0.8rem; text-transform: uppercase; margin-bottom: 1rem"
+                            data-i18n="cart_need_help">Besoin d'aide ?
                         </h4>
                         <a href="https://wa.me/212699705617" target="_blank" class="btn btn-secondary btn-sm"
-                            style="width:100%">
+                            style="width:100%" data-i18n="cart_whatsapp_direct">
                             <i class="fab fa-whatsapp"></i> WhatsApp Direct
                         </a>
                     </div>
@@ -69,9 +86,10 @@
 
             <div id="cart-empty" class="cart-empty">
                 <div class="cart-empty-icon"><i class="fas fa-shopping-bag"></i></div>
-                <h3>Votre panier est vide</h3>
-                <p>Il est temps de commencer votre shopping !</p>
-                <a href="products.html" class="btn btn-primary" style="margin-top: 2rem">Voir les produits</a>
+                <h3 data-i18n="cart_empty_title">Votre panier est vide</h3>
+                <p data-i18n="cart_empty_text">Il est temps de commencer votre shopping !</p>
+                <a href="products.html" class="btn btn-primary" style="margin-top: 2rem"
+                    data-i18n="cart_empty_products_btn">Voir les produits</a>
             </div>
         </div>
     </section>
@@ -80,18 +98,22 @@
     <div class="modal-overlay" id="success-modal">
         <div class="modal">
             <div class="modal-icon text-gold"><i class="fas fa-check-circle"></i></div>
-            <h2 class="modal-title">Commande Reçue !</h2>
-            <p class="modal-text">Merci pour votre commande chez Marrakech Luxe Home. Nous vous contacterons sous peu
+            <h2 class="modal-title" data-i18n="modal_order_received_title">Commande Reçue !</h2>
+            <p class="modal-text" data-i18n="modal_order_received_text">Merci pour votre commande chez Marrakech Luxe
+                Home. Nous vous contacterons sous peu
                 pour confirmer la livraison.</p>
-            <button class="btn btn-primary" style="width:100%" onclick="window.location.href='index.html'">Retour à
+            <button class="btn btn-primary" style="width:100%" onclick="window.location.href='index.html'"
+                data-i18n="modal_back_to_home_btn">Retour à
                 l'accueil</button>
         </div>
     </div>
 
     <div id="toast-container" class="toast-container"></div>
 
+    <!-- Scripts -->
     <script src="js/products.js"></script>
     <script src="js/cart.js"></script>
+    <script src="js/i18n.js"></script>
     <script src="js/main.js"></script>
     <script>
         function renderCart() {

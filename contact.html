@@ -22,6 +22,10 @@
                 <a href="contact.html" class="active">Contact</a>
             </div>
             <div class="nav-actions">
+                <div class="lang-switcher">
+                    <button class="lang-btn" onclick="I18n.setLang('fr')" id="lang-fr">FR</button>
+                    <button class="lang-btn" onclick="I18n.setLang('ar')" id="lang-ar">AR</button>
+                </div>
                 <button class="nav-icon-btn" onclick="window.location.href='cart.html'">
                     <i class="fas fa-shopping-bag"></i>
                     <span class="cart-badge" style="display:none">0</span>
@@ -158,6 +162,7 @@
 
     <script src="js/products.js"></script>
     <script src="js/cart.js"></script>
+    <script src="js/i18n.js"></script>
     <script src="js/main.js"></script>
 </body>
 

@@ -34,9 +34,15 @@
             </div>
 
             <div class="nav-actions">
+                <!-- Language Switcher -->
+                <div class="lang-switcher">
+                    <button class="lang-btn" onclick="I18n.setLang('fr')" id="lang-fr">FR</button>
+                    <button class="lang-btn" onclick="I18n.setLang('ar')" id="lang-ar">AR</button>
+                </div>
+
                 <div class="search-bar">
                     <i class="fas fa-search search-bar-icon"></i>
-                    <input type="text" placeholder="Rechercher...">
+                    <input type="text" data-i18n="nav_search" placeholder="Rechercher...">
                 </div>
                 <button class="nav-icon-btn" onclick="window.location.href='cart.html'">
                     <i class="fas fa-shopping-bag"></i>
@@ -66,16 +72,18 @@
             <div class="hero-content animate-fade-up">
                 <div class="hero-tag">
                     <span class="hero-tag-dot"></span>
-                    BOUTIQUE DE LUXE À MARRAKECH
+                    <span data-i18n="hero_tag">BOUTIQUE DE LUXE À MARRAKECH</span>
                 </div>
-                <h1 class="hero-title">L'élégance pour votre <em>maison</em> et votre <em>beauté</em>.</h1>
-                <p class="hero-subtitle">
+                <h1 class="hero-title" data-i18n="hero_title">L'élégance pour votre maison et votre beauté.</h1>
+                <p class="hero-subtitle" data-i18n="hero_subtitle">
                     Découvrez notre sélection exclusive d'électroménager premium, climatisation haute performance et
                     cosmétiques de luxe directement à Marrakech.
                 </p>
                 <div class="hero-actions">
-                    <a href="products.html" class="btn btn-primary btn-lg">Découvrir la collection</a>
-                    <a href="contact.html" class="btn btn-secondary btn-lg">Nous contacter</a>
+                    <a href="products.html" class="btn btn-primary btn-lg" data-i18n="hero_btn_collection">Découvrir la
+                        collection</a>
+                    <a href="contact.html" class="btn btn-secondary btn-lg" data-i18n="hero_btn_contact">Nous
+                        contacter</a>
                 </div>
             </div>
         </div>
@@ -317,6 +325,7 @@
     <!-- Scripts -->
     <script src="js/products.js"></script>
     <script src="js/cart.js"></script>
+    <script src="js/i18n.js"></script>
     <script src="js/main.js"></script>
     <script>
         // Local Homepage Initialization

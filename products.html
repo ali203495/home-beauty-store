@@ -22,6 +22,16 @@
                 <a href="contact.html">Contact</a>
             </div>
             <div class="nav-actions">
+                <!-- Language Switcher -->
+                <div class="lang-switcher">
+                    <button class="lang-btn" onclick="I18n.setLang('fr')" id="lang-fr">FR</button>
+                    <button class="lang-btn" onclick="I18n.setLang('ar')" id="lang-ar">AR</button>
+                </div>
+
+                <div class="search-bar">
+                    <i class="fas fa-search search-bar-icon"></i>
+                    <input type="text" data-i18n="nav_search" placeholder="Rechercher...">
+                </div>
                 <button class="nav-icon-btn" onclick="window.location.href='cart.html'">
                     <i class="fas fa-shopping-bag"></i>
                     <span class="cart-badge" style="display:none">00</span>
@@ -39,7 +49,7 @@
                 <span class="breadcrumb-sep">/</span>
                 <span>Produits</span>
             </div>
-            <h1 class="page-title">Notre <em>Catalogue</em></h1>
+            <h1 class="page-title" data-i18n="nav_products">Notre Catalogue</h1>
         </div>
     </header>
 
@@ -123,6 +133,7 @@
 
     <script src="js/products.js"></script>
     <script src="js/cart.js"></script>
+    <script src="js/i18n.js"></script>
     <script src="js/main.js"></script>
     <script>
         // Local Product Page Logic
