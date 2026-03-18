@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login — Marrakech Luxe Home</title>
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/components.css">
+    <style>
+        .login-wrapper {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-primary);
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 400px;
+            padding: var(--space-2xl);
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-xl);
+            text-align: center;
+        }
+
+        .login-logo {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            margin-bottom: var(--space-xl);
+            color: var(--gold);
+        }
+
+        .login-logo span {
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-wrapper">
+        <div class="login-card">
+            <div class="login-logo">MARRAKECH <span>LUXE</span></div>
+            <h2 style="margin-bottom: var(--space-lg)">Accès Administrateur</h2>
+            <form id="login-form">
+                <div class="form-group" style="text-align: left">
+                    <label class="form-label">Utilisateur</label>
+                    <input type="text" name="username" class="form-input" placeholder="admin" required>
+                </div>
+                <div class="form-group" style="text-align: left">
+                    <label class="form-label">Mot de passe</label>
+                    <input type="password" name="password" class="form-input" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem">Se
+                    Connecter</button>
+            </form>
+            <p style="margin-top: 2rem; font-size: 0.8rem; color: var(--text-muted)">
+                &copy; Marrakech Luxe Home Admin Portal
+            </p>
+        </div>
+    </div>
+
+    <script src="js/admin.js"></script>
+</body>
+
+</html>

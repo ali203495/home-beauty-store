@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Détails du Produit — Marrakech Luxe Home</title>
+  <link rel="stylesheet" href="css/index.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar scrolled">
+    <div class="container">
+      <a href="index.html" class="nav-logo">MARRAKECH <span>LUXE</span></a>
+      <div class="nav-links">
+        <a href="index.html">Accueil</a>
+        <a href="products.html">Produits</a>
+        <a href="contact.html">Contact</a>
+      </div>
+      <div class="nav-actions">
+        <button class="nav-icon-btn" onclick="window.location.href='cart.html'">
+          <i class="fas fa-shopping-bag"></i>
+          <span class="cart-badge" id="cart-badge" style="display:none">0</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <section class="section" style="padding-top: calc(var(--nav-height) + var(--space-2xl))">
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="index.html">Accueil</a>
+        <span class="breadcrumb-sep">/</span>
+        <a href="products.html">Produits</a>
+        <span class="breadcrumb-sep">/</span>
+        <span id="breadcrumb-current">Produit</span>
+      </div>
+
+      <div class="product-detail-grid" id="product-detail-container">
+        <!-- Will be populated by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Related Products -->
+  <section class="section bg-secondary">
+    <div class="container">
+      <h2 class="section-title">Produits Similaires</h2>
+      <div class="product-grid" id="related-grid" style="margin-top: var(--space-xl)"></div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container text-center">
+      <p>&copy; <span id="current-year"></span> Marrakech Luxe Home. Tous droits réservés.</p>
+    </div>
+  </footer>
+
+  <div id="toast-container" class="toast-container"></div>
+
+  <script src="js/products.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    function loadProduct() {
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get('id');
+      const product = PRODUCTS.find(p => p.id === id);
+
+      if (!product) {
+        window.location.href = 'products.html';
+        return;
+      }
+
+      document.title = `${product.name} — Marrakech Luxe Home`;
+      document.getElementById('breadcrumb-current').textContent = product.name;
+
+      const container = document.getElementById('product-detail-container');
+      container.innerHTML = `
+        <div class="product-detail-image-wrap">
+          <img src="${product.image}" alt="${product.name}">
+        </div>
+        <div class="product-detail-content">
+          <span class="product-detail-category">${product.category}</span>
+          <h1 class="product-detail-title">${product.name}</h1>
+          <div class="product-rating" style="margin-bottom: 1rem">
+            <div class="stars">${'★'.repeat(Math.floor(product.rating))}</div>
+            <span class="rating-count">(${product.reviews} avis clients)</span>
+          </div>
+          <div class="product-detail-price">${product.price} DH</div>
+          <p class="product-detail-desc">${product.description}</p>
+          
+          <div class="qty-row">
+            <div class="qty-control">
+              <button class="qty-btn" onclick="updateQty(-1)">-</button>
+              <span class="qty-value" id="qty-val">1</span>
+              <button class="qty-btn" onclick="updateQty(1)">+</button>
+            </div>
+            <button class="btn btn-primary btn-lg" onclick="handleAddToCart('${product.id}')" style="flex:1">
+              Ajouter au Panier
+            </button>
+            <button class="btn btn-secondary btn-lg" onclick="window.location.href='quick-buy.html?id=${product.id}'" style="flex:1; background: var(--gold); color: black; border:none">
+              Achat Rapide
+            </button>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom: 2rem;">
+            <button class="btn btn-secondary" onclick="shareToWhatsApp('${product.id}')">
+              <i class="fab fa-whatsapp"></i> Commander via WhatsApp
+            </button>
+            <button class="btn btn-secondary" onclick="shareToFacebook('${product.id}')">
+              <i class="fab fa-facebook"></i> Partager sur FB
+            </button>
+          </div>
+
+          <div class="detail-specs">
+            <h4>Spécifications</h4>
+            ${Object.entries(product.specs || {}).map(([key, val]) => `
+              <div class="detail-spec-row">
+                <span class="spec-key">${key}</span>
+                <span class="spec-val">${val}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+
+      // Load related
+      const related = PRODUCTS.filter(p => p.category === product.category && p.id !== product.id).slice(0, 4);
+      document.getElementById('related-grid').innerHTML = related.map(p => App.generateProductCard(p)).join('');
+    }
+
+    let currentQty = 1;
+    function updateQty(delta) {
+      currentQty = Math.max(1, currentQty + delta);
+      document.getElementById('qty-val').textContent = currentQty;
+    }
+
+    function handleAddToCart(id) {
+      Cart.add(id, currentQty);
+    }
+
+    document.addEventListener('DOMContentLoaded', loadProduct);
+  </script>
+</body>
+
+</html>

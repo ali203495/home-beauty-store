@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de Bord — Marrakech Luxe Home</title>
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .admin-layout {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: var(--space-2xl);
+            padding-top: calc(var(--nav-height) + var(--space-xl));
+        }
+
+        .admin-sidebar {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: var(--space-xl);
+            height: fit-content;
+            position: sticky;
+            top: calc(var(--nav-height) + var(--space-xl));
+        }
+
+        .admin-item {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-subtle);
+            transition: background 0.3s;
+        }
+
+        .admin-item:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .admin-item-img {
+            width: 60px;
+            height: 60px;
+            border-radius: var(--radius-sm);
+            object-fit: cover;
+        }
+
+        .admin-item-info {
+            flex: 1;
+        }
+
+        .admin-item-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .admin-nav {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border-subtle);
+            padding-bottom: 1rem;
+        }
+
+        .admin-nav-item {
+            color: var(--text-muted);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .admin-nav-item.active {
+            color: var(--gold);
+        }
+
+        .admin-nav-item.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1.1rem;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--gold);
+        }
+
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .stat-card-val {
+            font-family: var(--font-display);
+            font-size: 1.8rem;
+            color: var(--gold);
+            display: block;
+        }
+
+        .stat-card-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-top: 0.5rem;
+        }
+
+        .order-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .order-table th,
+        .order-table td {
+            text-align: left;
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .status-badge {
+            padding: 0.2rem 0.6rem;
+            border-radius: var(--radius-full);
+            font-size: 0.7rem;
+            font-weight: 700;
+        }
+
+        .status-new {
+            background: rgba(201, 149, 108, 0.2);
+            color: var(--gold);
+        }
+
+        .status-processing {
+            background: rgba(52, 152, 219, 0.2);
+            color: #3498db;
+        }
+
+        .status-delivered {
+            background: rgba(46, 204, 113, 0.2);
+            color: #2ecc71;
+        }
+
+        /* Modal Styles */
+        .admin-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .admin-modal {
+            background: var(--bg-card);
+            border: 1px solid var(--border-accent);
+            border-radius: var(--radius-xl);
+            padding: 2rem;
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        /* Analytics Chart */
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .chart-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+        }
+
+        .chart-bar-row {
+            margin-bottom: 1rem;
+        }
+
+        .chart-bar-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .chart-bar-bg {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .chart-bar-fill {
+            height: 100%;
+            background: var(--gold);
+            width: 0%;
+            transition: width 1s ease-out;
+        }
+
+        .search-wrapper {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .search-wrapper i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        .search-wrapper .form-input {
+            padding-left: 2.8rem;
+        }
+
+        @media (max-width: 900px) {
+            .admin-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-sidebar {
+                position: static;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Minimal Nav -->
+    <nav class="navbar scrolled">
+        <div class="container" style="display:flex; justify-content: space-between; align-items: center;">
+            <a href="index.html" class="nav-logo">MARRAKECH <span>LUXE</span> Admin</a>
+            <button class="btn btn-secondary btn-sm" onclick="Admin.logout()">Déconnexion</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="admin-layout">
+            <!-- Add Product Sidebar -->
+            <aside class="admin-sidebar">
+                <h3>Ajouter un Produit</h3>
+                <form id="add-product-form" style="margin-top: 1.5rem">
+                    <div class="form-group">
+                        <label class="form-label">Nom du Produit</label>
+                        <input type="text" name="name" class="form-input" placeholder="Ex: Climatiseur LG" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Catégorie</label>
+                        <select name="category" class="form-input" required>
+                            <option value="Electroménager">Electroménager</option>
+                            <option value="Climatisation">Climatisation</option>
+                            <option value="Maquillage">Maquillage</option>
+                            <option value="Cuisine">Cuisine</option>
+                            <option value="Nettoyage">Nettoyage</option>
+                            <option value="Plastique">Plastique</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Prix (DH)</label>
+                        <input type="number" name="price" class="form-input" placeholder="2500" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Description (optionnel)</label>
+                        <textarea name="description" class="form-input" rows="3"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%">Enregistrer le Produit</button>
+                </form>
+            </aside>
+
+            <!-- Product List Main -->
+            <main class="admin-main">
+                <div class="admin-nav">
+                    <div class="admin-nav-item active" onclick="Admin.switchTab('products', this)">Produits</div>
+                    <div class="admin-nav-item" onclick="Admin.switchTab('orders', this)">Commandes</div>
+                </div>
+
+                <!-- Stats Section -->
+                <div class="stats-cards">
+                    <div class="stat-card">
+                        <span class="stat-card-val" id="stat-products">0</span>
+                        <span class="stat-card-label">Produits Totaux</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-card-val" id="stat-orders">0</span>
+                        <span class="stat-card-label">Commandes</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-card-val" id="stat-total-dh">0 DH</span>
+                        <span class="stat-card-label">Ventes Totales</span>
+                    </div>
+                </div>
+
+                <!-- Analytics Tab (Hidden by default or integrated) -->
+                <div id="analytics-section" class="analytics-grid">
+                    <div class="chart-container">
+                        <h4 style="margin-bottom: 1.5rem">Ventes par Catégorie</h4>
+                        <div id="category-chart">
+                            <!-- Bars here -->
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <h4 style="margin-bottom: 1.5rem">Top Items</h4>
+                        <div id="top-items-chart">
+                            <!-- Bars here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Products Tab -->
+                <div id="tab-products">
+                    <div
+                        style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem">
+                        <h2>Gestion du Catalogue</h2>
+                        <div id="admin-status" class="text-xs text-gold"></div>
+                    </div>
+
+                    <div class="search-wrapper">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="product-search" class="form-input"
+                            placeholder="Rechercher un produit par nom ou catégorie..."
+                            oninput="Admin.filterProducts(this.value)">
+                    </div>
+
+                    <div id="product-list-admin" class="admin-content-card">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Orders Tab -->
+                <div id="tab-orders" style="display: none">
+                    <div
+                        style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem">
+                        <h2>Gestion des Commandes</h2>
+                        <button class="btn btn-secondary btn-sm" onclick="Admin.exportOrders()">
+                            <i class="fas fa-file-export"></i> Exporter CSV
+                        </button>
+                    </div>
+
+                    <div class="search-wrapper">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="order-search" class="form-input"
+                            placeholder="Rechercher une commande par ID ou nom client..."
+                            oninput="Admin.filterOrders(this.value)">
+                    </div>
+
+                    <div id="order-list-admin" class="admin-content-card">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Product Edit Modal -->
+    <div class="admin-modal-overlay" id="product-modal">
+        <div class="admin-modal">
+            <h3 id="modal-title" style="margin-bottom: 1.5rem">Modifier le Produit</h3>
+            <form id="edit-product-form">
+                <input type="hidden" name="id">
+                <div class="form-group">
+                    <label class="form-label">Nom du Produit</label>
+                    <input type="text" name="name" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Catégorie</label>
+                    <select name="category" class="form-input" required>
+                        <option value="Electroménager">Electroménager</option>
+                        <option value="Climatisation">Climatisation</option>
+                        <option value="Maquillage">Maquillage</option>
+                        <option value="Cuisine">Cuisine</option>
+                        <option value="Nettoyage">Nettoyage</option>
+                        <option value="Plastique">Plastique</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Prix (DH)</label>
+                    <input type="number" name="price" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Image URL</label>
+                    <input type="text" name="image" class="form-input" placeholder="assets/images/...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea name="description" class="form-input" rows="3"></textarea>
+                </div>
+                <div style="display:flex; gap: 1rem; margin-top: 2rem">
+                    <button type="submit" class="btn btn-primary" style="flex: 1">Enregistrer</button>
+                    <button type="button" class="btn btn-secondary" onclick="Admin.closeModal()"
+                        style="flex: 1">Annuler</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Order Details Modal -->
+    <div class="admin-modal-overlay" id="order-modal">
+        <div class="admin-modal" style="max-width: 700px">
+            <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem">
+                <h3 id="order-modal-title">Détails de la Commande</h3>
+                <button class="btn btn-secondary btn-sm" onclick="Admin.closeOrderModal()">Fermer</button>
+            </div>
+            <div id="order-modal-content">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+    </div>
+
+    <script src="js/products.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+
+</html>
