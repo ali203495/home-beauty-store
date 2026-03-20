@@ -6,7 +6,8 @@ const ADMIN_CREDENTIALS = {
     username: 'admin',
     // SHA-256 hash of 'luxe'
     passwordHash: 'af2f9db01d9b17076507ad8be72f741ff554d2387966a7e5e2456efe4333c3a6',
-    pin: '1337' // Secondary legacy-style PIN for 2FA demonstration
+    pin: '1337', // Secondary legacy-style PIN for 2FA demonstration
+    recoveryEmail: 'admin@gmail.com' // Mock recovery email
 };
 
 /**
@@ -106,6 +107,43 @@ const Admin = {
             }
         } else {
             this.handleFailedAttempt('Identifiants incorrects');
+        }
+    },
+
+    /**
+     * Simulates password recovery via Gmail
+     * @param {string} email 
+     */
+    recoverPassword(email) {
+        const errorEl = document.getElementById('login-error');
+        const recoveryForm = document.getElementById('recovery-form');
+        const loginForm = document.getElementById('login-form');
+
+        if (email.toLowerCase() === ADMIN_CREDENTIALS.recoveryEmail.toLowerCase()) {
+            this.showError('Un lien de réinitialisation a été envoyé à votre adresse Gmail.');
+            if (errorEl) errorEl.style.color = '#2ecc71'; // Success green
+            setTimeout(() => {
+                this.toggleRecovery(false);
+            }, 3000);
+        } else {
+            this.showError('Adresse email non reconnue.');
+            if (errorEl) errorEl.style.color = 'var(--rose)';
+        }
+    },
+
+    toggleRecovery(show) {
+        const loginForm = document.getElementById('login-form');
+        const recoveryForm = document.getElementById('recovery-form');
+        const errorEl = document.getElementById('login-error');
+
+        if (errorEl) errorEl.style.display = 'none';
+
+        if (show) {
+            if (loginForm) loginForm.style.display = 'none';
+            if (recoveryForm) recoveryForm.style.display = 'block';
+        } else {
+            if (loginForm) loginForm.style.display = 'block';
+            if (recoveryForm) recoveryForm.style.display = 'none';
         }
     },
 
@@ -552,6 +590,14 @@ const Admin = {
                     e.target.password.value,
                     e.target.pin ? e.target.pin.value : null
                 );
+            });
+        }
+
+        const recoveryForm = document.getElementById('recovery-form');
+        if (recoveryForm) {
+            recoveryForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                this.recoverPassword(e.target.recovery_email.value);
             });
         }
 

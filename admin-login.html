@@ -65,7 +65,28 @@
 
                 <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem">Se
                     Connecter</button>
+
+                <div style="margin-top: 1.5rem">
+                    <a href="#" onclick="Admin.toggleRecovery(true); return false;"
+                        style="color: var(--gold); font-size: 0.8rem; text-decoration: none">Mot de passe oublié ?</a>
+                </div>
             </form>
+
+            <form id="recovery-form" style="display: none">
+                <div class="form-group" style="text-align: left">
+                    <label class="form-label">Email Gmail Récupération</label>
+                    <input type="email" name="recovery_email" class="form-input" placeholder="votre-email@gmail.com"
+                        required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem">Réinitialiser via
+                    Gmail</button>
+                <div style="margin-top: 1.5rem">
+                    <a href="#" onclick="Admin.toggleRecovery(false); return false;"
+                        style="color: var(--text-muted); font-size: 0.8rem; text-decoration: none"><i
+                            class="fas fa-arrow-left"></i> Retour au login</a>
+                </div>
+            </form>
+
             <p style="margin-top: 2rem; font-size: 0.8rem; color: var(--text-muted)">
                 &copy; Marrakech Luxe Home Admin Portal
             </p>
