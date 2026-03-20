@@ -7,7 +7,7 @@ const ADMIN_CREDENTIALS = {
     // SHA-256 hash of 'luxe'
     passwordHash: 'af2f9db01d9b17076507ad8be72f741ff554d2387966a7e5e2456efe4333c3a6',
     pin: '1337', // Secondary legacy-style PIN for 2FA demonstration
-    recoveryEmail: 'admin@gmail.com' // Mock recovery email
+    recoveryEmail: 'abdelaali.markabi@gmail.com' // Updated to User's recovery email
 };
 
 /**
