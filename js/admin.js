@@ -94,6 +94,7 @@ const Admin = {
                 // Success
                 localStorage.setItem('admin_login_attempts', '0');
                 sessionStorage.setItem('mlh_admin_logged_in', 'true');
+                sessionStorage.setItem('mlh_admin_login_time', Date.now().toString());
                 window.location.href = 'admin-dashboard.html';
             } else {
                 this.handleFailedAttempt('Code PIN incorrect');
@@ -453,100 +454,126 @@ const Admin = {
     addProduct(e) {
         e.preventDefault();
         const formData = new FormData(e.target);
+        const name = formData.get('name').trim();
+        const price = parseFloat(formData.get('price'));
+
+        if (name.length < 3) {
+            alert('Le nom du produit est trop court (min 3 caractères)');
+            return;
+        }
+
+        if (isNaN(price) || price <= 0) {
+            alert('Le prix doit être un nombre supérieur à 0');
+            return;
+        }
+
         const newProduct = {
             id: 'p-' + Date.now(),
-            name: formData.get('name'),
+            name: name,
             category: formData.get('category'),
-            price: parseInt(formData.get('price')),
-            image: formData.get('image') || 'assets/images/appliances.png',
-            rating: 5,
-            reviews: 0,
+            price: price,
             description: formData.get('description'),
-            specs: {}
+            image: 'assets/images/placeholder.png', // Default
+            rating: 5,
+            reviews: 0
         };
 
-        // Add to local DB
-        ProductDB.add(newProduct);
+        ProductDB.saveProduct(newProduct);
         this.renderProducts();
+        this.renderStats();
         e.target.reset();
-        alert('Produit ajouté !');
+        this.notify('Produit ajouté avec succès !');
+    },
+    price: parseInt(formData.get('price')),
+    image: formData.get('image') || 'assets/images/appliances.png',
+    rating: 5,
+    reviews: 0,
+    description: formData.get('description'),
+    specs: {}
+};
+
+// Add to local DB
+ProductDB.add(newProduct);
+this.renderProducts();
+e.target.reset();
+alert('Produit ajouté !');
     },
 
-    deleteProduct(id) {
-        if (confirm('Êtes-vous sûr de vouloir supprimer ce produit ?')) {
-            ProductDB.delete(id);
-            this.renderProducts();
-        }
-    },
-
-    openModal(id = null) {
-        const modal = document.getElementById('product-modal');
-        const form = document.getElementById('edit-product-form');
-        const title = document.getElementById('modal-title');
-
-        if (id) {
-            const p = PRODUCTS.find(prod => prod.id === id);
-            title.innerText = 'Modifier le Produit';
-            form.id.value = p.id;
-            form.name.value = p.name;
-            form.category.value = p.category;
-            form.price.value = p.price;
-            form.image.value = p.image;
-            form.description.value = p.description || '';
-        } else {
-            // This could be used for adding too, but we have a sidebar form
-            // Let's stick to using modal for editing as requested
-        }
-
-        modal.style.display = 'flex';
-    },
-
-    closeModal() {
-        document.getElementById('product-modal').style.display = 'none';
-    },
-
-    saveProduct(e) {
-        e.preventDefault();
-        const formData = new FormData(e.target);
-        const id = formData.get('id');
-
-        const updatedData = {
-            name: formData.get('name'),
-            category: formData.get('category'),
-            price: parseInt(formData.get('price')),
-            image: formData.get('image'),
-            description: formData.get('description')
-        };
-
-        ProductDB.update(id, updatedData);
+deleteProduct(id) {
+    if (confirm('Êtes-vous sûr de vouloir supprimer ce produit ?')) {
+        ProductDB.delete(id);
         this.renderProducts();
-        this.closeModal();
-        alert('Produit mis à jour !');
-    },
-
-    setupEventListeners() {
-        const loginForm = document.getElementById('login-form');
-        if (loginForm) {
-            loginForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                this.login(
-                    e.target.username.value,
-                    e.target.password.value,
-                    e.target.pin ? e.target.pin.value : null
-                );
-            });
-        }
-
-        const addForm = document.getElementById('add-product-form');
-        if (addForm) {
-            addForm.addEventListener('submit', (e) => this.addProduct(e));
-        }
-
-        const editForm = document.getElementById('edit-product-form');
-        if (editForm) {
-            editForm.addEventListener('submit', (e) => this.saveProduct(e));
-        }
     }
+},
+
+openModal(id = null) {
+    const modal = document.getElementById('product-modal');
+    const form = document.getElementById('edit-product-form');
+    const title = document.getElementById('modal-title');
+
+    if (id) {
+        const p = PRODUCTS.find(prod => prod.id === id);
+        title.innerText = 'Modifier le Produit';
+        form.id.value = p.id;
+        form.name.value = p.name;
+        form.category.value = p.category;
+        form.price.value = p.price;
+        form.image.value = p.image;
+        form.description.value = p.description || '';
+    } else {
+        // This could be used for adding too, but we have a sidebar form
+        // Let's stick to using modal for editing as requested
+    }
+
+    modal.style.display = 'flex';
+},
+
+closeModal() {
+    document.getElementById('product-modal').style.display = 'none';
+},
+
+saveProduct(e) {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const id = formData.get('id');
+
+    const updatedData = {
+        name: formData.get('name'),
+        category: formData.get('category'),
+        price: parseInt(formData.get('price')),
+        image: formData.get('image'),
+        description: formData.get('description')
+    };
+
+    ProductDB.update(id, updatedData);
+    this.renderProducts();
+    this.closeModal();
+    alert('Produit mis à jour !');
+},
+
+setupEventListeners() {
+    const loginForm = document.getElementById('login-form');
+    if (loginForm) {
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            this.login(
+                e.target.username.value,
+                e.target.password.value,
+                e.target.pin ? e.target.pin.value : null
+            );
+        });
+    }
+
+    const addForm = document.getElementById('add-product-form');
+    if (addForm) {
+        addForm.addEventListener('submit', (e) => this.addProduct(e));
+    }
+
+    const editForm = document.getElementById('edit-product-form');
+    if (editForm) {
+        editForm.addEventListener('submit', (e) => this.saveProduct(e));
+    }
+}
 };
 
 document.addEventListener('DOMContentLoaded', () => Admin.init());
