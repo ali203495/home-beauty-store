@@ -7,6 +7,9 @@ const WHATSAPP_GROUP_URL = 'https://chat.whatsapp.com/JvGXnQd8fGB4vbZwNJNBUG?mod
 const FB_GROUP_URL = 'https://www.facebook.com/share/g/18L9fxx9pG/';
 
 const App = {
+  /**
+   * Initializes all global UI components and event listeners
+   */
   init() {
     this.handleNavbar();
     this.handleMobileNav();
@@ -16,6 +19,9 @@ const App = {
     this.updateCurrentYear();
   },
 
+  /**
+   * Manages navbar appearance on scroll
+   */
   handleNavbar() {
     const nav = document.querySelector('.navbar');
     window.addEventListener('scroll', () => {

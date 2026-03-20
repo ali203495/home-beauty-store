@@ -4,7 +4,8 @@
 
 const ADMIN_CREDENTIALS = {
     username: 'admin',
-    password: 'luxe' // In a real app, this would be on a server
+    // SHA-256 hash of 'luxe'
+    passwordHash: 'af2f9db01d9b17076507ad8be72f741ff554d2387966a7e5e2456efe4333c3a6'
 };
 
 const Admin = {
@@ -32,8 +33,27 @@ const Admin = {
         }
     },
 
-    login(username, password) {
-        if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
+    /**
+     * Hashes a string using SHA-256
+     * @param {string} string 
+     * @returns {Promise<string>}
+     */
+    async hashPassword(string) {
+        const utf8 = new TextEncoder().encode(string);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', utf8);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        return hashHex;
+    },
+
+    /**
+     * Authenticates the admin
+     * @param {string} username 
+     * @param {string} password 
+     */
+    async login(username, password) {
+        const hashedInput = await this.hashPassword(password);
+        if (username === ADMIN_CREDENTIALS.username && hashedInput === ADMIN_CREDENTIALS.passwordHash) {
             sessionStorage.setItem('mlh_admin_logged_in', 'true');
             window.location.href = 'admin-dashboard.html';
         } else {
