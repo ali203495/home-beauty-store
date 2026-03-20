@@ -144,6 +144,9 @@ const App = {
     `;
   },
 
+  /**
+   * Updates the copyright year in the footer
+   */
   updateCurrentYear() {
     const el = document.getElementById('current-year');
     if (el) el.textContent = new Date().getFullYear();
