@@ -5,6 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contactez-Nous — Marrakech Luxe Home</title>
+    <meta name="description"
+        content="Contactez Marrakech Luxe Home pour toute information sur nos produits, services d'installation de climatisation ou livraison à Marrakech.">
+    <link rel="icon" type="image/png" href="assets/images/logo.png">
     <link rel="stylesheet" href="css/index.css">
     <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -75,35 +78,46 @@
             <div class="contact-grid">
                 <div class="contact-form animate-fade-up">
                     <h3 style="margin-bottom: var(--space-lg)">Envoyez-nous un message</h3>
-                    <form
-                        onsubmit="event.preventDefault(); alert('Message envoyé ! Nous vous répondrons prochainement.')">
+                    <form id="contact-form-main">
                         <div class="grid grid-2 gap-md">
                             <div class="form-group">
-                                <label class="form-label">Nom Complet</label>
-                                <input type="text" class="form-input" placeholder="Votre nom" required>
+                                <label class="form-label" data-i18n="form_name_label">Nom Complet</label>
+                                <input type="text" name="name" class="form-input" data-i18n="form_name_ph"
+                                    placeholder="Votre nom" required>
                             </div>
                             <div class="form-group">
-                                <label class="form-label">Email</label>
-                                <input type="email" class="form-input" placeholder="votre@email.com" required>
+                                <label class="form-label" data-i18n="form_email_label">Email</label>
+                                <input type="email" name="email" class="form-input" data-i18n="form_email_ph"
+                                    placeholder="votre@email.com" required>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Sujet</label>
-                            <select class="form-input">
-                                <option>Information Produit</option>
-                                <option>Service Installation AC</option>
-                                <option>Commande & Livraison</option>
-                                <option>Autre</option>
+                            <label class="form-label" data-i18n="form_subject_label">Sujet</label>
+                            <select name="subject" class="form-input">
+                                <option data-i18n="form_sub_info">Information Produit</option>
+                                <option data-i18n="form_sub_ac">Service Installation AC</option>
+                                <option data-i18n="form_sub_order">Commande & Livraison</option>
+                                <option data-i18n="form_sub_other">Autre</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Message</label>
-                            <textarea class="form-input" rows="5" placeholder="Comment pouvons-nous vous aider ?"
-                                required></textarea>
+                            <label class="form-label" data-i18n="form_message_label">Message</label>
+                            <textarea name="message" class="form-input" rows="5" data-i18n="form_message_ph"
+                                placeholder="Comment pouvons-nous vous aider ?" required></textarea>
                         </div>
-                        <button type="submit" class="btn btn-primary btn-lg" style="width: 100%">Envoyer le
+                        <button type="submit" class="btn btn-primary btn-lg" style="width: 100%"
+                            data-i18n="form_submit_btn">Envoyer le
                             Message</button>
                     </form>
+                    <script>
+                        document.getElementById('contact-form-main').addEventListener('submit', function (e) {
+                            e.preventDefault();
+                            const formData = new FormData(this);
+                            const mailtoLink = `mailto:contact@marrakech-luxe.com?subject=${encodeURIComponent(formData.get('subject'))}&body=${encodeURIComponent("Nom: " + formData.get('name') + "\\nEmail: " + formData.get('email') + "\\n\\nMessage:\\n" + formData.get('message'))}`;
+                            window.location.href = mailtoLink;
+                            App.showToast(I18n.get('form_success') || 'Message prêt à être envoyé via votre email !');
+                        });
+                    </script>
                 </div>
 
                 <div class="contact-info-list animate-fade-up-delay-1">
