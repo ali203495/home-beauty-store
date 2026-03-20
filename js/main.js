@@ -18,6 +18,20 @@ const App = {
     this.initSearch();
     this.updateCurrentYear();
     this.setupScrollEffects();
+    this.initWhatsAppBubble();
+  },
+
+  /**
+   * Initializes the floating WhatsApp chat bubble
+   */
+  initWhatsAppBubble() {
+    const bubble = document.createElement('a');
+    bubble.className = 'whatsapp-bubble';
+    bubble.href = `https://wa.me/${CONFIG.whatsappNumber}?text=${encodeURIComponent(CONFIG.whatsappMessage)}`;
+    bubble.target = '_blank';
+    bubble.innerHTML = '<i class="fab fa-whatsapp"></i>';
+    bubble.setAttribute('aria-label', 'Chat on WhatsApp');
+    document.body.appendChild(bubble);
   },
 
   /**
