@@ -75,12 +75,13 @@ const Admin = {
         const pinGroup = document.getElementById('pin-group');
 
         // Rate Limiting Check
-        const lockUntil = parseInt(localStorage.getItem('admin_lock_until') || '0');
+        /*
         if (Date.now() < lockUntil) {
             const wait = Math.ceil((lockUntil - Date.now()) / 1000);
             this.showError(`Trop de tentatives. Réessayez dans ${wait}s.`);
             return;
         }
+        */
 
         // TEMP: Simplified login for debugging
         const isUserMatch = (username.trim().toLowerCase() === ADMIN_CREDENTIALS.username.toLowerCase());
