@@ -1,6 +1,6 @@
 /**
  * LUMIÈRE HOME & BEAUTY (Marrakech LUXE HOME)
- * Product Database
+ * Product Database & Storage Management
  */
 
 // Initial hardcoded products (used if localStorage is empty)
@@ -165,7 +165,10 @@ if (!PRODUCTS || PRODUCTS.length === 0) {
     localStorage.setItem('mlh_products', JSON.stringify(PRODUCTS));
 }
 
-// Global functions to manage products (sync with localStorage)
+/**
+ * Data Access Object for Products
+ * Synchronizes with localStorage for persistence
+ */
 const ProductDB = {
     save(products) {
         localStorage.setItem('mlh_products', JSON.stringify(products));
@@ -188,7 +191,10 @@ const ProductDB = {
     }
 };
 
-// Order Management (sync with localStorage)
+/**
+ * Data Access Object for Orders
+ * Synchronizes with localStorage for persistence
+ */
 const OrderDB = {
     getOrders() {
         return JSON.parse(localStorage.getItem('mlh_orders')) || [];

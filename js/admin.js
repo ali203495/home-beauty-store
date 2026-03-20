@@ -8,6 +8,9 @@ const ADMIN_CREDENTIALS = {
     passwordHash: 'af2f9db01d9b17076507ad8be72f741ff554d2387966a7e5e2456efe4333c3a6'
 };
 
+/**
+ * Core Admin Dashboard Logic
+ */
 const Admin = {
     init() {
         this.checkAuth();
