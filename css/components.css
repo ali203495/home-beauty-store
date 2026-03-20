@@ -1663,3 +1663,53 @@ select.form-input option {
         display: none;
     }
 }
+/* --- UI Polish Elements --- */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 4px;
+  background: var(--gold-gradient);
+  z-index: 2000;
+  transition: width 0.1s ease;
+}
+
+.scroll-top-btn {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 45px;
+  height: 45px;
+  background: var(--bg-card);
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+.scroll-top-btn.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.scroll-top-btn:hover {
+  background: var(--gold);
+  color: black;
+  transform: translateY(-5px);
+}
+
+@media (max-width: 768px) {
+  .scroll-top-btn {
+    bottom: 5rem; /* Avoid overlapping with bottom bars */
+    right: 1.5rem;
+  }
+}

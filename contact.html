@@ -8,6 +8,14 @@
     <meta name="description"
         content="Contactez Marrakech Luxe Home pour toute information sur nos produits, services d'installation de climatisation ou livraison à Marrakech.">
     <link rel="icon" type="image/png" href="assets/images/logo.png">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Contactez-nous — Marrakech Luxe Home">
+    <meta property="og:description"
+        content="Contactez Marrakech Luxe Home pour vos besoins en électroménager et beauté à Marrakech.">
+    <meta property="og:image" content="https://ali203495.github.io/home-beauty-store/assets/images/logo.png">
+    <meta property="og:url" content="https://ali203495.github.io/home-beauty-store/contact.html">
     <link rel="stylesheet" href="css/index.css">
     <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -26,8 +34,10 @@
             </div>
             <div class="nav-actions">
                 <div class="lang-switcher">
-                    <button class="lang-btn" onclick="I18n.setLang('fr')" id="lang-fr">FR</button>
-                    <button class="lang-btn" onclick="I18n.setLang('ar')" id="lang-ar">AR</button>
+                    <button class="lang-btn" onclick="I18n.setLang('fr')" id="lang-fr"
+                        aria-label="Changer la langue en Français">FR</button>
+                    <button class="lang-btn" onclick="I18n.setLang('ar')" id="lang-ar"
+                        aria-label="Changer la langue en Arabe">AR</button>
                 </div>
                 <button class="nav-icon-btn" onclick="window.location.href='cart.html'">
                     <i class="fas fa-shopping-bag"></i>

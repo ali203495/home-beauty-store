@@ -17,6 +17,46 @@ const App = {
     this.setupSocialSharing();
     this.initSearch();
     this.updateCurrentYear();
+    this.setupScrollEffects();
+  },
+
+  /**
+   * Sets up scroll-based feedback (Progress bar and Scroll to Top button)
+   */
+  setupScrollEffects() {
+    // Create Scroll to Top Button
+    const btn = document.createElement('button');
+    btn.className = 'scroll-top-btn';
+    btn.innerHTML = '<i class="fas fa-arrow-up"></i>';
+    btn.setAttribute('aria-label', 'Retour en haut');
+    document.body.appendChild(btn);
+
+    const progressBar = document.getElementById('scroll-progress');
+
+    window.addEventListener('scroll', () => {
+      const scrollPx = document.documentElement.scrollTop;
+      const winHeightPx = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = (scrollPx / winHeightPx) * 100;
+
+      // Update Top Progress Bar
+      if (progressBar) {
+        progressBar.style.width = scrolled + '%';
+      }
+
+      // Toggle Scroll Top Button
+      if (scrollPx > 300) {
+        btn.classList.add('visible');
+      } else {
+        btn.classList.remove('visible');
+      }
+    });
+
+    btn.addEventListener('click', () => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
   },
 
   /**
