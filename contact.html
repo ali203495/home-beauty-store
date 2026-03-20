@@ -112,10 +112,14 @@
                     <script>
                         document.getElementById('contact-form-main').addEventListener('submit', function (e) {
                             e.preventDefault();
-                            const formData = new FormData(this);
-                            const mailtoLink = `mailto:contact@marrakech-luxe.com?subject=${encodeURIComponent(formData.get('subject'))}&body=${encodeURIComponent("Nom: " + formData.get('name') + "\\nEmail: " + formData.get('email') + "\\n\\nMessage:\\n" + formData.get('message'))}`;
+                            const form = this;
+                            const formData = new FormData(form);
+                            const mailtoLink = `mailto:contact@marrakech-luxe.com?subject=${encodeURIComponent(formData.get('subject'))}&body=${encodeURIComponent("Nom: " + formData.get('name') + "\nEmail: " + formData.get('email') + "\n\nMessage:\n" + formData.get('message'))}`;
+
                             window.location.href = mailtoLink;
+
                             App.showToast(I18n.get('form_success') || 'Message prêt à être envoyé via votre email !');
+                            form.reset();
                         });
                     </script>
                 </div>
