@@ -1713,3 +1713,53 @@ select.form-input option {
     right: 1.5rem;
   }
 }
+
+/* --- Admin Mobile Polish --- */
+.admin-mobile-toggle {
+    display: none;
+    background: none;
+    border: 1px solid var(--border-subtle);
+    color: var(--text-primary);
+    padding: 0.5rem;
+    border-radius: 4px;
+}
+
+@media (max-width: 992px) {
+    .admin-layout {
+        grid-template-columns: 1fr;
+    }
+    
+    .admin-sidebar {
+        position: fixed;
+        left: -320px;
+        top: var(--nav-height);
+        bottom: 0;
+        width: 300px;
+        z-index: 1001;
+        background: var(--bg-card);
+        transition: left 0.3s ease;
+        box-shadow: 10px 0 30px rgba(0,0,0,0.5);
+    }
+    
+    .admin-sidebar.open {
+        left: 0;
+    }
+    
+    .admin-mobile-toggle {
+        display: block;
+    }
+    
+    .admin-stats-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .admin-stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .admin-content-card {
+        padding: 1.5rem;
+    }
+}

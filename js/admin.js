@@ -5,7 +5,8 @@
 const ADMIN_CREDENTIALS = {
     username: 'admin',
     // SHA-256 hash of 'luxe'
-    passwordHash: 'af2f9db01d9b17076507ad8be72f741ff554d2387966a7e5e2456efe4333c3a6'
+    passwordHash: 'af2f9db01d9b17076507ad8be72f741ff554d2387966a7e5e2456efe4333c3a6',
+    pin: '1337' // Secondary legacy-style PIN for 2FA demonstration
 };
 
 /**
@@ -27,7 +28,15 @@ const Admin = {
 
     checkAuth() {
         const isLoggedIn = sessionStorage.getItem('mlh_admin_logged_in');
+        const loginTime = sessionStorage.getItem('mlh_admin_login_time');
         const isLoginPage = window.location.pathname.includes('admin-login.html');
+
+        // Session timeout (2 hours)
+        const twoHours = 2 * 60 * 60 * 1000;
+        if (isLoggedIn && loginTime && (Date.now() - parseInt(loginTime) > twoHours)) {
+            this.logout();
+            return;
+        }
 
         if (!isLoggedIn && !isLoginPage) {
             window.location.href = 'admin-login.html';
@@ -50,23 +59,81 @@ const Admin = {
     },
 
     /**
-     * Authenticates the admin
+     * Authenticates the admin with rate limiting and 2FA
      * @param {string} username 
      * @param {string} password 
+     * @param {string} pin
      */
-    async login(username, password) {
+    async login(username, password, pin = null) {
+        const errorEl = document.getElementById('login-error');
+        const pinGroup = document.getElementById('pin-group');
+
+        // Rate Limiting Check
+        const attempts = parseInt(localStorage.getItem('admin_login_attempts') || '0');
+        const lockUntil = parseInt(localStorage.getItem('admin_lock_until') || '0');
+
+        if (Date.now() < lockUntil) {
+            const wait = Math.ceil((lockUntil - Date.now()) / 1000);
+            this.showError(`Trop de tentatives. Réessayez dans ${wait}s.`);
+            return;
+        }
+
         const hashedInput = await this.hashPassword(password);
+
+        // Step 1: Basic Credential Check
         if (username === ADMIN_CREDENTIALS.username && hashedInput === ADMIN_CREDENTIALS.passwordHash) {
-            sessionStorage.setItem('mlh_admin_logged_in', 'true');
-            window.location.href = 'admin-dashboard.html';
+
+            // Step 2: 2FA PIN Check
+            if (!pin) {
+                if (pinGroup) pinGroup.style.display = 'block';
+                this.showError('Veuillez entrer votre code PIN de sécurité.');
+                return;
+            }
+
+            if (pin === ADMIN_CREDENTIALS.pin) {
+                // Success
+                localStorage.setItem('admin_login_attempts', '0');
+                sessionStorage.setItem('mlh_admin_logged_in', 'true');
+                window.location.href = 'admin-dashboard.html';
+            } else {
+                this.handleFailedAttempt('Code PIN incorrect');
+            }
         } else {
-            alert('Identifiants incorrects');
+            this.handleFailedAttempt('Identifiants incorrects');
+        }
+    },
+
+    handleFailedAttempt(msg) {
+        let attempts = parseInt(localStorage.getItem('admin_login_attempts') || '0') + 1;
+        localStorage.setItem('admin_login_attempts', attempts);
+
+        if (attempts >= 3) {
+            const lockTime = Date.now() + 30000; // 30 sec lock
+            localStorage.setItem('admin_lock_until', lockTime);
+            this.showError('Compte bloqué temporairement (30s).');
+        } else {
+            this.showError(`${msg} (${attempts}/3)`);
+        }
+    },
+
+    showError(msg) {
+        const errorEl = document.getElementById('login-error');
+        if (errorEl) {
+            errorEl.innerText = msg;
+            errorEl.style.display = 'block';
+        } else {
+            alert(msg);
         }
     },
 
     logout() {
         sessionStorage.removeItem('mlh_admin_logged_in');
         window.location.href = 'admin-login.html';
+    },
+
+    toggleSidebar() {
+        const sidebar = document.querySelector('.admin-sidebar');
+        if (sidebar) sidebar.classList.toggle('open');
     },
 
     switchTab(tab, el) {
@@ -82,11 +149,34 @@ const Admin = {
         const orders = OrderDB.getOrders();
         const totalSales = orders.reduce((sum, o) => sum + o.total, 0);
 
+        // Calculate new orders in last 24h
+        const now = Date.now();
+        const oneDay = 24 * 60 * 60 * 1000;
+        const newOrdersToday = orders.filter(o => {
+            const orderDate = new Date(o.date).getTime();
+            return (now - orderDate) < oneDay;
+        }).length;
+
         if (document.getElementById('stat-products')) document.getElementById('stat-products').innerText = productsCount;
         if (document.getElementById('stat-orders')) document.getElementById('stat-orders').innerText = orders.length;
         if (document.getElementById('stat-total-dh')) document.getElementById('stat-total-dh').innerText = `${totalSales} DH`;
 
+        const newOrdersEl = document.getElementById('stat-new-today');
+        const alertBox = document.getElementById('alert-new-orders');
+        if (newOrdersEl && alertBox) {
+            newOrdersEl.innerText = newOrdersToday;
+            alertBox.style.display = newOrdersToday > 0 ? 'flex' : 'none';
+            if (newOrdersToday > 0) {
+                this.notify('Nouvelles commandes reçues !');
+            }
+        }
+
         this.renderAnalytics();
+    },
+
+    notify(msg) {
+        // Simple notification placeholder
+        console.log('Admin Notify:', msg);
     },
 
     renderAnalytics() {
@@ -439,7 +529,11 @@ const Admin = {
         if (loginForm) {
             loginForm.addEventListener('submit', (e) => {
                 e.preventDefault();
-                this.login(e.target.username.value, e.target.password.value);
+                this.login(
+                    e.target.username.value,
+                    e.target.password.value,
+                    e.target.pin ? e.target.pin.value : null
+                );
             });
         }
 

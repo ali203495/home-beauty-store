@@ -250,7 +250,14 @@
     <!-- Minimal Nav -->
     <nav class="navbar scrolled">
         <div class="container" style="display:flex; justify-content: space-between; align-items: center;">
-            <a href="index.html" class="nav-logo">MARRAKECH <span>LUXE</span> Admin</a>
+            <div style="display: flex; align-items: center; gap: 1rem">
+                <button class="admin-mobile-toggle" onclick="Admin.toggleSidebar()"
+                    style="background:none; border:none; color:white; font-size:1.2rem; cursor:pointer"
+                    aria-label="Menu">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <a href="index.html" class="nav-logo">MARRAKECH <span>LUXE</span> Admin</a>
+            </div>
             <button class="btn btn-secondary btn-sm" onclick="Admin.logout()">Déconnexion</button>
         </div>
     </nav>
@@ -308,6 +315,10 @@
                     <div class="stat-card">
                         <span class="stat-card-val" id="stat-total-dh">0 DH</span>
                         <span class="stat-card-label">Ventes Totales</span>
+                    </div>
+                    <div class="stat-card" id="alert-new-orders" style="display: none; border: 1px solid var(--rose)">
+                        <span class="stat-card-val" style="color: var(--rose)" id="stat-new-today">0</span>
+                        <span class="stat-card-label">Nouvelles (24h)</span>
                     </div>
                 </div>
 

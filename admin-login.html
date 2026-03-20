@@ -54,6 +54,15 @@
                     <label class="form-label">Mot de passe</label>
                     <input type="password" name="password" class="form-input" placeholder="••••••••" required>
                 </div>
+
+                <div class="form-group" id="pin-group" style="display: none; text-align: left; margin-top: 1rem">
+                    <label class="form-label" style="color: var(--gold)">Code PIN de Sécurité (2FA)</label>
+                    <input type="password" name="pin" class="form-input" maxlength="4" placeholder="••••">
+                </div>
+
+                <div id="login-error" style="color: var(--rose); margin: 1rem 0; font-size: 0.8rem; display: none">
+                </div>
+
                 <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem">Se
                     Connecter</button>
             </form>
