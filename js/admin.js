@@ -70,42 +70,42 @@ const Admin = {
      * @param {string} pin
      */
     async login(username, password, pin = null) {
+        console.log('Login attempt:', { username, password, hasPin: !!pin });
         const errorEl = document.getElementById('login-error');
         const pinGroup = document.getElementById('pin-group');
 
         // Rate Limiting Check
-        const attempts = parseInt(localStorage.getItem('admin_login_attempts') || '0');
         const lockUntil = parseInt(localStorage.getItem('admin_lock_until') || '0');
-
         if (Date.now() < lockUntil) {
             const wait = Math.ceil((lockUntil - Date.now()) / 1000);
             this.showError(`Trop de tentatives. Réessayez dans ${wait}s.`);
             return;
         }
 
-        const hashedInput = await this.hashPassword(password);
-        const isSecureContext = window.crypto && window.crypto.subtle;
-        const targetPass = isSecureContext ? ADMIN_CREDENTIALS.passwordHash : 'luxe';
+        // TEMP: Simplified login for debugging
+        const isUserMatch = (username.trim().toLowerCase() === ADMIN_CREDENTIALS.username.toLowerCase());
+        const isPassMatch = (password === 'luxe');
 
-        // Step 1: Basic Credential Check
-        if (username === ADMIN_CREDENTIALS.username && hashedInput === targetPass) {
-
-            // Step 2: 2FA PIN Check
+        if (isUserMatch && isPassMatch) {
+            console.log('Credentials matched, checking PIN...');
             if (!pin) {
                 if (pinGroup) pinGroup.style.display = 'block';
-                this.showError('Étape 2 : Entrez votre code PIN de sécurité (1337).');
+                this.showError('Étape 2 : Entrez votre code PIN (1337).');
                 return;
             }
+
             if (pin === ADMIN_CREDENTIALS.pin) {
-                // Success
+                console.log('Login Success!');
                 localStorage.setItem('admin_login_attempts', '0');
                 sessionStorage.setItem('mlh_admin_logged_in', 'true');
                 sessionStorage.setItem('mlh_admin_login_time', Date.now().toString());
                 window.location.href = 'admin-dashboard.html';
             } else {
+                console.warn('PIN mismatch:', pin);
                 this.handleFailedAttempt('Code PIN incorrect');
             }
         } else {
+            console.warn('Mismatch:', { typedUser: username, typedPass: password });
             this.handleFailedAttempt('Identifiants incorrects');
         }
     },
