@@ -95,8 +95,6 @@ const Admin = {
                 this.showError('Étape 2 : Entrez votre code PIN de sécurité (1337).');
                 return;
             }
-            // ... rest of login logic
-
             if (pin === ADMIN_CREDENTIALS.pin) {
                 // Success
                 localStorage.setItem('admin_login_attempts', '0');
