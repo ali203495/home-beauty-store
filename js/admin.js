@@ -3,7 +3,7 @@
  */
 
 const ADMIN_CREDENTIALS = {
-    username: 'admin',
+    username: 'ali',
     // SHA-256 hash of 'luxe'
     passwordHash: 'af2f9db01d9b17076507ad8be72f741ff554d2387966a7e5e2456efe4333c3a6',
     pin: '1337', // Secondary legacy-style PIN for 2FA demonstration
