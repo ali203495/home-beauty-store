@@ -30,6 +30,30 @@ const INITIAL_PRODUCTS = [
         description: 'Machine à espresso manuelle pour un café de qualité barista à la maison.',
         specs: { 'Pression': '15 Bars', 'Réservoir': '1.5L', 'Matériau': 'Acier Inoxydable' }
     },
+    {
+        id: 'app-03',
+        name: 'Réfrigérateur Split Side-by-Side',
+        category: 'Electroménager',
+        price: 12500,
+        rating: 4.8,
+        reviews: 45,
+        image: 'assets/images/appliances.png',
+        badge: 'Luxe',
+        description: 'Réfrigérateur grand volume avec distributeur d\'eau et glaçons filtré.',
+        specs: { 'Capacité': '540L', 'Classe': 'A++', 'Technologie': 'No Frost' }
+    },
+    {
+        id: 'app-04',
+        name: 'Lave-linge Frontal ProSmart',
+        category: 'Electroménager',
+        price: 4800,
+        rating: 4.7,
+        reviews: 67,
+        image: 'assets/images/appliances.png',
+        badge: 'Efficace',
+        description: 'Lave-linge intelligent avec moteur Inverter et programme vapeur.',
+        specs: { 'Capacité': '9kg', 'Vitesse': '1400 tr/min', 'Programmes': '15' }
+    },
 
     // --- Climatisation (Air Conditioners) ---
     {
@@ -111,7 +135,7 @@ const INITIAL_PRODUCTS = [
     {
         id: 'cln-01',
         name: 'Pack Nettoyage Éclat Total',
-        category: 'Nettoyage',
+        category: 'Fournitures de Nettoyage',
         price: 250,
         rating: 4.6,
         reviews: 78,
@@ -122,7 +146,7 @@ const INITIAL_PRODUCTS = [
     {
         id: 'cln-02',
         name: 'Aspirateur Robot CleanPro X',
-        category: 'Nettoyage',
+        category: 'Équipements de Nettoyage',
         price: 2400,
         rating: 4.7,
         reviews: 64,
@@ -130,6 +154,66 @@ const INITIAL_PRODUCTS = [
         badge: 'Promo',
         description: 'Robot aspirateur intelligent avec navigation laser et fonction lavage de sol.',
         specs: { 'Autonomie': '120 min', 'Aspiration': '2500 Pa', 'Bruit': '60 dB' }
+    },
+    {
+        id: 'cln-03',
+        name: 'Nettoyeur Vapeur Multi-usage',
+        category: 'Équipements de Nettoyage',
+        price: 1450,
+        rating: 4.8,
+        reviews: 52,
+        image: 'assets/images/kitchen_cleaning.png',
+        badge: 'Best-Seller',
+        description: 'Nettoyeur vapeur pour assainir toutes les surfaces sans produits chimiques.',
+        specs: { 'Pression': '4 Bars', 'Temps chauffe': '5 min', 'Accessoires': '10' }
+    },
+    {
+        id: 'cln-04',
+        name: 'Pack Désinfectant Hospitalier (5L)',
+        category: 'Fournitures de Nettoyage',
+        price: 350,
+        rating: 4.9,
+        reviews: 110,
+        image: 'assets/images/kitchen_cleaning.png',
+        badge: 'Pro',
+        description: 'Solution désinfectante à large spectre pour environnements exigeants (aéroport, bureaux).',
+        specs: { 'Volume': '5L', 'Efficacité': 'Virucide/Bactéricide', 'Usage': 'Diluable' }
+    },
+    {
+        id: 'cln-05',
+        name: 'EL-WALI Cleaning Soap',
+        category: 'Fournitures de Nettoyage',
+        price: 45,
+        rating: 4.8,
+        reviews: 24,
+        image: 'assets/images/kitchen_cleaning.png',
+        badge: 'Efficace',
+        description: 'Cleans surfaces quickly without harmful chemicals',
+        specs: { 'Type': 'Savon de nettoyage', 'Usage': 'Multi-surfaces', 'Parfum': 'Frais' }
+    },
+    {
+        id: 'cln-06',
+        name: 'EL-WALI Floor Cleaner',
+        category: 'Nettoyage des Sols',
+        price: 60,
+        rating: 4.7,
+        reviews: 38,
+        image: 'assets/images/kitchen_cleaning.png',
+        badge: 'Pro',
+        description: 'Removes dirt and odors effectively',
+        specs: { 'Type': 'Nettoyant sol', 'Concentré': 'Oui', 'Volume': '1L' }
+    },
+    {
+        id: 'cln-07',
+        name: 'EL-WALI Cleaning Cloth',
+        category: 'Outils de Nettoyage',
+        price: 20,
+        rating: 4.9,
+        reviews: 15,
+        image: 'assets/images/kitchen_cleaning.png',
+        badge: 'Top',
+        description: 'Soft and absorbs water quickly',
+        specs: { 'Matière': 'Microfibre', 'Taille': '40x40cm', 'Lavage': 'Machine' }
     },
 
     // --- Produits de Plastique ---

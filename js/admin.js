@@ -1,5 +1,5 @@
 /**
- * Admin Logic for Marrakech Luxe Home
+ * Admin Logic for EL-WALI-SHOP
  */
 
 const ADMIN_CREDENTIALS = {
@@ -456,7 +456,7 @@ const Admin = {
 
         let message = '';
         if (type === 'confirm') {
-            message = `Bonjour ${o.customer.name}, c'est Marrakech Luxe Home. Nous confirmons votre commande #${o.id} de ${o.total} DH. Nous préparons votre livraison. Merci !`;
+            message = `Bonjour ${o.customer.name}, c'est EL-WALI-SHOP. Nous confirmons votre commande #${o.id} de ${o.total} DH. Nous préparons votre livraison. Merci !`;
         } else if (type === 'shipping') {
             message = `Bonjour ${o.customer.name}, votre commande #${o.id} est actuellement en cours de livraison. Notre livreur vous contactera sous peu. À bientôt !`;
         }

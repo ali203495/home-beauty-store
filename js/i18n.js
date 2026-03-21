@@ -1,5 +1,5 @@
 /**
- * Localization Engine - Marrakech Luxe Home
+ * Localization Engine - EL-WALI-SHOP
  */
 
 const I18N_KEY = 'mlh_lang';
@@ -57,7 +57,7 @@ const translations = {
         modal_order_confirmed_text: "Merci de votre confiance. Notre service client vous contactera par téléphone pour confirmer la livraison.",
         modal_back_to_shop_btn: "Retour à la Boutique",
         modal_order_received_title: "Commande Reçue !",
-        modal_order_received_text: "Merci pour votre commande chez Marrakech Luxe Home. Nous vous contacterons sous peu pour confirmer la livraison.",
+        modal_order_received_text: "Merci pour votre commande chez EL-WALI-SHOP. Nous vous contacterons sous peu pour confirmer la livraison.",
         modal_back_to_home_btn: "Retour à l'accueil",
         msg_added: "Produit ajouté au panier !",
         msg_removed: "Produit retiré du panier"

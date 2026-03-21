@@ -1,0 +1,43 @@
+name: Airport Infrastructure Delivery (ABCDE)
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+jobs:
+  package-delivery:
+    name: Package for Airport Kiosk/Infrastructure
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Prepare Clean Build
+        run: |
+          mkdir -p dist
+          cp -r assets css js *.html dist/
+          # Ensure products.js is updated in the package
+          echo "Package prepared for airport infrastructure"
+
+      - name: Create Deployment Package
+        run: |
+          zip -r airport-delivery.zip dist/
+
+      - name: Upload to Airport Infrastructure (Artifact)
+        uses: actions/upload-artifact@v4
+        with:
+          name: airport-delivery-package
+          path: airport-delivery.zip
+          retention-days: 7
+
+      # NOTE: To deploy directly to airport servers, add SSH/FTP steps below:
+      # - name: Deploy via SSH
+      #   uses: appleboy/ssh-action@master
+      #   with:
+      #     host: ${{ secrets.AIRPORT_SERVER_IP }}
+      #     username: ${{ secrets.AIRPORT_SERVER_USER }}
+      #     key: ${{ secrets.AIRPORT_SSH_KEY }}
+      #     script: |
+      #       cd /var/www/html
+      #       unzip -o airport-delivery.zip

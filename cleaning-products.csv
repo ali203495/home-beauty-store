@@ -1,0 +1,8 @@
+Product ID,Name,Category,Price (MAD),Description,Technical Specs,Image Path
+cln-01,Pack Nettoyage Éclat Total,Fournitures de Nettoyage,250,Kit complet comprenant nettoyant multi-surfaces dégraissant et lustrant,"Volume Total: 3L | Parfums: Citron/Lavande",assets/images/kitchen_cleaning.png
+cln-02,Aspirateur Robot CleanPro X,Équipements de Nettoyage,2400,Robot aspirateur intelligent avec navigation laser et fonction lavage de sol,"Autonomie: 120 min | Aspiration: 2500 Pa | Bruit: 60 dB",assets/images/appliances.png
+cln-03,Nettoyeur Vapeur Multi-usage,Équipements de Nettoyage,1450,Nettoyeur vapeur pour assainir toutes les surfaces sans produits chimiques,"Pression: 4 Bars | Temps chauffe: 5 min | Accessoires: 10",assets/images/kitchen_cleaning.png
+cln-04,Pack Désinfectant Hospitalier (5L),Fournitures de Nettoyage,350,Solution désinfectante à large spectre pour environnements exigeants,"Volume: 5L | Efficacité: Virucide/Bactéricide | Usage: Diluable",assets/images/kitchen_cleaning.png
+cln-05,EL-WALI Cleaning Soap,Fournitures de Nettoyage,45,Cleans surfaces quickly without harmful chemicals,"Type: Savon de nettoyage | Usage: Multi-surfaces | Parfum: Frais",assets/images/kitchen_cleaning.png
+cln-06,EL-WALI Floor Cleaner,Nettoyage des Sols,60,Removes dirt and odors effectively,"Type: Nettoyant sol | Concentré: Oui | Volume: 1L",assets/images/kitchen_cleaning.png
+cln-07,EL-WALI Cleaning Cloth,Outils de Nettoyage,20,Soft and absorbs water quickly,"Matière: Microfibre | Taille: 40x40cm | Lavage: Machine",assets/images/kitchen_cleaning.png

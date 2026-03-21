@@ -150,7 +150,7 @@ const App = {
     window.shareToWhatsApp = (id) => {
       const product = PRODUCTS.find(p => p.id === id);
       if (!product) return;
-      const text = encodeURIComponent(`Bonjour Marrakech Luxe Home ! Je suis intéressé par ce produit : ${product.name} (${product.price} DH). Voici le lien : ${window.location.origin}/product-detail.html?id=${product.id}`);
+      const text = encodeURIComponent(`Bonjour EL-WALI-SHOP ! Je suis intéressé par ce produit : ${product.name} (${product.price} DH). Voici le lien : ${window.location.origin}/product-detail.html?id=${product.id}`);
       window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${text}`, '_blank');
     };
 
