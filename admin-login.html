@@ -43,8 +43,8 @@
 <body>
     <div class="login-wrapper">
         <div class="login-card">
-            <div class="login-logo">MARRAKECH <span>LUXE</span></div>
-            <h2 style="margin-bottom: var(--space-lg); color: var(--gold)">ACCÈS ALI - V4</h2>
+            <div class="login-logo">EL-WALI-<span>SHOP</span></div>
+            <h2 style="margin-bottom: var(--space-lg); color: var(--gold)">PORTAIL ADMIN</h2>
             <form id="login-form">
                 <div class="form-group" style="text-align: left">
                     <label class="form-label">Utilisateur</label>
@@ -55,8 +55,9 @@
                     <input type="password" name="password" class="form-input" placeholder="••••••••" required>
                 </div>
 
+                <!-- 2FA PIN Hidden for simplicity during maintenance -->
                 <div class="form-group" id="pin-group" style="display: none; text-align: left; margin-top: 1rem">
-                    <label class="form-label" style="color: var(--gold)">Code PIN de Sécurité (2FA)</label>
+                    <label class="form-label" style="color: var(--gold)">Code PIN (Désactivé)</label>
                     <input type="password" name="pin" class="form-input" maxlength="4" placeholder="••••">
                 </div>
 

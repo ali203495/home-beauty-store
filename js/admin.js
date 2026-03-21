@@ -83,30 +83,20 @@ const Admin = {
         }
         */
 
-        // TEMP: Simplified login for debugging
+        // Simplified direct comparison for reliability
         const isUserMatch = (username.trim().toLowerCase() === ADMIN_CREDENTIALS.username.toLowerCase());
         const isPassMatch = (password === 'luxe');
 
         if (isUserMatch && isPassMatch) {
-            console.log('Credentials matched, checking PIN...');
-            if (!pin) {
-                if (pinGroup) pinGroup.style.display = 'block';
-                this.showError('Étape 2 : Entrez votre code PIN (1337).');
-                return;
-            }
+            console.log('Login Success! Redirecting to dashboard...');
+            localStorage.setItem('admin_login_attempts', '0');
+            sessionStorage.setItem('mlh_admin_logged_in', 'true');
+            sessionStorage.setItem('mlh_admin_login_time', Date.now().toString());
 
-            if (pin === ADMIN_CREDENTIALS.pin) {
-                console.log('Login Success!');
-                localStorage.setItem('admin_login_attempts', '0');
-                sessionStorage.setItem('mlh_admin_logged_in', 'true');
-                sessionStorage.setItem('mlh_admin_login_time', Date.now().toString());
-                window.location.href = 'admin-dashboard.html';
-            } else {
-                console.warn('PIN mismatch:', pin);
-                this.handleFailedAttempt('Code PIN incorrect');
-            }
+            // Direct redirect
+            window.location.href = 'admin-dashboard.html';
         } else {
-            console.warn('Mismatch:', { typedUser: username, typedPass: password });
+            console.warn('Login Mismatch:', { typedUser: username, typedPass: password });
             this.handleFailedAttempt('Identifiants incorrects');
         }
     },
@@ -179,6 +169,17 @@ const Admin = {
     toggleSidebar() {
         const sidebar = document.querySelector('.admin-sidebar');
         if (sidebar) sidebar.classList.toggle('open');
+    },
+
+    updatePreview(url, containerId) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+
+        if (url && url.length > 5) {
+            container.innerHTML = `<img src="${url}" style="width:100%; height:100%; object-fit:contain">`;
+        } else {
+            container.innerHTML = `<span style="color:var(--text-muted); font-size:0.8rem">Prévisualisation</span>`;
+        }
     },
 
     switchTab(tab, el) {
@@ -288,16 +289,24 @@ const Admin = {
             return;
         }
 
+        list.className = 'admin-grid'; // Ensure grid class is applied
         list.innerHTML = prods.map(p => `
-            <div class="admin-item" data-id="${p.id}">
+            <div class="admin-item animate-fade-up" data-id="${p.id}">
+                <div style="position:absolute; top:10px; right:10px; background:var(--gold); color:black; font-size:0.6rem; padding:2px 6px; border-radius:4px; font-weight:700">
+                    ${p.category}
+                </div>
                 <img src="${p.image}" alt="${p.name}" class="admin-item-img">
                 <div class="admin-item-info">
-                    <strong>${p.name}</strong><br>
-                    <small>${p.category} — ${p.price} DH</small>
+                    <div style="font-weight: 700; color:var(--text-primary); margin-bottom:0.2rem">${p.name}</div>
+                    <div style="color:var(--gold); font-weight:700">${p.price} DH</div>
                 </div>
                 <div class="admin-item-actions">
-                    <button class="btn btn-secondary btn-sm" onclick="Admin.openModal('${p.id}')">Modifier</button>
-                    <button class="btn btn-secondary btn-sm" style="color:var(--rose)" onclick="Admin.deleteProduct('${p.id}')">Supprimer</button>
+                    <button class="btn btn-secondary btn-sm" style="flex:1" onclick="Admin.openModal('${p.id}')">
+                        <i class="fas fa-edit"></i> Modifier
+                    </button>
+                    <button class="btn btn-secondary btn-sm" style="color:var(--rose)" onclick="Admin.deleteProduct('${p.id}')">
+                        <i class="fas fa-trash"></i>
+                    </button>
                 </div>
             </div>
         `).join('');
@@ -549,6 +558,7 @@ const Admin = {
             form.category.value = p.category;
             form.price.value = p.price;
             form.image.value = p.image;
+            this.updatePreview(p.image, 'edit-preview');
             form.description.value = p.description || '';
         } else {
             // This could be used for adding too, but we have a sidebar form
