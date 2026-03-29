@@ -200,29 +200,46 @@
         <button class="btn btn-primary" onclick="window.location.href='index.html'">Retour à la Boutique</button>
     </div>
 
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
     <script src="js/config.js"></script>
     <script src="js/products.js"></script>
     <script>
-        const params = new URLSearchParams(window.location.search);
-        const productId = params.get('id');
-        const product = PRODUCTS.find(p => p.id === productId);
+        let product = null;
 
-        if (!product) {
-            window.location.href = 'index.html';
-        }
+        document.addEventListener('DOMContentLoaded', async () => {
+            await ProductDB.fetchAll();
+            
+            const params = new URLSearchParams(window.location.search);
+            const productId = params.get('id');
+            product = PRODUCTS.find(p => p.id === productId);
 
-        // Render preview
-        document.getElementById('quick-product-preview').innerHTML = `
-            <img src="${product.image}" alt="${product.name}">
-            <div class="product-preview-info">
-                <h4>${product.name}</h4>
-                <p>${product.price} DH</p>
-            </div>
-        `;
+            if (!product) {
+                window.location.href = 'index.html';
+                return;
+            }
 
+            // Render preview
+            document.getElementById('quick-product-preview').innerHTML = `
+                <img src="${product.image}" alt="${product.name}">
+                <div class="product-preview-info">
+                    <h4>${product.name}</h4>
+                    <p>${product.price} DH</p>
+                </div>
+            `;
+        });
         // Handle Order
-        document.getElementById('quick-order-form').addEventListener('submit', function (e) {
+        document.getElementById('quick-order-form').addEventListener('submit', async function (e) {
             e.preventDefault();
+            
+            if(!product) return;
+            
+            const btn = this.querySelector('button[type="submit"]');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Traitement...';
+            btn.disabled = true;
+
             const formData = new FormData(this);
 
             const orderData = {
@@ -247,18 +264,25 @@
                 type: 'Achat Rapide'
             };
 
-            // Save via OrderDB
-            if (typeof OrderDB !== 'undefined') {
-                OrderDB.saveOrder(orderData);
-            } else {
-                // Fallback for standalone test
-                const orders = JSON.parse(localStorage.getItem('mlh_orders')) || [];
-                orders.unshift(orderData);
-                localStorage.setItem('mlh_orders', JSON.stringify(orders));
-            }
+            try {
+                // Save via OrderDB
+                if (typeof OrderDB !== 'undefined') {
+                    await OrderDB.saveOrder(orderData);
+                } else {
+                    const orders = JSON.parse(localStorage.getItem('mlh_orders')) || [];
+                    orders.unshift(orderData);
+                    localStorage.setItem('mlh_orders', JSON.stringify(orders));
+                }
 
-            // Show success
-            document.getElementById('success-screen').style.display = 'flex';
+                // Show success
+                document.getElementById('success-screen').style.display = 'flex';
+            } catch (err) {
+                console.error("Erreur lors de la commande rapide:", err);
+                alert("Erreur lors de la validation. Veuillez réessayer.");
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
         });
     </script>
 </body>

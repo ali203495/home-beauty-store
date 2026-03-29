@@ -192,6 +192,21 @@ textarea {
   font-size: 0.75rem;
 }
 
+/* ── Header Overrides ─────────────────────────────────── */
+.navbar {
+  background-color: #1d4ed8;
+}
+
+.navbar .nav-logo,
+.navbar .nav-logo span,
+.navbar .nav-links a,
+.navbar .nav-icon-btn,
+.navbar .hamburger,
+.navbar .search-bar-icon,
+.navbar .lang-btn {
+  color: #ffffff;
+}
+
 /* ── Typography ────────────────────────────────────────── */
 h1,
 h2,

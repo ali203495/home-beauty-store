@@ -241,64 +241,100 @@ const INITIAL_PRODUCTS = [
     }
 ];
 
-// Initialize dynamic products from localStorage or defaults
-let PRODUCTS = JSON.parse(localStorage.getItem('mlh_products'));
-
-if (!PRODUCTS || PRODUCTS.length === 0) {
-    PRODUCTS = INITIAL_PRODUCTS;
-    localStorage.setItem('mlh_products', JSON.stringify(PRODUCTS));
-}
+// Initialize dynamic products
+let PRODUCTS = [];
 
 /**
  * Data Access Object for Products
- * Synchronizes with localStorage for persistence
+ * Synchronizes with Supabase for persistence
  */
 const ProductDB = {
-    save(products) {
-        localStorage.setItem('mlh_products', JSON.stringify(products));
-        PRODUCTS = products;
-    },
-    add(product) {
-        PRODUCTS.push(product);
-        this.save(PRODUCTS);
-    },
-    update(id, updatedData) {
-        const index = PRODUCTS.findIndex(p => p.id === id);
-        if (index !== -1) {
-            PRODUCTS[index] = { ...PRODUCTS[index], ...updatedData };
-            this.save(PRODUCTS);
+    async fetchAll() {
+        if (!window.supabaseClient) {
+            console.warn('Supabase not connected. Falling back to local/initial.');
+            PRODUCTS = INITIAL_PRODUCTS;
+            return PRODUCTS;
         }
+
+        const { data, error } = await window.supabaseClient.from('products').select('*');
+        if (error) {
+            console.error('Error fetching products:', error);
+            PRODUCTS = INITIAL_PRODUCTS;
+            return PRODUCTS;
+        }
+        
+        // Seed if empty
+        if (!data || data.length === 0) {
+            console.log('Seeding initial products to Supabase...');
+            for (const p of INITIAL_PRODUCTS) {
+                await window.supabaseClient.from('products').insert([p]);
+            }
+            PRODUCTS = INITIAL_PRODUCTS;
+            return PRODUCTS;
+        }
+
+        PRODUCTS = data;
+        return PRODUCTS;
     },
-    delete(id) {
-        PRODUCTS = PRODUCTS.filter(p => p.id !== id);
-        this.save(PRODUCTS);
+
+    async saveProduct(product) {
+        if(!window.supabaseClient) return;
+        const { error } = await window.supabaseClient.from('products').insert([product]);
+        if (error) console.error('Error saving product:', error);
+        await this.fetchAll();
+    },
+
+    async update(id, updatedData) {
+        if(!window.supabaseClient) return;
+        const { error } = await window.supabaseClient.from('products').update(updatedData).eq('id', id);
+        if (error) console.error('Error updating product:', error);
+        await this.fetchAll();
+    },
+
+    async delete(id) {
+        if(!window.supabaseClient) return;
+        const { error } = await window.supabaseClient.from('products').delete().eq('id', id);
+        if (error) console.error('Error deleting product:', error);
+        await this.fetchAll();
     }
 };
 
 /**
  * Data Access Object for Orders
- * Synchronizes with localStorage for persistence
+ * Synchronizes with Supabase for persistence
  */
 const OrderDB = {
-    getOrders() {
-        return JSON.parse(localStorage.getItem('mlh_orders')) || [];
-    },
-    saveOrder(order) {
-        const orders = this.getOrders();
-        orders.unshift(order); // Add to beginning
-        localStorage.setItem('mlh_orders', JSON.stringify(orders));
-    },
-    updateStatus(orderId, status) {
-        const orders = this.getOrders();
-        const index = orders.findIndex(o => o.id === orderId);
-        if (index !== -1) {
-            orders[index].status = status;
-            localStorage.setItem('mlh_orders', JSON.stringify(orders));
+    async getOrders() {
+        if(!window.supabaseClient) return JSON.parse(localStorage.getItem('mlh_orders')) || [];
+        const { data, error } = await window.supabaseClient.from('orders').select('*').order('date', { ascending: false });
+        if (error) {
+            console.error('Error fetching orders:', error);
+            return [];
         }
+        return data;
     },
-    deleteOrder(orderId) {
-        const orders = this.getOrders().filter(o => o.id !== orderId);
-        localStorage.setItem('mlh_orders', JSON.stringify(orders));
+
+    async saveOrder(order) {
+        if(!window.supabaseClient) {
+            const orders = JSON.parse(localStorage.getItem('mlh_orders')) || [];
+            orders.unshift(order);
+            localStorage.setItem('mlh_orders', JSON.stringify(orders));
+            return;
+        }
+        const { error } = await window.supabaseClient.from('orders').insert([order]);
+        if (error) console.error('Error saving order:', error);
+    },
+
+    async updateStatus(orderId, status) {
+        if(!window.supabaseClient) return;
+        const { error } = await window.supabaseClient.from('orders').update({status}).eq('id', orderId);
+        if (error) console.error('Error updating order status:', error);
+    },
+
+    async deleteOrder(orderId) {
+        if(!window.supabaseClient) return;
+        const { error } = await window.supabaseClient.from('orders').delete().eq('id', orderId);
+        if (error) console.error('Error deleting order:', error);
     }
 };
 

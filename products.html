@@ -134,15 +134,21 @@
 
     <div id="toast-container" class="toast-container"></div>
 
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
     <script src="js/products.js"></script>
     <script src="js/cart.js"></script>
     <script src="js/i18n.js"></script>
     <script src="js/main.js"></script>
     <script>
         // Local Product Page Logic
-        let currentProducts = [...PRODUCTS];
+        let currentProducts = [];
 
-        function initPage() {
+        async function initPage() {
+            await ProductDB.fetchAll();
+            currentProducts = [...PRODUCTS];
+
             // Get params from URL
             const params = new URLSearchParams(window.location.search);
             const catParam = params.get('cat');

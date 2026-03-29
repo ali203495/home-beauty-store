@@ -114,6 +114,9 @@
     <div id="toast-container" class="toast-container"></div>
 
     <!-- Scripts -->
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
     <script src="js/products.js"></script>
     <script src="js/cart.js"></script>
     <script src="js/i18n.js"></script>
@@ -160,7 +163,10 @@
             document.getElementById('total').textContent = `${total} DH`;
         }
 
-        document.addEventListener('DOMContentLoaded', renderCart);
+        document.addEventListener('DOMContentLoaded', async () => {
+            await ProductDB.fetchAll();
+            renderCart();
+        });
     </script>
 </body>
 

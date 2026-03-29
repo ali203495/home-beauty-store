@@ -386,14 +386,17 @@
     <div id="toast-container" class="toast-container"></div>
 
     <!-- Scripts -->
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
     <script src="js/config.js"></script>
     <script src="js/products.js"></script>
     <script src="js/cart.js"></script>
     <script src="js/i18n.js"></script>
     <script src="js/main.js"></script>
     <script>
-        // Local Homepage Initialization
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
+            await ProductDB.fetchAll();
             // Load Featured Products
             const featuredGrid = document.getElementById('featured-grid');
             if (featuredGrid) {

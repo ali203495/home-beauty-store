@@ -63,7 +63,10 @@
 
   <div id="toast-container" class="toast-container"></div>
 
-  <script src="js/config.js"></script>
+  
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
+    <script src="js/config.js"></script>
   <script src="js/products.js"></script>
   <script src="js/cart.js"></script>
   <script src="js/main.js"></script>
@@ -183,7 +186,8 @@
       document.head.appendChild(script);
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', async () => {
+      await ProductDB.fetchAll();
       loadProduct();
       const params = new URLSearchParams(window.location.search);
       const id = params.get('id');

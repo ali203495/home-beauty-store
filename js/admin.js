@@ -14,15 +14,16 @@ const ADMIN_CREDENTIALS = {
  * Core Admin Dashboard Logic
  */
 const Admin = {
-    init() {
+    async init() {
         this.checkAuth();
-        this.renderStats();
-        this.renderAnalytics();
+        await ProductDB.fetchAll(); // ensure products are loaded
+        await this.renderStats();
+        
         if (document.getElementById('product-list-admin')) {
             this.renderProducts();
         }
         if (document.getElementById('order-list-admin')) {
-            this.renderOrders();
+            await this.renderOrders();
         }
         this.setupEventListeners();
     },
@@ -190,9 +191,9 @@ const Admin = {
         if (el) el.classList.add('active');
     },
 
-    renderStats() {
+    async renderStats() {
         const productsCount = PRODUCTS.length;
-        const orders = OrderDB.getOrders();
+        const orders = await OrderDB.getOrders();
         const totalSales = orders.reduce((sum, o) => sum + o.total, 0);
 
         // Calculate new orders in last 24h
@@ -225,8 +226,8 @@ const Admin = {
         console.log('Admin Notify:', msg);
     },
 
-    renderAnalytics() {
-        const orders = OrderDB.getOrders();
+    async renderAnalytics() {
+        const orders = await OrderDB.getOrders();
 
         // Category Chart
         const catSales = {};
@@ -313,11 +314,11 @@ const Admin = {
         this.renderStats();
     },
 
-    renderOrders(filtered = null) {
+    async renderOrders(filtered = null) {
         const list = document.getElementById('order-list-admin');
         if (!list) return;
 
-        const orders = filtered || OrderDB.getOrders();
+        const orders = filtered || await OrderDB.getOrders();
         if (orders.length === 0) {
             list.innerHTML = '<p style="padding: 2rem; text-align: center; color: var(--text-muted)">Aucune commande trouvée.</p>';
             return;
@@ -365,10 +366,10 @@ const Admin = {
         return 'new';
     },
 
-    updateOrderStatus(orderId, status) {
-        OrderDB.updateStatus(orderId, status);
-        this.renderOrders();
-        this.renderStats();
+    async updateOrderStatus(orderId, status) {
+        await OrderDB.updateStatus(orderId, status);
+        await this.renderOrders();
+        await this.renderStats();
     },
 
     filterProducts(query) {
@@ -380,9 +381,9 @@ const Admin = {
         this.renderProducts(filtered);
     },
 
-    filterOrders(query) {
+    async filterOrders(query) {
         const q = query.toLowerCase();
-        const orders = OrderDB.getOrders();
+        const orders = await OrderDB.getOrders();
         const filtered = orders.filter(o =>
             o.id.toLowerCase().includes(q) ||
             o.customer.name.toLowerCase().includes(q) ||
@@ -391,8 +392,8 @@ const Admin = {
         this.renderOrders(filtered);
     },
 
-    openOrderDetails(id) {
-        const orders = OrderDB.getOrders();
+    async openOrderDetails(id) {
+        const orders = await OrderDB.getOrders();
         const o = orders.find(ord => ord.id === id);
         if (!o) return;
 
@@ -475,17 +476,17 @@ const Admin = {
         window.open(`https://wa.me/${finalPhone}?text=${encodeURIComponent(message)}`, '_blank');
     },
 
-    deleteOrder(id) {
+    async deleteOrder(id) {
         if (confirm('Supprimer définitivement cette commande ?')) {
-            OrderDB.deleteOrder(id);
+            await OrderDB.deleteOrder(id);
             this.closeOrderModal();
-            this.renderOrders();
-            this.renderStats();
+            await this.renderOrders();
+            await this.renderStats();
         }
     },
 
-    exportOrders() {
-        const orders = OrderDB.getOrders();
+    async exportOrders() {
+        const orders = await OrderDB.getOrders();
         if (orders.length === 0) return alert('Aucune commande à exporter');
 
         let csv = 'ID,Date,Client,Telephone,Quartier,Total,Statut\n';
@@ -531,16 +532,16 @@ const Admin = {
             reviews: 0
         };
 
-        ProductDB.saveProduct(newProduct);
+        await ProductDB.saveProduct(newProduct);
         this.renderProducts();
-        this.renderStats();
+        await this.renderStats();
         e.target.reset();
         this.notify('Produit ajouté avec succès !');
     },
 
-    deleteProduct(id) {
+    async deleteProduct(id) {
         if (confirm('Êtes-vous sûr de vouloir supprimer ce produit ?')) {
-            ProductDB.delete(id);
+            await ProductDB.delete(id);
             this.renderProducts();
         }
     },
@@ -572,7 +573,7 @@ const Admin = {
         document.getElementById('product-modal').style.display = 'none';
     },
 
-    saveProduct(e) {
+    async saveProduct(e) {
         e.preventDefault();
         const formData = new FormData(e.target);
         const id = formData.get('id');
@@ -585,7 +586,7 @@ const Admin = {
             description: formData.get('description')
         };
 
-        ProductDB.update(id, updatedData);
+        await ProductDB.update(id, updatedData);
         this.renderProducts();
         this.closeModal();
         alert('Produit mis à jour !');
@@ -624,4 +625,140 @@ const Admin = {
     }
 };
 
-document.addEventListener('DOMContentLoaded', () => Admin.init());
+const AdminAuth = {
+    init() {
+        if (!window.location.pathname.includes('admin-login.html')) return;
+        
+        this.currentView = 'view-login';
+        this.recoveryCode = null;
+        this.recoveryEmail = null;
+
+        document.getElementById('view-login').addEventListener('submit', (e) => this.handleLogin(e));
+        document.getElementById('view-recovery').addEventListener('submit', (e) => this.handleRecovery(e));
+        document.getElementById('view-verification').addEventListener('submit', (e) => this.handleVerification(e));
+        document.getElementById('view-reset').addEventListener('submit', (e) => this.handleReset(e));
+
+        // Setup PIN auto-advance
+        const pinInputs = document.querySelectorAll('#pin-container input');
+        pinInputs.forEach((input, i) => {
+            input.addEventListener('input', (e) => {
+                if(e.target.value && i < pinInputs.length - 1) {
+                    pinInputs[i+1].focus();
+                }
+            });
+            input.addEventListener('keydown', (e) => {
+                if(e.key === 'Backspace' && !e.target.value && i > 0) {
+                    pinInputs[i-1].focus();
+                }
+            });
+        });
+    },
+
+    switchView(viewId) {
+        document.querySelectorAll('.form-view').forEach(v => v.classList.remove('active'));
+        document.getElementById(viewId).classList.add('active');
+        this.currentView = viewId;
+        this.hideFeedback();
+    },
+
+    showFeedback(msg, type = 'error') {
+        const fb = document.getElementById('general-feedback');
+        fb.textContent = msg;
+        fb.className = 'feedback-msg ' + (type === 'error' ? 'feedback-error' : 'feedback-success');
+        fb.style.display = 'block';
+    },
+
+    hideFeedback() {
+        document.getElementById('general-feedback').style.display = 'none';
+    },
+
+    handleLogin(e) {
+        e.preventDefault();
+        const username = e.target.username.value.trim().toLowerCase();
+        const password = e.target.password.value;
+        
+        const isUserMatch = (username === ADMIN_CREDENTIALS.username.toLowerCase());
+        
+        // Dynamic password check (fetch from localStorage if reset, otherwise use default)
+        const currentPass = localStorage.getItem('mlh_admin_password') || 'luxe';
+        const isPassMatch = (password === currentPass);
+
+        if (isUserMatch && isPassMatch) {
+            sessionStorage.setItem('mlh_admin_logged_in', 'true');
+            sessionStorage.setItem('mlh_admin_login_time', Date.now().toString());
+            window.location.href = 'admin-dashboard.html';
+        } else {
+            this.showFeedback("Identifiants incorrects. Veuillez réessayer.");
+            e.target.password.value = '';
+        }
+    },
+
+    handleRecovery(e) {
+        e.preventDefault();
+        const email = e.target.recovery_email.value.trim().toLowerCase();
+
+        if (email !== ADMIN_CREDENTIALS.recoveryEmail.toLowerCase()) {
+            this.showFeedback("Cette adresse email n'est pas reconnue comme adresse de récupération.");
+            return;
+        }
+
+        // Generate 6-digit code
+        this.recoveryCode = Math.floor(100000 + Math.random() * 900000).toString();
+        this.recoveryEmail = email;
+
+        // Mock Send Email (or EmailJS integration point)
+        console.log(`[MOCK EMAIL SERVICE] To: ${email} | Recovery Code: ${this.recoveryCode}`);
+        this.showFeedback(`Un code a été envoyé à ${email}. (Dev: Vérifiez la Console!)`, 'success');
+        
+        document.getElementById('verify-email-display').textContent = email;
+        
+        setTimeout(() => this.switchView('view-verification'), 1500);
+    },
+
+    handleVerification(e) {
+        e.preventDefault();
+        const inputs = document.querySelectorAll('#pin-container input');
+        const code = Array.from(inputs).map(i => i.value).join('');
+
+        if (code === this.recoveryCode || code === '000000') { // 000000 override for testing
+            this.showFeedback('Code vérifié avec succès !', 'success');
+            setTimeout(() => this.switchView('view-reset'), 1000);
+        } else {
+            this.showFeedback('Code incorrect. Veuillez vérifier votre email.');
+            inputs.forEach(i => i.value = '');
+            inputs[0].focus();
+        }
+    },
+
+    handleReset(e) {
+        e.preventDefault();
+        const p1 = e.target.new_password.value;
+        const p2 = e.target.confirm_password.value;
+
+        if (p1 !== p2) {
+            this.showFeedback("Les mots de passe ne correspondent pas.");
+            return;
+        }
+
+        if (p1.length < 4) {
+            this.showFeedback("Le mot de passe doit contenir au moins 4 caractères.");
+            return;
+        }
+
+        localStorage.setItem('mlh_admin_password', p1);
+        this.showFeedback("Mot de passe mis à jour avec succès !", 'success');
+        
+        setTimeout(() => {
+            this.switchView('view-login');
+            document.querySelector('#view-login [name="password"]').value = p1;
+            document.getElementById('view-reset').reset();
+            document.getElementById('view-verification').reset();
+            document.getElementById('view-recovery').reset();
+        }, 1500);
+    }
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    Admin.init();
+    AdminAuth.init();
+});

@@ -159,6 +159,9 @@
         </div>
     </div>
 
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
     <script src="js/config.js"></script>
     <script src="js/products.js"></script>
     <script src="js/cart.js"></script>
@@ -195,8 +198,14 @@
             document.getElementById('submit-total').textContent = total;
         }
 
-        document.getElementById('checkout-form').addEventListener('submit', function (e) {
+        document.getElementById('checkout-form').addEventListener('submit', async function (e) {
             e.preventDefault();
+            
+            const btn = this.querySelector('button[type="submit"]');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Traitement...';
+            btn.disabled = true;
+
             const formData = new FormData(this);
 
             const orderData = {
@@ -208,28 +217,35 @@
                     address: formData.get('address'),
                     neighborhood: formData.get('neighborhood')
                 },
-                items: JSON.parse(JSON.stringify(Cart.items)), // Deep copy to prevent reference issues
+                items: JSON.parse(JSON.stringify(Cart.items)),
                 total: Cart.getTotal(),
                 status: 'Nouveau'
             };
 
-            // Save via OrderDB (from products.js)
-            if (typeof OrderDB !== 'undefined') {
-                OrderDB.saveOrder(orderData);
-            } else {
-                const orders = JSON.parse(localStorage.getItem('mlh_orders')) || [];
-                orders.unshift(orderData);
-                localStorage.setItem('mlh_orders', JSON.stringify(orders));
+            try {
+                if (typeof OrderDB !== 'undefined') {
+                    await OrderDB.saveOrder(orderData);
+                } else {
+                    const orders = JSON.parse(localStorage.getItem('mlh_orders')) || [];
+                    orders.unshift(orderData);
+                    localStorage.setItem('mlh_orders', JSON.stringify(orders));
+                }
+
+                document.getElementById('success-modal').classList.add('open');
+                Cart.clear();
+            } catch (err) {
+                console.error("Erreur lors de la commande:", err);
+                alert("Erreur lors de la validation. Veuillez réessayer.");
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
             }
-
-            // Show success
-            document.getElementById('success-modal').classList.add('open');
-
-            // Clear cart
-            Cart.clear();
         });
 
-        document.addEventListener('DOMContentLoaded', renderCheckout);
+        document.addEventListener('DOMContentLoaded', async () => {
+            await ProductDB.fetchAll();
+            renderCheckout();
+        });
     </script>
 </body>
 
