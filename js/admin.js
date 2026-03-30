@@ -505,7 +505,7 @@ const Admin = {
         document.body.removeChild(link);
     },
 
-    addProduct(e) {
+    async addProduct(e) {
         e.preventDefault();
         const formData = new FormData(e.target);
         const name = formData.get('name').trim();
