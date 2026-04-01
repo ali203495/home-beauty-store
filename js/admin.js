@@ -3,11 +3,11 @@
  */
 
 const ADMIN_CREDENTIALS = {
-    username: 'ali',
-    // SHA-256 hash of 'luxe'
-    passwordHash: 'af2f9db01d9b17076507ad8be72f741ff554d2387966a7e5e2456efe4333c3a6',
+    username: 'abdelaali',
+    // SHA-256 hash of 'abdelaali.markabi1234!@#$'
+    passwordHash: '37a7f7690623a492ad21a0a588b49911e9f2913c1fce988f91885f679e0ba891',
     pin: '1337', // Secondary legacy-style PIN for 2FA demonstration
-    recoveryEmail: 'abdelaali.markabi@gmail.com' // Updated to User's recovery email
+    recoveryEmail: 'abdelaali.markabi@gmail.com'
 };
 
 /**
