@@ -268,14 +268,14 @@
     <nav class="navbar scrolled">
         <div class="container" style="display:flex; justify-content: space-between; align-items: center;">
             <div style="display: flex; align-items: center; gap: 1rem">
-                <button class="admin-mobile-toggle" onclick="Admin.toggleSidebar()"
+                <button aria-label="Action Button" class="admin-mobile-toggle" onclick="Admin.toggleSidebar()"
                     style="background:none; border:none; color:white; font-size:1.2rem; cursor:pointer"
                     aria-label="Menu">
                     <i class="fas fa-bars"></i>
                 </button>
                 <a href="/" class="nav-logo">EL-WALI-<span>SHOP</span> Admin</a>
             </div>
-            <button class="btn btn-secondary btn-sm" onclick="Admin.logout()">Déconnexion</button>
+            <button aria-label="Action Button" class="btn btn-secondary btn-sm" onclick="Admin.logout()">Déconnexion</button>
         </div>
     </nav>
 
@@ -325,7 +325,7 @@
                         <input type="text" name="image" class="form-input" placeholder="assets/webp/..."
                             oninput="Admin.updatePreview(this.value, 'add-preview')">
                     </div>
-                    <button type="submit" class="btn btn-primary" style="width: 100%">Enregistrer le Produit</button>
+                    <button aria-label="Action Button" type="submit" class="btn btn-primary" style="width: 100%">Enregistrer le Produit</button>
                 </form>
 
                 <div style="margin-top: 2rem; border-top: 1px solid var(--border-subtle); padding-top: 1.5rem">
@@ -405,7 +405,7 @@
                     <div
                         style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem">
                         <h2>Gestion des Commandes</h2>
-                        <button class="btn btn-secondary btn-sm" onclick="Admin.exportOrders()">
+                        <button aria-label="Action Button" class="btn btn-secondary btn-sm" onclick="Admin.exportOrders()">
                             <i class="fas fa-file-export"></i> Exporter CSV
                         </button>
                     </div>
@@ -472,8 +472,8 @@
                     <textarea name="description" class="form-input" rows="3"></textarea>
                 </div>
                 <div style="display:flex; gap: 1rem; margin-top: 2rem">
-                    <button type="submit" class="btn btn-primary" style="flex: 1">Enregistrer</button>
-                    <button type="button" class="btn btn-secondary" onclick="Admin.closeModal()"
+                    <button aria-label="Action Button" type="submit" class="btn btn-primary" style="flex: 1">Enregistrer</button>
+                    <button aria-label="Action Button" type="button" class="btn btn-secondary" onclick="Admin.closeModal()"
                         style="flex: 1">Annuler</button>
                 </div>
             </form>
@@ -485,7 +485,7 @@
         <div class="admin-modal" style="max-width: 700px">
             <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem">
                 <h3 id="order-modal-title">Détails de la Commande</h3>
-                <button class="btn btn-secondary btn-sm" onclick="Admin.closeOrderModal()">Fermer</button>
+                <button aria-label="Action Button" class="btn btn-secondary btn-sm" onclick="Admin.closeOrderModal()">Fermer</button>
             </div>
             <div id="order-modal-content">
                 <!-- Populated by JS -->

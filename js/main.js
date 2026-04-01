@@ -13,26 +13,12 @@ const App = {
   init() {
     this.handleNavbar();
     this.handleMobileNav();
-    this.setupWhatsAppButton();
-    this.setupSocialSharing();
     this.initSearch();
     this.updateCurrentYear();
     this.setupScrollEffects();
-    this.initWhatsAppBubble();
+    this.setupWhatsAppButton();
   },
 
-  /**
-   * Initializes the floating WhatsApp chat bubble
-   */
-  initWhatsAppBubble() {
-    const bubble = document.createElement('a');
-    bubble.className = 'whatsapp-bubble';
-    bubble.href = `https://wa.me/${CONFIG.whatsappNumber}?text=${encodeURIComponent(CONFIG.whatsappMessage)}`;
-    bubble.target = '_blank';
-    bubble.innerHTML = '<i class="fab fa-whatsapp"></i>';
-    bubble.setAttribute('aria-label', 'Chat on WhatsApp');
-    document.body.appendChild(bubble);
-  },
 
   /**
    * Sets up scroll-based feedback (Progress bar and Scroll to Top button)

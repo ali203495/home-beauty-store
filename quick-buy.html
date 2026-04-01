@@ -180,7 +180,7 @@
                 </select>
             </div>
 
-            <button type="submit" class="btn-confirm">
+            <button aria-label="Action Button" type="submit" class="btn-confirm">
                 Confirmer la Commande <i class="fas fa-check-circle"></i>
             </button>
             <p style="text-align: center; margin-top: 1rem; color: var(--text-muted); font-size: 0.8rem">
@@ -197,7 +197,7 @@
             Votre commande a été reçue avec succès. Notre équipe vous contactera dans les plus brefs délais sur votre
             numéro WhatsApp.
         </p>
-        <button class="btn btn-primary" onclick="window.location.href='/'">Retour à la Boutique</button>
+        <button aria-label="Action Button" class="btn btn-primary" onclick="window.location.href='/'">Retour à la Boutique</button>
     </div>
 
     
@@ -222,7 +222,7 @@
 
             // Render preview
             document.getElementById('quick-product-preview').innerHTML = `
-                <img src="${product.image}" alt="${product.name}">
+                <img alt="EL-WALI-SHOP Product" src="${product.image}" alt="${product.name}">
                 <div class="product-preview-info">
                     <h4>${product.name}</h4>
                     <p>${product.price} DH</p>

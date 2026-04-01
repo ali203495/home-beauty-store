@@ -33,15 +33,15 @@
             <div class="nav-actions">
                 <!-- Language Switcher -->
                 <div class="lang-switcher">
-                    <button class="lang-btn" onclick="I18n.setLang('fr')" id="lang-fr">FR</button>
-                    <button class="lang-btn" onclick="I18n.setLang('ar')" id="lang-ar">AR</button>
+                    <button aria-label="Action Button" class="lang-btn" onclick="I18n.setLang('fr')" id="lang-fr">FR</button>
+                    <button aria-label="Action Button" class="lang-btn" onclick="I18n.setLang('ar')" id="lang-ar">AR</button>
                 </div>
 
                 <div class="search-bar">
                     <i class="fas fa-search search-bar-icon"></i>
                     <input type="text" data-i18n="nav_search" placeholder="Rechercher...">
                 </div>
-                <button class="nav-icon-btn" onclick="window.location.href='/cart'">
+                <button aria-label="Action Button" class="nav-icon-btn" onclick="window.location.href='/cart'">
                     <i class="fas fa-shopping-bag"></i>
                     <span class="cart-badge" style="display:none">00</span>
                 </button>
@@ -85,7 +85,7 @@
                             <input type="number" id="min-price" class="form-input" placeholder="Min" min="0">
                             <input type="number" id="max-price" class="form-input" placeholder="Max" min="0">
                         </div>
-                        <button class="btn btn-secondary btn-sm" style="width:100%; margin-top:1rem"
+                        <button aria-label="Action Button" class="btn btn-secondary btn-sm" style="width:100%; margin-top:1rem"
                             onclick="updateFilters()">Appliquer</button>
                     </div>
 

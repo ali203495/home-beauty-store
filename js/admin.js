@@ -76,17 +76,17 @@ const Admin = {
         const pinGroup = document.getElementById('pin-group');
 
         // Rate Limiting Check
-        /*
+        const lockUntil = parseInt(localStorage.getItem('admin_lock_until') || '0');
         if (Date.now() < lockUntil) {
             const wait = Math.ceil((lockUntil - Date.now()) / 1000);
             this.showError(`Trop de tentatives. Réessayez dans ${wait}s.`);
             return;
         }
-        */
 
-        // Simplified direct comparison for reliability
+        // Secure Comparison: use hash if possible, otherwise use a stronger string
+        const hashedInput = await this.hashPassword(password);
         const isUserMatch = (username.trim().toLowerCase() === ADMIN_CREDENTIALS.username.toLowerCase());
-        const isPassMatch = (password === 'luxe');
+        const isPassMatch = (hashedInput === ADMIN_CREDENTIALS.passwordHash);
 
         if (isUserMatch && isPassMatch) {
             console.log('Login Success! Redirecting to dashboard...');
@@ -97,7 +97,7 @@ const Admin = {
             // Direct redirect
             window.location.href = '/admin-dashboard';
         } else {
-            console.warn('Login Mismatch:', { typedUser: username, typedPass: password });
+            console.warn('Login Mismatch!');
             this.handleFailedAttempt('Identifiants incorrects');
         }
     },

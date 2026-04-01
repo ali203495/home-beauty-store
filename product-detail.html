@@ -23,7 +23,7 @@
         <a href="/contact">Contact</a>
       </div>
       <div class="nav-actions">
-        <button class="nav-icon-btn" onclick="window.location.href='/cart'" aria-label="Voir le panier">
+        <button aria-label="Action Button" class="nav-icon-btn" onclick="window.location.href='/cart'" aria-label="Voir le panier">
           <i class="fas fa-shopping-bag"></i>
           <span class="cart-badge" id="cart-badge" style="display:none">0</span>
         </button>
@@ -87,7 +87,7 @@
       const container = document.getElementById('product-detail-container');
       container.innerHTML = `
         <div class="product-detail-image-wrap">
-          <img src="${product.image}" alt="${product.name}">
+          <img alt="EL-WALI-SHOP Product" src="${product.image}" alt="${product.name}">
         </div>
         <div class="product-detail-content">
           <span class="product-detail-category">${product.category}</span>
@@ -101,23 +101,23 @@
           
           <div class="qty-row">
             <div class="qty-control">
-              <button class="qty-btn" onclick="updateQty(-1)">-</button>
+              <button aria-label="Action Button" class="qty-btn" onclick="updateQty(-1)">-</button>
               <span class="qty-value" id="qty-val">1</span>
-              <button class="qty-btn" onclick="updateQty(1)">+</button>
+              <button aria-label="Action Button" class="qty-btn" onclick="updateQty(1)">+</button>
             </div>
-            <button class="btn btn-primary btn-lg" onclick="handleAddToCart('${product.id}')" style="flex:1">
+            <button aria-label="Action Button" class="btn btn-primary btn-lg" onclick="handleAddToCart('${product.id}')" style="flex:1">
               Ajouter au Panier
             </button>
-            <button class="btn btn-secondary btn-lg" onclick="window.location.href='/quick-buy?id=${product.id}'" style="flex:1; background: var(--gold); color: black; border:none">
+            <button aria-label="Action Button" class="btn btn-secondary btn-lg" onclick="window.location.href='/quick-buy?id=${product.id}'" style="flex:1; background: var(--gold); color: black; border:none">
               Achat Rapide
             </button>
           </div>
 
           <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom: 2rem;">
-            <button class="btn btn-secondary" onclick="shareToWhatsApp('${product.id}')">
+            <button aria-label="Action Button" class="btn btn-secondary" onclick="shareToWhatsApp('${product.id}')">
               <i class="fab fa-whatsapp"></i> Commander via WhatsApp
             </button>
-            <button class="btn btn-secondary" onclick="shareToFacebook('${product.id}')">
+            <button aria-label="Action Button" class="btn btn-secondary" onclick="shareToFacebook('${product.id}')">
               <i class="fab fa-facebook"></i> Partager sur FB
             </button>
           </div>

@@ -2,6 +2,12 @@
 <html lang="fr">
 
 <head>
+    <!-- SEO <head> Social Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://el-wali-shop.work.gd/cart">
+    <meta property="og:title" content="Mon Panier | EL-WALI-SHOP Marrakech">
+    <meta property="og:description" content="Finalisez vos achats d’électroménager et produits de beauté en toute sécurité.">
+    <meta property="og:image" content="https://el-wali-shop.work.gd/assets/webp/hero.webp">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mon Panier — EL-WALI-SHOP</title>
@@ -27,15 +33,15 @@
             <div class="nav-actions">
                 <!-- Language Switcher -->
                 <div class="lang-switcher">
-                    <button class="lang-btn" onclick="I18n.setLang('fr')" id="lang-fr">FR</button>
-                    <button class="lang-btn" onclick="I18n.setLang('ar')" id="lang-ar">AR</button>
+                    <button aria-label="Action Button" class="lang-btn" onclick="I18n.setLang('fr')" id="lang-fr">FR</button>
+                    <button aria-label="Action Button" class="lang-btn" onclick="I18n.setLang('ar')" id="lang-ar">AR</button>
                 </div>
 
                 <div class="search-bar">
                     <i class="fas fa-search search-bar-icon"></i>
                     <input type="text" data-i18n="nav_search" placeholder="Rechercher...">
                 </div>
-                <button class="nav-icon-btn" onclick="window.location.href='/cart'">
+                <button aria-label="Action Button" class="nav-icon-btn" onclick="window.location.href='/cart'">
                     <i class="fas fa-shopping-bag"></i>
                     <span class="cart-count">0</span>
                 </button>
@@ -69,7 +75,7 @@
                         <span class="summary-val" id="total">0 DH</span>
                     </div>
 
-                    <button class="btn btn-primary btn-lg" style="width:100%; margin-top: 1.5rem"
+                    <button aria-label="Action Button" class="btn btn-primary btn-lg" style="width:100%; margin-top: 1.5rem"
                         onclick="window.location.href='/checkout'" data-i18n="cart_checkout_btn">
                         Passer à la Caisse <i class="fas fa-chevron-right"
                             style="margin-left: 10px; font-size: 0.8rem"></i>
@@ -105,7 +111,7 @@
             <p class="modal-text" data-i18n="modal_order_received_text">Merci pour votre commande chez Marrakech Luxe
                 Home. Nous vous contacterons sous peu
                 pour confirmer la livraison.</p>
-            <button class="btn btn-primary" style="width:100%" onclick="window.location.href='/'"
+            <button aria-label="Action Button" class="btn btn-primary" style="width:100%" onclick="window.location.href='/'"
                 data-i18n="modal_back_to_home_btn">Retour à
                 l'accueil</button>
         </div>
@@ -139,7 +145,7 @@
 
             list.innerHTML = items.map(item => `
         <div class="cart-item">
-          <div class="cart-item-image"><img src="${item.image}" alt="${item.name}"></div>
+          <div class="cart-item-image"><img alt="EL-WALI-SHOP Product" src="${item.image}" alt="${item.name}"></div>
           <div class="cart-item-info">
             <span class="cart-item-cat">${item.category}</span>
             <h4>${item.name}</h4>
@@ -147,11 +153,11 @@
           </div>
           <div style="display:flex; align-items:center; gap: 2rem">
             <div class="qty-control">
-              <button class="qty-btn" onclick="Cart.updateQuantity('${item.id}', ${item.quantity - 1}); renderCart()">-</button>
+              <button aria-label="Action Button" class="qty-btn" onclick="Cart.updateQuantity('${item.id}', ${item.quantity - 1}); renderCart()">-</button>
               <span class="qty-value">${item.quantity}</span>
-              <button class="qty-btn" onclick="Cart.updateQuantity('${item.id}', ${item.quantity + 1}); renderCart()">+</button>
+              <button aria-label="Action Button" class="qty-btn" onclick="Cart.updateQuantity('${item.id}', ${item.quantity + 1}); renderCart()">+</button>
             </div>
-            <button class="cart-remove-btn" onclick="Cart.remove('${item.id}'); renderCart()">
+            <button aria-label="Action Button" class="cart-remove-btn" onclick="Cart.remove('${item.id}'); renderCart()">
               <i class="fas fa-trash"></i>
             </button>
           </div>

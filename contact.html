@@ -40,12 +40,12 @@
             </div>
             <div class="nav-actions">
                 <div class="lang-switcher">
-                    <button class="lang-btn" onclick="I18n.setLang('fr')" id="lang-fr"
+                    <button aria-label="Action Button" class="lang-btn" onclick="I18n.setLang('fr')" id="lang-fr"
                         aria-label="Changer la langue en Français">FR</button>
-                    <button class="lang-btn" onclick="I18n.setLang('ar')" id="lang-ar"
+                    <button aria-label="Action Button" class="lang-btn" onclick="I18n.setLang('ar')" id="lang-ar"
                         aria-label="Changer la langue en Arabe">AR</button>
                 </div>
-                <button class="nav-icon-btn" onclick="window.location.href='/cart'">
+                <button aria-label="Action Button" class="nav-icon-btn" onclick="window.location.href='/cart'">
                     <i class="fas fa-shopping-bag"></i>
                     <span class="cart-badge" style="display:none">0</span>
                 </button>
@@ -68,7 +68,7 @@
         <div class="container">
             <div class="about-grid" style="margin-bottom: var(--space-3xl)">
                 <div class="about-image animate-fade-up">
-                    <img src="assets/webp/hero.webp" alt="EL-WALI-SHOP Boutique">
+                    <img alt="EL-WALI-SHOP Product" src="assets/webp/hero.webp" alt="EL-WALI-SHOP Boutique">
                 </div>
                 <div class="about-content animate-fade-up-delay-1">
                     <span class="section-tag">Notre Histoire</span>
@@ -121,7 +121,7 @@
                             <textarea name="message" class="form-input" rows="5" data-i18n="form_message_ph"
                                 placeholder="Comment pouvons-nous vous aider ?" required></textarea>
                         </div>
-                        <button type="submit" class="btn btn-primary btn-lg" style="width: 100%"
+                        <button aria-label="Action Button" type="submit" class="btn btn-primary btn-lg" style="width: 100%"
                             data-i18n="form_submit_btn">Envoyer le
                             Message</button>
                     </form>

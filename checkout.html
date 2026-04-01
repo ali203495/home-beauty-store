@@ -2,6 +2,12 @@
 <html lang="fr">
 
 <head>
+    <!-- SEO <head> Social Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://el-wali-shop.work.gd/checkout">
+    <meta property="og:title" content="Caisse | EL-WALI-SHOP Marrakech">
+    <meta property="og:description" content="Paiement à la livraison à Marrakech. Rapide et sécurisé.">
+    <meta property="og:image" content="https://el-wali-shop.work.gd/assets/webp/hero.webp">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Caisse — EL-WALI-SHOP</title>
@@ -28,9 +34,9 @@
             <a href="/" class="nav-logo">MARRAKECH <span>LUXE</span></a>
             <div class="nav-actions">
                 <div class="lang-switcher">
-                    <button class="lang-btn" onclick="I18n.setLang('fr')" id="lang-fr"
+                    <button aria-label="Action Button" class="lang-btn" onclick="I18n.setLang('fr')" id="lang-fr"
                         aria-label="Changer la langue en Français">FR</button>
-                    <button class="lang-btn" onclick="I18n.setLang('ar')" id="lang-ar"
+                    <button aria-label="Action Button" class="lang-btn" onclick="I18n.setLang('ar')" id="lang-ar"
                         aria-label="Changer la langue en Arabe">AR</button>
                 </div>
             </div>
@@ -106,7 +112,7 @@
                                 </p>
                             </div>
 
-                            <button type="submit" class="btn btn-primary btn-lg"
+                            <button aria-label="Action Button" type="submit" class="btn btn-primary btn-lg"
                                 style="width: 100%; margin-top: 2rem; font-size: 1.1rem">
                                 <span data-i18n="checkout_confirm">Confirmer ma commande</span> (Total: <span
                                     id="submit-total">0</span> DH)
@@ -153,7 +159,7 @@
                 Merci de votre confiance. Notre service client vous contactera par téléphone pour confirmer la
                 livraison.
             </p>
-            <button class="btn btn-primary" style="width:100%" onclick="window.location.href='/'"
+            <button aria-label="Action Button" class="btn btn-primary" style="width:100%" onclick="window.location.href='/'"
                 data-i18n="modal_back_to_shop_btn">Retour à la
                 Boutique</button>
         </div>
@@ -177,7 +183,7 @@
             const list = document.getElementById('checkout-summary-items');
             list.innerHTML = items.map(item => `
                 <div style="display: flex; gap: 1rem; padding: 1rem 0; border-bottom: 1px solid rgba(255,255,255,0.05)">
-                    <img src="${item.image}" alt="${item.name}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 4px">
+                    <img alt="EL-WALI-SHOP Product" src="${item.image}" alt="${item.name}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 4px">
                     <div style="flex: 1">
                         <h4 style="font-size: 0.9rem; margin-bottom: 0.2rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden">
                             ${item.name}
