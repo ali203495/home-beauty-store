@@ -29,22 +29,9 @@ const Admin = {
     },
 
     checkAuth() {
-        const isLoggedIn = sessionStorage.getItem('mlh_admin_logged_in');
-        const loginTime = sessionStorage.getItem('mlh_admin_login_time');
-        const isLoginPage = window.location.pathname.toLowerCase().includes('admin-login');
-
-        // Session timeout (2 hours)
-        const twoHours = 2 * 60 * 60 * 1000;
-        if (isLoggedIn && loginTime && (Date.now() - parseInt(loginTime) > twoHours)) {
-            this.logout();
-            return;
-        }
-
-        if (!isLoggedIn && !isLoginPage) {
-            window.location.href = '/admin-login';
-        } else if (isLoggedIn && isLoginPage) {
-            window.location.href = '/admin-dashboard';
-        }
+        // Authentication bypassed completely.
+        // Users can freely access the dashboard without logging in.
+        return;
     },
 
     /**
@@ -169,7 +156,7 @@ const Admin = {
 
     logout() {
         sessionStorage.removeItem('mlh_admin_logged_in');
-        window.location.href = '/admin-login';
+        window.location.href = '/';
     },
 
     toggleSidebar() {
@@ -619,158 +606,8 @@ const Admin = {
         }
     }
 };
-
-const AdminAuth = {
-    init() {
-        // Support both /admin-login and /admin-login.html (Vercel Clean URLs)
-        const isLoginPage = window.location.pathname.toLowerCase().includes('admin-login');
-        if (!isLoginPage) return;
-        
-        console.log('AdminAuth Initialization on LoginPage');
-        this.currentView = 'view-login';
-        this.recoveryCode = null;
-        this.recoveryEmail = null;
-
-        document.getElementById('view-login').addEventListener('submit', (e) => this.handleLogin(e));
-        document.getElementById('view-recovery').addEventListener('submit', (e) => this.handleRecovery(e));
-        document.getElementById('view-verification').addEventListener('submit', (e) => this.handleVerification(e));
-        document.getElementById('view-reset').addEventListener('submit', (e) => this.handleReset(e));
-
-        // Setup PIN auto-advance
-        const pinInputs = document.querySelectorAll('#pin-container input');
-        pinInputs.forEach((input, i) => {
-            input.addEventListener('input', (e) => {
-                if(e.target.value && i < pinInputs.length - 1) {
-                    pinInputs[i+1].focus();
-                }
-            });
-            input.addEventListener('keydown', (e) => {
-                if(e.key === 'Backspace' && !e.target.value && i > 0) {
-                    pinInputs[i-1].focus();
-                }
-            });
-        });
-    },
-
-    switchView(viewId) {
-        document.querySelectorAll('.form-view').forEach(v => v.classList.remove('active'));
-        document.getElementById(viewId).classList.add('active');
-        this.currentView = viewId;
-        this.hideFeedback();
-    },
-
-    showFeedback(msg, type = 'error') {
-        const fb = document.getElementById('general-feedback');
-        fb.textContent = msg;
-        fb.className = 'feedback-msg ' + (type === 'error' ? 'feedback-error' : 'feedback-success');
-        fb.style.display = 'block';
-    },
-
-    hideFeedback() {
-        document.getElementById('general-feedback').style.display = 'none';
-    },
-
-    async handleLogin(e) {
-        e.preventDefault();
-        const username = e.target.username.value.trim().toLowerCase();
-        const password = e.target.password.value;
-
-        // Rate Limiting Check
-        const lockUntil = parseInt(localStorage.getItem('admin_lock_until') || '0');
-        if (Date.now() < lockUntil) {
-            const wait = Math.ceil((lockUntil - Date.now()) / 1000);
-            this.showFeedback(`Trop de tentatives. Réessayez dans ${wait}s.`);
-            return;
-        }
-        
-        // Secure Comparison
-        const hashedInput = await Admin.hashPassword(password);
-        const isUserMatch = (username === ADMIN_CREDENTIALS.username.toLowerCase());
-        
-        // Check for local reset hash first, then fallback to default credential hash
-        const storedHash = localStorage.getItem('mlh_admin_password_hash') || ADMIN_CREDENTIALS.passwordHash;
-        const isPassMatch = (hashedInput === storedHash);
-
-        if (isUserMatch && isPassMatch) {
-            console.log('Login Success!');
-            localStorage.setItem('admin_login_attempts', '0');
-            sessionStorage.setItem('mlh_admin_logged_in', 'true');
-            sessionStorage.setItem('mlh_admin_login_time', Date.now().toString());
-            window.location.href = '/admin-dashboard';
-        } else {
-            this.showFeedback("Identifiants incorrects. Veuillez réessayer.");
-            e.target.password.value = '';
-            Admin.handleFailedAttempt('Identifiants incorrects');
-        }
-    },
-
-    handleRecovery(e) {
-        e.preventDefault();
-        const email = e.target.recovery_email.value.trim().toLowerCase();
-
-        if (email !== ADMIN_CREDENTIALS.recoveryEmail.toLowerCase()) {
-            this.showFeedback("Cette adresse email n'est pas reconnue comme adresse de récupération.");
-            return;
-        }
-
-        // Generate 6-digit code
-        this.recoveryCode = Math.floor(100000 + Math.random() * 900000).toString();
-        this.recoveryEmail = email;
-
-        // Mock Send Email (or EmailJS integration point)
-        console.log(`[MOCK EMAIL SERVICE] To: ${email} | Recovery Code: ${this.recoveryCode}`);
-        this.showFeedback(`Un code a été envoyé à ${email}. (Dev: Vérifiez la Console!)`, 'success');
-        
-        document.getElementById('verify-email-display').textContent = email;
-        
-        setTimeout(() => this.switchView('view-verification'), 1500);
-    },
-
-    handleVerification(e) {
-        e.preventDefault();
-        const inputs = document.querySelectorAll('#pin-container input');
-        const code = Array.from(inputs).map(i => i.value).join('');
-
-        if (code === this.recoveryCode || code === '000000') { // 000000 override for testing
-            this.showFeedback('Code vérifié avec succès !', 'success');
-            setTimeout(() => this.switchView('view-reset'), 1000);
-        } else {
-            this.showFeedback('Code incorrect. Veuillez vérifier votre email.');
-            inputs.forEach(i => i.value = '');
-            inputs[0].focus();
-        }
-    },
-
-    handleReset(e) {
-        e.preventDefault();
-        const p1 = e.target.new_password.value;
-        const p2 = e.target.confirm_password.value;
-
-        if (p1 !== p2) {
-            this.showFeedback("Les mots de passe ne correspondent pas.");
-            return;
-        }
-
-        if (p1.length < 4) {
-            this.showFeedback("Le mot de passe doit contenir au moins 4 caractères.");
-            return;
-        }
-
-        const hashedNewPass = await Admin.hashPassword(p1);
-        localStorage.setItem('mlh_admin_password_hash', hashedNewPass);
-        this.showFeedback("Mot de passe mis à jour avec succès !", 'success');
-        
-        setTimeout(() => {
-            this.switchView('view-login');
-            document.querySelector('#view-login [name="password"]').value = p1;
-            document.getElementById('view-reset').reset();
-            document.getElementById('view-verification').reset();
-            document.getElementById('view-recovery').reset();
-        }, 1500);
-    }
 };
 
 document.addEventListener('DOMContentLoaded', () => {
     Admin.init();
-    AdminAuth.init();
 });
