@@ -153,10 +153,13 @@ const Admin = {
     },
 
     showError(msg) {
-        const errorEl = document.getElementById('login-error');
+        const errorEl = document.getElementById('login-error') || document.getElementById('general-feedback');
         if (errorEl) {
             errorEl.innerText = msg;
             errorEl.style.display = 'block';
+            if (errorEl.id === 'general-feedback') {
+                errorEl.className = 'feedback-msg feedback-error';
+            }
         } else {
             alert(msg);
         }
@@ -672,24 +675,37 @@ const AdminAuth = {
         document.getElementById('general-feedback').style.display = 'none';
     },
 
-    handleLogin(e) {
+    async handleLogin(e) {
         e.preventDefault();
         const username = e.target.username.value.trim().toLowerCase();
         const password = e.target.password.value;
+
+        // Rate Limiting Check
+        const lockUntil = parseInt(localStorage.getItem('admin_lock_until') || '0');
+        if (Date.now() < lockUntil) {
+            const wait = Math.ceil((lockUntil - Date.now()) / 1000);
+            this.showFeedback(`Trop de tentatives. Réessayez dans ${wait}s.`);
+            return;
+        }
         
+        // Secure Comparison
+        const hashedInput = await Admin.hashPassword(password);
         const isUserMatch = (username === ADMIN_CREDENTIALS.username.toLowerCase());
         
-        // Dynamic password check (fetch from localStorage if reset, otherwise use default)
-        const currentPass = localStorage.getItem('mlh_admin_password') || 'luxe';
-        const isPassMatch = (password === currentPass);
+        // Check for local reset hash first, then fallback to default credential hash
+        const storedHash = localStorage.getItem('mlh_admin_password_hash') || ADMIN_CREDENTIALS.passwordHash;
+        const isPassMatch = (hashedInput === storedHash);
 
         if (isUserMatch && isPassMatch) {
+            console.log('Login Success!');
+            localStorage.setItem('admin_login_attempts', '0');
             sessionStorage.setItem('mlh_admin_logged_in', 'true');
             sessionStorage.setItem('mlh_admin_login_time', Date.now().toString());
             window.location.href = '/admin-dashboard';
         } else {
             this.showFeedback("Identifiants incorrects. Veuillez réessayer.");
             e.target.password.value = '';
+            Admin.handleFailedAttempt('Identifiants incorrects');
         }
     },
 
@@ -745,7 +761,8 @@ const AdminAuth = {
             return;
         }
 
-        localStorage.setItem('mlh_admin_password', p1);
+        const hashedNewPass = await Admin.hashPassword(p1);
+        localStorage.setItem('mlh_admin_password_hash', hashedNewPass);
         this.showFeedback("Mot de passe mis à jour avec succès !", 'success');
         
         setTimeout(() => {
