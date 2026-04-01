@@ -13,7 +13,7 @@ const INITIAL_PRODUCTS = [
         price: 1850,
         rating: 4.8,
         reviews: 124,
-        image: 'assets/images/appliances.png',
+        image: 'assets/webp/appliances.webp',
         badge: 'Populaire',
         description: 'Mélangeur haute performance avec moteur de 1500W, idéal pour les smoothies et soupes.',
         specs: { 'Puissance': '1500W', 'Capacité': '2L', 'Garantie': '2 ans' }
@@ -25,7 +25,7 @@ const INITIAL_PRODUCTS = [
         price: 3200,
         rating: 4.9,
         reviews: 89,
-        image: 'assets/images/appliances.png',
+        image: 'assets/webp/appliances.webp',
         badge: 'Nouveau',
         description: 'Machine à espresso manuelle pour un café de qualité barista à la maison.',
         specs: { 'Pression': '15 Bars', 'Réservoir': '1.5L', 'Matériau': 'Acier Inoxydable' }
@@ -37,7 +37,7 @@ const INITIAL_PRODUCTS = [
         price: 12500,
         rating: 4.8,
         reviews: 45,
-        image: 'assets/images/appliances.png',
+        image: 'assets/webp/appliances.webp',
         badge: 'Luxe',
         description: 'Réfrigérateur grand volume avec distributeur d\'eau et glaçons filtré.',
         specs: { 'Capacité': '540L', 'Classe': 'A++', 'Technologie': 'No Frost' }
@@ -49,7 +49,7 @@ const INITIAL_PRODUCTS = [
         price: 4800,
         rating: 4.7,
         reviews: 67,
-        image: 'assets/images/appliances.png',
+        image: 'assets/webp/appliances.webp',
         badge: 'Efficace',
         description: 'Lave-linge intelligent avec moteur Inverter et programme vapeur.',
         specs: { 'Capacité': '9kg', 'Vitesse': '1400 tr/min', 'Programmes': '15' }
@@ -63,7 +63,7 @@ const INITIAL_PRODUCTS = [
         price: 4500,
         rating: 4.7,
         reviews: 56,
-        image: 'assets/images/aircon.png',
+        image: 'assets/webp/aircon.webp',
         badge: 'Service Inclus',
         description: 'Climatiseur haute efficacité avec installation professionnelle incluse à Marrakech.',
         specs: { 'Capacité': '12000 BTU', 'Type': 'Inverter', 'Installation': 'Gratuite' }
@@ -75,7 +75,7 @@ const INITIAL_PRODUCTS = [
         price: 2800,
         rating: 4.5,
         reviews: 34,
-        image: 'assets/images/aircon.png',
+        image: 'assets/webp/aircon.webp',
         description: 'Solution de refroidissement mobile facile à déplacer, parfaite pour les appartements.',
         specs: { 'Capacité': '9000 BTU', 'Bruit': 'Low DB', 'Kit Fenêtre': 'Inclus' }
     },
@@ -88,7 +88,7 @@ const INITIAL_PRODUCTS = [
         price: 450,
         rating: 4.9,
         reviews: 210,
-        image: 'assets/images/makeup.png',
+        image: 'assets/webp/makeup.webp',
         badge: 'Luxe',
         description: 'Palette de 12 teintes pigmentées allant du mat au scintillant.',
         specs: { 'Teintes': '12', 'Fini': 'Mat & Irisé', 'Tenue': '24h' }
@@ -100,7 +100,7 @@ const INITIAL_PRODUCTS = [
         price: 380,
         rating: 4.8,
         reviews: 156,
-        image: 'assets/images/makeup.png',
+        image: 'assets/webp/makeup.webp',
         description: 'Base de maquillage à couvrance totale avec fini naturel et lumineux.',
         specs: { 'Volume': '30ml', 'SPF': '15', 'Type de peau': 'Tous types' }
     },
@@ -113,7 +113,7 @@ const INITIAL_PRODUCTS = [
         price: 1250,
         rating: 4.7,
         reviews: 42,
-        image: 'assets/images/kitchen_cleaning.png',
+        image: 'assets/webp/kitchen_cleaning.webp',
         badge: 'Offre',
         description: 'Ensemble de 5 pièces en acier inoxydable multicouche pour une cuisson uniforme.',
         specs: { 'Pièces': '5', 'Compatibilité': 'Induction/Gaz', 'Revêtement': 'Anti-adhésif' }
@@ -125,7 +125,7 @@ const INITIAL_PRODUCTS = [
         price: 850,
         rating: 4.9,
         reviews: 15,
-        image: 'assets/images/kitchen_cleaning.png',
+        image: 'assets/webp/kitchen_cleaning.webp',
         badge: 'Premium',
         description: 'Élégant service de table complet pour 6 personnes, design moderne et épuré.',
         specs: { 'Pièces': '18', 'Compatibles': 'Micro-ondes/Lave-vaisselle' }
@@ -139,7 +139,7 @@ const INITIAL_PRODUCTS = [
         price: 250,
         rating: 4.6,
         reviews: 78,
-        image: 'assets/images/kitchen_cleaning.png',
+        image: 'assets/webp/kitchen_cleaning.webp',
         description: 'Kit complet comprenant nettoyant multi-surfaces, dégraissant et lustrant.',
         specs: { 'Volume Total': '3L', 'Parfums': 'Citron/Lavande' }
     },
@@ -150,7 +150,7 @@ const INITIAL_PRODUCTS = [
         price: 2400,
         rating: 4.7,
         reviews: 64,
-        image: 'assets/images/appliances.png',
+        image: 'assets/webp/appliances.webp',
         badge: 'Promo',
         description: 'Robot aspirateur intelligent avec navigation laser et fonction lavage de sol.',
         specs: { 'Autonomie': '120 min', 'Aspiration': '2500 Pa', 'Bruit': '60 dB' }
@@ -162,7 +162,7 @@ const INITIAL_PRODUCTS = [
         price: 1450,
         rating: 4.8,
         reviews: 52,
-        image: 'assets/images/kitchen_cleaning.png',
+        image: 'assets/webp/kitchen_cleaning.webp',
         badge: 'Best-Seller',
         description: 'Nettoyeur vapeur pour assainir toutes les surfaces sans produits chimiques.',
         specs: { 'Pression': '4 Bars', 'Temps chauffe': '5 min', 'Accessoires': '10' }
@@ -174,7 +174,7 @@ const INITIAL_PRODUCTS = [
         price: 350,
         rating: 4.9,
         reviews: 110,
-        image: 'assets/images/kitchen_cleaning.png',
+        image: 'assets/webp/kitchen_cleaning.webp',
         badge: 'Pro',
         description: 'Solution désinfectante à large spectre pour environnements exigeants (aéroport, bureaux).',
         specs: { 'Volume': '5L', 'Efficacité': 'Virucide/Bactéricide', 'Usage': 'Diluable' }
@@ -186,7 +186,7 @@ const INITIAL_PRODUCTS = [
         price: 45,
         rating: 4.8,
         reviews: 24,
-        image: 'assets/images/kitchen_cleaning.png',
+        image: 'assets/webp/kitchen_cleaning.webp',
         badge: 'Efficace',
         description: 'Cleans surfaces quickly without harmful chemicals',
         specs: { 'Type': 'Savon de nettoyage', 'Usage': 'Multi-surfaces', 'Parfum': 'Frais' }
@@ -198,7 +198,7 @@ const INITIAL_PRODUCTS = [
         price: 60,
         rating: 4.7,
         reviews: 38,
-        image: 'assets/images/kitchen_cleaning.png',
+        image: 'assets/webp/kitchen_cleaning.webp',
         badge: 'Pro',
         description: 'Removes dirt and odors effectively',
         specs: { 'Type': 'Nettoyant sol', 'Concentré': 'Oui', 'Volume': '1L' }
@@ -210,7 +210,7 @@ const INITIAL_PRODUCTS = [
         price: 20,
         rating: 4.9,
         reviews: 15,
-        image: 'assets/images/kitchen_cleaning.png',
+        image: 'assets/webp/kitchen_cleaning.webp',
         badge: 'Top',
         description: 'Soft and absorbs water quickly',
         specs: { 'Matière': 'Microfibre', 'Taille': '40x40cm', 'Lavage': 'Machine' }
@@ -224,7 +224,7 @@ const INITIAL_PRODUCTS = [
         price: 180,
         rating: 4.8,
         reviews: 95,
-        image: 'assets/images/plastic.png',
+        image: 'assets/webp/plastic.webp',
         description: 'Ensemble de bacs de rangement transparents sans BPA pour frigo et placards.',
         specs: { 'Nombre': '6 bacs', 'Matériau': 'Plastique sans BPA', 'Lavage': 'Lave-vaisselle' }
     },
@@ -235,7 +235,7 @@ const INITIAL_PRODUCTS = [
         price: 95,
         rating: 4.4,
         reviews: 28,
-        image: 'assets/images/plastic.png',
+        image: 'assets/webp/plastic.webp',
         description: 'Série de 3 bassines de tailles différentes, résistantes et aux couleurs vives.',
         specs: { 'Tailles': 'S, M, L', 'Usage': 'Multi-usage', 'Origine': 'Maroc' }
     }
