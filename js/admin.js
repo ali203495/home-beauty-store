@@ -31,7 +31,7 @@ const Admin = {
     checkAuth() {
         const isLoggedIn = sessionStorage.getItem('mlh_admin_logged_in');
         const loginTime = sessionStorage.getItem('mlh_admin_login_time');
-        const isLoginPage = window.location.pathname.includes('admin-login.html');
+        const isLoginPage = window.location.pathname.includes('admin-login');
 
         // Session timeout (2 hours)
         const twoHours = 2 * 60 * 60 * 1000;
@@ -41,9 +41,9 @@ const Admin = {
         }
 
         if (!isLoggedIn && !isLoginPage) {
-            window.location.href = 'admin-login.html';
+            window.location.href = '/admin-login';
         } else if (isLoggedIn && isLoginPage) {
-            window.location.href = 'admin-dashboard.html';
+            window.location.href = '/admin-dashboard';
         }
     },
 
@@ -95,7 +95,7 @@ const Admin = {
             sessionStorage.setItem('mlh_admin_login_time', Date.now().toString());
 
             // Direct redirect
-            window.location.href = 'admin-dashboard.html';
+            window.location.href = '/admin-dashboard';
         } else {
             console.warn('Login Mismatch:', { typedUser: username, typedPass: password });
             this.handleFailedAttempt('Identifiants incorrects');
@@ -164,7 +164,7 @@ const Admin = {
 
     logout() {
         sessionStorage.removeItem('mlh_admin_logged_in');
-        window.location.href = 'admin-login.html';
+        window.location.href = '/admin-login';
     },
 
     toggleSidebar() {
@@ -686,7 +686,7 @@ const AdminAuth = {
         if (isUserMatch && isPassMatch) {
             sessionStorage.setItem('mlh_admin_logged_in', 'true');
             sessionStorage.setItem('mlh_admin_login_time', Date.now().toString());
-            window.location.href = 'admin-dashboard.html';
+            window.location.href = '/admin-dashboard';
         } else {
             this.showFeedback("Identifiants incorrects. Veuillez réessayer.");
             e.target.password.value = '';

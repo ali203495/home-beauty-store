@@ -18,11 +18,11 @@
     <!-- Navigation -->
     <nav class="navbar scrolled">
         <div class="container">
-            <a href="index.html" class="nav-logo">MARRAKECH <span>LUXE</span></a>
+            <a href="/" class="nav-logo">MARRAKECH <span>LUXE</span></a>
             <div class="nav-links">
-                <a href="index.html">Accueil</a>
-                <a href="products.html">Produits</a>
-                <a href="contact.html">Contact</a>
+                <a href="/">Accueil</a>
+                <a href="/products">Produits</a>
+                <a href="/contact">Contact</a>
             </div>
             <div class="nav-actions">
                 <!-- Language Switcher -->
@@ -35,7 +35,7 @@
                     <i class="fas fa-search search-bar-icon"></i>
                     <input type="text" data-i18n="nav_search" placeholder="Rechercher...">
                 </div>
-                <button class="nav-icon-btn" onclick="window.location.href='cart.html'">
+                <button class="nav-icon-btn" onclick="window.location.href='/cart'">
                     <i class="fas fa-shopping-bag"></i>
                     <span class="cart-count">0</span>
                 </button>
@@ -70,7 +70,7 @@
                     </div>
 
                     <button class="btn btn-primary btn-lg" style="width:100%; margin-top: 1.5rem"
-                        onclick="window.location.href='checkout.html'" data-i18n="cart_checkout_btn">
+                        onclick="window.location.href='/checkout'" data-i18n="cart_checkout_btn">
                         Passer à la Caisse <i class="fas fa-chevron-right"
                             style="margin-left: 10px; font-size: 0.8rem"></i>
                     </button>
@@ -91,7 +91,7 @@
                 <div class="cart-empty-icon"><i class="fas fa-shopping-bag"></i></div>
                 <h3 data-i18n="cart_empty_title">Votre panier est vide</h3>
                 <p data-i18n="cart_empty_text">Il est temps de commencer votre shopping !</p>
-                <a href="products.html" class="btn btn-primary" style="margin-top: 2rem"
+                <a href="/products" class="btn btn-primary" style="margin-top: 2rem"
                     data-i18n="cart_empty_products_btn">Voir les produits</a>
             </div>
         </div>
@@ -105,7 +105,7 @@
             <p class="modal-text" data-i18n="modal_order_received_text">Merci pour votre commande chez Marrakech Luxe
                 Home. Nous vous contacterons sous peu
                 pour confirmer la livraison.</p>
-            <button class="btn btn-primary" style="width:100%" onclick="window.location.href='index.html'"
+            <button class="btn btn-primary" style="width:100%" onclick="window.location.href='/'"
                 data-i18n="modal_back_to_home_btn">Retour à
                 l'accueil</button>
         </div>

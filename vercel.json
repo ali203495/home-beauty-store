@@ -1,0 +1,16 @@
+{
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "routes": [
+    {
+      "src": "/(.*)",
+      "headers": {
+        "cache-control": "s-maxage=600"
+      },
+      "continue": true
+    }
+  ],
+  "github": {
+    "silent": true
+  }
+}

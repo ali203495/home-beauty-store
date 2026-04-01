@@ -150,21 +150,21 @@ const App = {
     window.shareToWhatsApp = (id) => {
       const product = PRODUCTS.find(p => p.id === id);
       if (!product) return;
-      const text = encodeURIComponent(`Bonjour EL-WALI-SHOP ! Je suis intéressé par ce produit : ${product.name} (${product.price} DH). Voici le lien : ${window.location.origin}/product-detail.html?id=${product.id}`);
+      const text = encodeURIComponent(`Bonjour EL-WALI-SHOP ! Je suis intéressé par ce produit : ${product.name} (${product.price} DH). Voici le lien : ${window.location.origin}/product-detail?id=${product.id}`);
       window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${text}`, '_blank');
     };
 
     window.shareToFacebook = (id) => {
       const product = PRODUCTS.find(p => p.id === id);
       if (!product) return;
-      const url = encodeURIComponent(`${window.location.origin}/product-detail.html?id=${product.id}`);
+      const url = encodeURIComponent(`${window.location.origin}/product-detail?id=${product.id}`);
       window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
     };
   },
 
   generateProductCard(p) {
     return `
-      <div class="product-card" onclick="window.location.href='product-detail.html?id=${p.id}'">
+      <div class="product-card" onclick="window.location.href='product-detail?id=${p.id}'">
         <div class="product-card-image">
           <img src="${p.image}" alt="${p.name}" loading="lazy">
           ${p.badge ? `<span class="product-card-badge badge-new">${p.badge}</span>` : ''}
@@ -175,7 +175,7 @@ const App = {
             <button class="product-action-btn" onclick="event.stopPropagation(); shareToWhatsApp('${p.id}')">
               <i class="fab fa-whatsapp"></i>
             </button>
-            <button class="product-action-btn" style="background:var(--gold); color:black" onclick="event.stopPropagation(); window.location.href='quick-buy.html?id=${p.id}'" title="Achat Rapide">
+            <button class="product-action-btn" style="background:var(--gold); color:black" onclick="event.stopPropagation(); window.location.href='quick-buy?id=${p.id}'" title="Achat Rapide">
               <i class="fas fa-bolt"></i>
             </button>
           </div>
@@ -213,7 +213,7 @@ const App = {
         if (e.key === 'Enter') {
           const query = e.target.value.trim();
           if (query) {
-            window.location.href = `products.html?search=${encodeURIComponent(query)}`;
+            window.location.href = `products?search=${encodeURIComponent(query)}`;
           }
         }
       });

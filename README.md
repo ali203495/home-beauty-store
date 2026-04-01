@@ -19,11 +19,16 @@ Professional E-commerce platform for high-end home appliances and beauty product
 
 ## 📦 Deployment
 
-This website is designed for **GitHub Pages**.
+This website is optimized for **Vercel** (recommended) and **GitHub Pages**.
 
-1. Create a new repository on GitHub.
-2. Push this code to the `main` branch.
-3. Enable GitHub Pages in Settings > Pages.
+### 🚀 Deploy to Vercel
+1. Log in to [Vercel](https://vercel.com) with GitHub.
+2. Import the `ali203495/home-beauty-store` repository.
+3. Click **Deploy**. (The `vercel.json` provides clean URLs).
+
+### 🐙 Deploy to GitHub Pages
+1. Push code to the `main` branch.
+2. Enable GitHub Pages in Settings > Pages.
 
 ---
 © 2026 Marrakech Luxe Home. All rights reserved.
