@@ -31,7 +31,7 @@ const Admin = {
     checkAuth() {
         const isLoggedIn = sessionStorage.getItem('mlh_admin_logged_in');
         const loginTime = sessionStorage.getItem('mlh_admin_login_time');
-        const isLoginPage = window.location.pathname.includes('admin-login');
+        const isLoginPage = window.location.pathname.toLowerCase().includes('admin-login');
 
         // Session timeout (2 hours)
         const twoHours = 2 * 60 * 60 * 1000;
@@ -54,8 +54,10 @@ const Admin = {
      */
     async hashPassword(string) {
         if (!window.crypto || !window.crypto.subtle) {
-            console.warn('Web Crypto API not available. Falling back to insecure comparison for local testing.');
-            return string; // Insecure fallback for local/file:// testing
+            console.warn('Web Crypto API not available. This browser is not in a Secure Context (HTTPS).');
+            // This situation usually only happens on local unencrypted connections.
+            // On production (Vercel), it will always reach the secure hash block below.
+            return string; 
         }
         const utf8 = new TextEncoder().encode(string);
         const hashBuffer = await crypto.subtle.digest('SHA-256', utf8);
@@ -596,18 +598,8 @@ const Admin = {
     },
 
     setupEventListeners() {
-        const loginForm = document.getElementById('login-form');
-        if (loginForm) {
-            loginForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                this.login(
-                    e.target.username.value,
-                    e.target.password.value,
-                    e.target.pin ? e.target.pin.value : null
-                );
-            });
-        }
-
+        // Redundant login form listener removed to prevent conflict with AdminAuth
+        
         const recoveryForm = document.getElementById('recovery-form');
         if (recoveryForm) {
             recoveryForm.addEventListener('submit', (e) => {
@@ -630,8 +622,11 @@ const Admin = {
 
 const AdminAuth = {
     init() {
-        if (!window.location.pathname.includes('admin-login.html')) return;
+        // Support both /admin-login and /admin-login.html (Vercel Clean URLs)
+        const isLoginPage = window.location.pathname.toLowerCase().includes('admin-login');
+        if (!isLoginPage) return;
         
+        console.log('AdminAuth Initialization on LoginPage');
         this.currentView = 'view-login';
         this.recoveryCode = null;
         this.recoveryEmail = null;
