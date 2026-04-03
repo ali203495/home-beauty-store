@@ -32,9 +32,10 @@ const Admin = {
 
     checkAuth() {
         const isLoggedIn = sessionStorage.getItem('mlh_admin_logged_in') === 'true';
-        const isLoginPage = window.location.pathname.includes('admin-login.html');
+        const isLoginPage = window.location.pathname.includes('admin-login');
+        const loginForm = document.getElementById('login-form');
         
-        if (!isLoggedIn && !isLoginPage) {
+        if (!isLoggedIn && !isLoginPage && !loginForm) {
             window.location.href = 'admin-login.html';
         }
     },
