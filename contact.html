@@ -25,159 +25,167 @@
     <link rel="stylesheet" href="css/index.css">
     <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
-
-<body>
+</he    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="container flex-between">
+            <div class="flex gap-md">
+                <span><i class="fas fa-truck"></i> Livraison Gratuite sur Marrakech</span>
+                <span><i class="fas fa-phone"></i> +212 699-705617</span>
+            </div>
+            <div class="flex gap-md">
+                <a href="/contact">Support 24/7</a>
+                <a href="https://www.facebook.com/share/g/18L9fxx9pG/" target="_blank"><i class="fab fa-facebook-f"></i></a>
+            </div>
+        </div>
+    </div>
 
     <!-- Navigation -->
-    <nav class="navbar scrolled">
+    <nav class="navbar">
         <div class="container">
-            <a href="/" class="nav-logo">MARRAKECH <span>LUXE</span></a>
-            <div class="nav-links">
-                <a href="/">Accueil</a>
-                <a href="/products">Produits</a>
-                <a href="/contact" class="active">Contact</a>
-            </div>
-            <div class="nav-actions">
-                <div class="lang-switcher">
-                    <button aria-label="Action Button" class="lang-btn" onclick="I18n.setLang('fr')" id="lang-fr"
-                        aria-label="Changer la langue en Français">FR</button>
-                    <button aria-label="Action Button" class="lang-btn" onclick="I18n.setLang('ar')" id="lang-ar"
-                        aria-label="Changer la langue en Arabe">AR</button>
+            <div class="flex-between w-full" style="width: 100%;">
+                <a href="/" class="nav-logo" id="site-name-display">EL-WALI<span>.SHOP</span></a>
+
+                <div class="search-bar" style="flex: 1; margin: 0 2rem; position: relative;">
+                    <i class="fas fa-search" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-muted);"></i>
+                    <input type="text" data-i18n="nav_search" placeholder="Rechercher un produit, une marque..." 
+                           style="width: 100%; padding: 0.8rem 1rem 0.8rem 2.8rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); background: var(--bg-primary);">
                 </div>
-                <button aria-label="Action Button" class="nav-icon-btn" onclick="window.location.href='/cart'">
-                    <i class="fas fa-shopping-bag"></i>
-                    <span class="cart-badge" style="display:none">0</span>
-                </button>
+
+                <div class="nav-actions">
+                    <div class="lang-switcher">
+                        <button class="lang-btn active" onclick="I18n.setLang('fr')" id="lang-fr">FR</button>
+                        <button class="lang-btn" onclick="I18n.setLang('ar')" id="lang-ar">AR</button>
+                    </div>
+                    
+                    <button class="nav-icon-btn" onclick="window.location.href='/cart'" aria-label="Panier">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-badge" id="cart-badge-nav" style="display:none">0</span>
+                    </button>
+                    <button class="hamburger">
+                        <span></span><span></span><span></span>
+                    </button>
+                </div>
             </div>
         </div>
     </nav>
-
-    <header class="page-hero bg-secondary">
+    
+    <!-- Secondary Nav (Categories) -->
+    <div class="secondary-nav">
         <div class="container">
-            <div class="breadcrumb">
-                <a href="/">Accueil</a>
+            <div class="flex gap-xl">
+                <a href="/products">Tous les Produits</a>
+                <a href="/products?cat=Electroménager">Electroménager</a>
+                <a href="/products?cat=Climatisation">Climatisation</a>
+                <a href="/products?cat=TV">TV & Audio</a>
+                <a href="/products?cat=Cuisine">Cuisine</a>
+                <a href="/products?cat=Beauté">Beauté & Soin</a>
+            </div>
+        </div>
+    </div>
+
+    <header class="page-hero" style="background: var(--bg-primary); padding: 2.5rem 0; text-align: left;">
+        <div class="container">
+            <div class="breadcrumb" style="font-size: 0.82rem; margin-bottom: 0.5rem; color: var(--text-muted);">
+                <a href="/" style="text-decoration: underline;">Accueil</a>
                 <span class="breadcrumb-sep">/</span>
                 <span>Contact</span>
             </div>
-            <h1 class="page-title">Nous <em>Contacter</em></h1>
+            <h1 class="page-title" style="font-size: 2.2rem; font-weight: 800; color: var(--black);">Nous Contacter</h1>
         </div>
     </header>
 
     <section class="section">
         <div class="container">
-            <div class="about-grid" style="margin-bottom: var(--space-3xl)">
+            <div class="about-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; margin-bottom: 5rem;">
                 <div class="about-image animate-fade-up">
-                    <img alt="EL-WALI-SHOP Product" src="assets/webp/hero.webp" alt="EL-WALI-SHOP Boutique">
+                    <img src="assets/webp/hero.webp" alt="EL-WALI-SHOP Boutique" style="border-radius: var(--radius-md); box-shadow: var(--shadow-lg);">
                 </div>
                 <div class="about-content animate-fade-up-delay-1">
-                    <span class="section-tag">Notre Histoire</span>
-                    <h2 class="section-title">EL-WALI-SHOP</h2>
-                    <p class="text-muted" style="margin-bottom: 1.5rem">
-                        Située au cœur de Marrakech, notre boutique est dédiée à apporter l'excellence internationale à
-                        votre foyer. Nous sélectionnons rigoureusement chaque pièce de notre collection, de
-                        l'électroménager de pointe aux produits de beauté les plus raffinés.
+                    <span class="section-tag" style="color: var(--accent-blue); font-weight: 800; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.1em; display: inline-block; margin-bottom: 1rem;">NOTRE HISTOIRE</span>
+                    <h2 class="section-title" style="font-size: 2.5rem; font-weight: 800; color: var(--black); margin-bottom: 1.5rem;">EL-WALI-SHOP : L'Excellence à Marrakech</h2>
+                    <p class="text-muted" style="margin-bottom: 1.5rem; line-height: 1.7; font-size: 1rem;">
+                        Depuis notre installation au cœur de Marrakech, nous nous engageons à offrir le meilleur de l'électroménager mondial au foyer marocain. Notre sélection rigoureuse allie technologie de pointe, design et durabilité.
                     </p>
-                    <p class="text-muted">
-                        Notre mission est simple : offrir des produits de haute qualité avec un service client
-                        personnalisé, incluant l'installation professionnelle pour vos équipements de climatisation.
+                    <p class="text-muted" style="margin-bottom: 2rem; line-height: 1.7; font-size: 1rem;">
+                        Plus qu'un simple magasin, nous sommes vos experts de confiance pour l'équipement de votre maison, notamment en Climatisation avec notre service d'installation certifié.
                     </p>
-                    <div style="margin-top: 2rem">
+                    <div>
                         <a href="https://www.facebook.com/share/g/18L9fxx9pG/" target="_blank"
-                            class="btn btn-secondary">
-                            <i class="fab fa-facebook"></i> Rejoindre la communauté
+                            class="btn btn-primary" style="padding: 1rem 2rem;">
+                            <i class="fab fa-facebook-f"></i> Rejoindre la communauté
                         </a>
                     </div>
                 </div>
             </div>
 
-            <div class="contact-grid">
-                <div class="contact-form animate-fade-up">
-                    <h3 style="margin-bottom: var(--space-lg)">Envoyez-nous un message</h3>
+            <div class="contact-grid" style="display: grid; grid-template-columns: 1fr 400px; gap: 3rem;">
+                <div class="contact-form animate-fade-up" style="background: white; padding: 2.5rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); box-shadow: var(--shadow-sm);">
+                    <h3 style="font-weight: 800; font-size: 1.5rem; margin-bottom: 2rem; border-bottom: 2px solid var(--bg-primary); padding-bottom: 1rem;">Envoyez-nous un message</h3>
                     <form id="contact-form-main">
-                        <div class="grid grid-2 gap-md">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
                             <div class="form-group">
-                                <label class="form-label" data-i18n="form_name_label">Nom Complet</label>
+                                <label class="form-label" data-i18n="form_name_label" style="font-weight: 700; margin-bottom: 0.5rem; display: block;">Nom Complet</label>
                                 <input type="text" name="name" class="form-input" data-i18n="form_name_ph"
-                                    placeholder="Votre nom" required>
+                                    placeholder="Ex: Mohammed Alami" style="width: 100%; padding: 0.8rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);" required>
                             </div>
                             <div class="form-group">
-                                <label class="form-label" data-i18n="form_email_label">Email</label>
+                                <label class="form-label" data-i18n="form_email_label" style="font-weight: 700; margin-bottom: 0.5rem; display: block;">Votre Email</label>
                                 <input type="email" name="email" class="form-input" data-i18n="form_email_ph"
-                                    placeholder="votre@email.com" required>
+                                    placeholder="Ex: contact@email.com" style="width: 100%; padding: 0.8rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);" required>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label class="form-label" data-i18n="form_subject_label">Sujet</label>
-                            <select name="subject" class="form-input">
+                        <div class="form-group" style="margin-bottom: 1.5rem;">
+                            <label class="form-label" data-i18n="form_subject_label" style="font-weight: 700; margin-bottom: 0.5rem; display: block;">Objet de votre demande</label>
+                            <select name="subject" class="form-input" style="width: 100%; padding: 0.8rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); background: white;">
                                 <option data-i18n="form_sub_info">Information Produit</option>
                                 <option data-i18n="form_sub_ac">Service Installation AC</option>
                                 <option data-i18n="form_sub_order">Commande & Livraison</option>
-                                <option data-i18n="form_sub_other">Autre</option>
+                                <option data-i18n="form_sub_other">Autre demande</option>
                             </select>
                         </div>
-                        <div class="form-group">
-                            <label class="form-label" data-i18n="form_message_label">Message</label>
+                        <div class="form-group" style="margin-bottom: 2rem;">
+                            <label class="form-label" data-i18n="form_message_label" style="font-weight: 700; margin-bottom: 0.5rem; display: block;">Votre Message</label>
                             <textarea name="message" class="form-input" rows="5" data-i18n="form_message_ph"
-                                placeholder="Comment pouvons-nous vous aider ?" required></textarea>
+                                placeholder="Comment pouvons-nous vous aider aujourd'hui ?" style="width: 100%; padding: 0.8rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); resize: vertical;" required></textarea>
                         </div>
-                        <button aria-label="Action Button" type="submit" class="btn btn-primary btn-lg" style="width: 100%"
-                            data-i18n="form_submit_btn">Envoyer le
-                            Message</button>
+                        <button type="submit" class="btn btn-primary btn-lg" style="width: 100%; border-radius: var(--radius-sm); font-weight: 800;"
+                            data-i18n="form_submit_btn">ENVOYER LE MESSAGE</button>
                     </form>
-                    <script>
-                        document.getElementById('contact-form-main').addEventListener('submit', function (e) {
-                            e.preventDefault();
-                            const form = this;
-                            const formData = new FormData(form);
-                            const mailtoLink = `mailto:abdelaali.markabi@gmail.com?subject=${encodeURIComponent(formData.get('subject'))}&body=${encodeURIComponent("Nom: " + formData.get('name') + "\nEmail: " + formData.get('email') + "\n\nMessage:\n" + formData.get('message'))}`;
-
-                            window.location.href = mailtoLink;
-
-                            App.showToast(I18n.get('form_success') || 'Message prêt à être envoyé via votre email !');
-                            form.reset();
-                        });
-                    </script>
                 </div>
 
-                <div class="contact-info-list animate-fade-up-delay-1">
-                    <h3 style="margin-bottom: var(--space-lg)">Coordonnées</h3>
+                <div class="contact-info-list animate-fade-up-delay-1" style="display: flex; flex-direction: column; gap: 2rem;">
+                    <h3 style="font-weight: 800; font-size: 1.5rem; margin-bottom: 1rem;">Nos Coordonnées</h3>
 
-                    <div class="contact-info-item">
-                        <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
+                    <div class="contact-info-item" style="display: flex; gap: 1rem; align-items: flex-start;">
+                        <div style="width: 50px; height: 50px; background: var(--bg-primary); display: flex; align-items: center; justify-content: center; border-radius: 50%; color: var(--accent-blue); font-size: 1.2rem;"><i class="fas fa-map-marker-alt"></i></div>
                         <div>
-                            <h4 style="margin-bottom: 0.25rem">Localisation</h4>
-                            <p class="text-sm text-muted">Marrakech, Maroc (Secteur Gueliz)</p>
+                            <h4 style="font-weight: 800; margin-bottom: 0.2rem;">Localisation</h4>
+                            <p class="text-sm text-muted">Secteur Guéliz, Marrakech, Maroc</p>
                         </div>
                     </div>
 
-                    <div class="contact-info-item">
-                        <div class="contact-icon"><i class="fab fa-whatsapp"></i></div>
+                    <div class="contact-info-item" style="display: flex; gap: 1rem; align-items: flex-start;">
+                        <div style="width: 50px; height: 50px; background: rgba(37, 211, 102, 0.1); display: flex; align-items: center; justify-content: center; border-radius: 50%; color: #25D366; font-size: 1.2rem;"><i class="fab fa-whatsapp"></i></div>
                         <div>
-                            <h4 style="margin-bottom: 0.25rem">WhatsApp Support</h4>
-                            <p class="text-sm text-muted">+212 773-791443</p>
-                            <a href="https://wa.me/212773791443" target="_blank" class="text-gold text-xs"
-                                style="font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 0.5rem">Direct
-                                WhatsApp</a>
-                            <a href="https://chat.whatsapp.com/JvGXnQd8fGB4vbZwNJNBUG?mode=gi_t" target="_blank"
-                                class="btn btn-secondary btn-sm" style="margin-top: 0.5rem">Rejoindre le Groupe
-                                WhatsApp</a>
+                            <h4 style="font-weight: 800; margin-bottom: 0.2rem;">WhatsApp Support</h4>
+                            <p class="text-sm text-muted" style="margin-bottom: 0.5rem;">+212 699-705617</p>
+                            <a href="https://wa.me/212699705617" target="_blank" class="btn btn-secondary btn-sm" style="font-size: 0.7rem; border-radius: var(--radius-sm);">Démarrer un chat</a>
                         </div>
                     </div>
 
-                    <div class="contact-info-item">
-                        <div class="contact-icon"><i class="fas fa-clock"></i></div>
+                    <div class="contact-info-item" style="display: flex; gap: 1rem; align-items: flex-start;">
+                        <div style="width: 50px; height: 50px; background: var(--bg-primary); display: flex; align-items: center; justify-content: center; border-radius: 50%; color: var(--accent-blue); font-size: 1.2rem;"><i class="fas fa-clock"></i></div>
                         <div>
-                            <h4 style="margin-bottom: 0.25rem">Horaires d'ouverture</h4>
-                            <p class="text-sm text-muted">Lun - Sam: 10h00 - 20h00</p>
-                            <p class="text-sm text-muted">Dimanches: Fermé</p>
+                            <h4 style="font-weight: 800; margin-bottom: 0.2rem;">Horaires</h4>
+                            <p class="text-sm text-muted">Lun - Sam: 09:30 - 19:30</p>
+                            <p class="text-sm text-muted">Dimanche: Sur rendez-vous</p>
                         </div>
                     </div>
 
-                    <div class="contact-info-item">
-                        <div class="contact-icon"><i class="fas fa-envelope"></i></div>
+                    <div class="contact-info-item" style="display: flex; gap: 1rem; align-items: flex-start;">
+                        <div style="width: 50px; height: 50px; background: var(--bg-primary); display: flex; align-items: center; justify-content: center; border-radius: 50%; color: var(--accent-blue); font-size: 1.2rem;"><i class="fas fa-envelope"></i></div>
                         <div>
-                            <h4 style="margin-bottom: 0.25rem">Email</h4>
+                            <h4 style="font-weight: 800; margin-bottom: 0.2rem;">Email Direct</h4>
                             <p class="text-sm text-muted">abdelaali.markabi@gmail.com</p>
                         </div>
                     </div>
@@ -186,9 +194,12 @@
         </div>
     </section>
 
-    <footer class="footer">
-        <div class="container text-center">
-            <p>&copy; <span id="current-year"></span> EL-WALI-SHOP. Tous droits réservés.</p>
+    <!-- Footer -->
+    <footer class="footer" style="background: var(--bg-secondary); border-top: 1px solid var(--border-subtle); padding: 4rem 0 2rem;">
+        <div class="container footer-bottom" style="text-align: center; color: var(--text-muted); font-size: 0.85rem;">
+            <p>&copy; <span id="current-year"></span> EL-WALI-SHOP. Votre partenaire de confiance à Marrakech.</p>
+        </div>
+    </footer>vés.</p>
         </div>
     </footer>
 

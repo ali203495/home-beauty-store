@@ -220,11 +220,31 @@ const Admin = {
     },
 
     switchTab(tab, el) {
-        document.querySelectorAll('[id^="tab-"]').forEach(el => el.style.display = 'none');
-        document.getElementById(`tab-${tab}`).style.display = 'block';
+        // Hide all tabs and sections
+        document.querySelectorAll('[id^="tab-"], .content-section').forEach(section => {
+            section.style.display = 'none';
+            section.classList.remove('active');
+        });
 
-        document.querySelectorAll('.admin-nav-item').forEach(item => item.classList.remove('active'));
-        if (el) el.classList.add('active');
+        // Show target tab
+        const target = document.getElementById(`tab-${tab}`);
+        if (target) {
+            target.style.display = 'block';
+            target.classList.add('active');
+        }
+
+        // Handle active states for toggle elements (sidebar links and legacy nav items)
+        document.querySelectorAll('.admin-nav-item, .sidebar-link').forEach(item => {
+            item.classList.remove('active');
+        });
+
+        if (el) {
+            el.classList.add('active');
+        } else {
+            // Find the link manually if el was not passed
+            const link = document.querySelector(`.sidebar-link[onclick*="'${tab}'"]`);
+            if (link) link.classList.add('active');
+        }
     },
 
     async renderStats() {
@@ -278,13 +298,13 @@ const Admin = {
         const catChart = document.getElementById('category-chart');
         if (catChart) {
             catChart.innerHTML = Object.entries(catSales).map(([cat, sales]) => `
-                <div class="chart-bar-row">
-                    <div class="chart-bar-label">
-                        <span>${cat}</span>
-                        <span>${sales} DH</span>
+                <div class="chart-bar-row" style="margin-bottom: 1.25rem;">
+                    <div class="chart-bar-label" style="display:flex; justify-content:space-between; margin-bottom:0.5rem;">
+                        <span style="font-weight: 700; color: #475569; font-size: 0.85rem;">${cat}</span>
+                        <span style="font-weight: 800; color: var(--accent-blue); font-size: 0.85rem;">${sales} DH</span>
                     </div>
-                    <div class="chart-bar-bg">
-                        <div class="chart-bar-fill" style="width: ${(sales / maxCatSales) * 100}%"></div>
+                    <div class="chart-bar-bg" style="background: #f1f5f9; height: 8px; border-radius: 50px; overflow:hidden;">
+                        <div class="chart-bar-fill" style="width: ${(sales / maxCatSales) * 100}%; background: var(--accent-blue); height: 100%; border-radius: 50px;"></div>
                     </div>
                 </div>
             `).join('');
@@ -303,13 +323,13 @@ const Admin = {
         const itemChart = document.getElementById('top-items-chart');
         if (itemChart) {
             itemChart.innerHTML = topItems.map(([name, qty]) => `
-                <div class="chart-bar-row">
-                    <div class="chart-bar-label">
-                        <span>${name}</span>
-                        <span>${qty} vendus</span>
+                <div class="chart-bar-row" style="margin-bottom: 1.25rem;">
+                    <div class="chart-bar-label" style="display:flex; justify-content:space-between; margin-bottom:0.5rem;">
+                        <span style="font-weight: 700; color: #475569; font-size: 0.85rem;">${name}</span>
+                        <span style="font-weight: 800; color: #f97316; font-size: 0.85rem;">${qty} vendus</span>
                     </div>
-                    <div class="chart-bar-bg">
-                        <div class="chart-bar-fill" style="width: ${(qty / maxItemSales) * 100}%"></div>
+                    <div class="chart-bar-bg" style="background: #f1f5f9; height: 8px; border-radius: 50px; overflow:hidden;">
+                        <div class="chart-bar-fill" style="width: ${(qty / maxItemSales) * 100}%; background: #f97316; height: 100%; border-radius: 50px;"></div>
                     </div>
                 </div>
             `).join('');
@@ -328,21 +348,23 @@ const Admin = {
 
         list.className = 'admin-grid'; // Ensure grid class is applied
         list.innerHTML = prods.map(p => `
-            <div class="admin-item animate-fade-up" data-id="${p.id}">
-                <div style="position:absolute; top:10px; right:10px; background:var(--gold); color:black; font-size:0.6rem; padding:2px 6px; border-radius:4px; font-weight:700">
-                    ${p.category}
+            <div class="admin-item animate-fade-up" data-id="${p.id}" style="background: white; border: 1px solid #e2e8f0; border-radius: var(--radius-md); overflow: hidden; display: flex; flex-direction: column; transition: transform 0.2s, box-shadow 0.2s;">
+                <div class="admin-item-img-container" style="position:relative; background: #f8fafc; height: 180px; display:flex; align-items:center; justify-content:center; padding:1.5rem; border-bottom: 1px solid #e2e8f0;">
+                    <img src="${p.image}" alt="${p.name}" style="max-width:100%; max-height:100%; object-fit:contain;">
+                    <div style="position:absolute; top:12px; right:12px; background:white; color:#64748b; font-size:0.65rem; padding:4px 10px; border-radius:50px; font-weight:800; border: 1px solid #e2e8f0; text-transform:uppercase; letter-spacing:0.05em;">
+                        ${p.category}
+                    </div>
                 </div>
-                <img src="${p.image}" alt="${p.name}" class="admin-item-img">
-                <div class="admin-item-info">
-                    <div style="font-weight: 700; color:var(--text-primary); margin-bottom:0.2rem">${p.name}</div>
-                    <div style="color:var(--gold); font-weight:700">${p.price} DH</div>
+                <div class="admin-item-content" style="padding:1.5rem; flex:1;">
+                    <h4 style="font-weight: 800; font-size: 1rem; color: #1e293b; margin-bottom: 0.5rem; line-height: 1.3;">${p.name}</h4>
+                    <div class="admin-item-price" style="font-weight: 800; color: var(--accent-blue); font-size: 1.2rem;">${p.price} DH</div>
                 </div>
-                <div class="admin-item-actions">
-                    <button class="btn btn-secondary btn-sm" style="flex:1" onclick="Admin.openModal('${p.id}')">
-                        <i class="fas fa-edit"></i> Modifier
+                <div class="admin-item-actions" style="display:grid; grid-template-columns:1fr 1fr; border-top:1px solid #e2e8f0;">
+                    <button class="admin-action-btn" style="padding:1rem; border:none; background:none; cursor:pointer; color:var(--accent-blue); font-weight:800; border-right:1px solid #e2e8f0; font-size:0.8rem; transition:background 0.2s;" onmouseover="this.style.background='#eff6ff'" onmouseout="this.style.background='none'" onclick="Admin.openModal('${p.id}')">
+                        <i class="fas fa-edit"></i> MODIFIER
                     </button>
-                    <button class="btn btn-secondary btn-sm" style="color:var(--rose)" onclick="Admin.deleteProduct('${p.id}')">
-                        <i class="fas fa-trash"></i>
+                    <button class="admin-action-btn" style="padding:1rem; border:none; background:none; cursor:pointer; color:#ef4444; font-weight:800; font-size:0.8rem; transition:background 0.2s;" onmouseover="this.style.background='#fef2f2'" onmouseout="this.style.background='none'" onclick="Admin.deleteProduct('${p.id}')">
+                        <i class="fas fa-trash-alt"></i> SUPPRIMER
                     </button>
                 </div>
             </div>
@@ -361,37 +383,53 @@ const Admin = {
         }
 
         list.innerHTML = `
-            <table class="order-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Client</th>
-                        <th>Total</th>
-                        <th>Statut</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${orders.map(o => `
-                        <tr>
-                            <td><strong class="text-gold" style="cursor:pointer" onclick="Admin.openOrderDetails('${o.id}')">${o.id}</strong><br><small>${new Date(o.date).toLocaleDateString()}</small></td>
-                            <td>${o.customer.name}<br><small>${o.customer.phone} — ${o.customer.neighborhood}</small></td>
-                            <td>${o.total} DH</td>
-                            <td><span class="status-badge status-${this.getStatusClass(o.status)}">${o.status}</span></td>
-                            <td>
-                                <div style="display:flex; gap: 5px">
-                                    <select onchange="Admin.updateOrderStatus('${o.id}', this.value)" class="form-input" style="padding: 0.2rem; font-size: 0.8rem; width: auto">
-                                        <option value="Nouveau" ${o.status === 'Nouveau' ? 'selected' : ''}>Nouveau</option>
-                                        <option value="En cours" ${o.status === 'En cours' ? 'selected' : ''}>En cours</option>
-                                        <option value="Livré" ${o.status === 'Livré' ? 'selected' : ''}>Livré</option>
-                                    </select>
-                                    <button class="btn btn-secondary btn-sm" onclick="Admin.openOrderDetails('${o.id}')" title="Détails"><i class="fas fa-eye"></i></button>
-                                </div>
-                            </td>
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; background: white;">
+                    <thead>
+                        <tr style="text-align: left; background: #f8fafc; border-bottom: 2px solid #e2e8f0;">
+                            <th style="padding: 1.25rem 1rem; color: #475569; font-weight: 800; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Commande</th>
+                            <th style="padding: 1.25rem 1rem; color: #475569; font-weight: 800; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Client / Localisation</th>
+                            <th style="padding: 1.25rem 1rem; color: #475569; font-weight: 800; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Total TTC</th>
+                            <th style="padding: 1.25rem 1rem; color: #475569; font-weight: 800; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Statut</th>
+                            <th style="padding: 1.25rem 1rem; color: #475569; font-weight: 800; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; text-align: right;">Actions</th>
                         </tr>
-                    `).join('')}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        ${orders.map(o => `
+                            <tr style="border-bottom: 1px solid #e2e8f0; transition: background 0.1s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='white'">
+                                <td style="padding: 1.25rem 1rem;">
+                                    <div style="font-weight: 800; color: var(--accent-blue); cursor: pointer;" onclick="Admin.openOrderDetails('${o.id}')">#${o.id}</div>
+                                    <div style="font-size: 0.8rem; color: #94a3b8; font-weight: 600; margin-top: 2px;">${new Date(o.date).toLocaleDateString('fr-FR', {day: 'numeric', month: 'short'})}</div>
+                                </td>
+                                <td style="padding: 1.25rem 1rem;">
+                                    <div style="font-weight: 700; color: #1e293b;">${o.customer.name}</div>
+                                    <div style="font-size: 0.8rem; color: #64748b; font-weight: 500; margin-top: 2px;">${o.customer.phone} — <span style="color:#f97316; font-weight:700;">${o.customer.neighborhood}</span></div>
+                                </td>
+                                <td style="padding: 1.25rem 1rem; font-weight: 800; color: #1e293b;">${o.total} DH</td>
+                                <td style="padding: 1.25rem 1rem;">
+                                    <span style="display:inline-block; padding: 0.4rem 0.8rem; border-radius: 50px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.02em; border: 1px solid transparent; 
+                                        ${o.status === 'Nouveau' ? 'background: rgba(29, 78, 216, 0.1); color: #1d4ed8; border-color: rgba(29, 78, 216, 0.2);' : 
+                                          o.status === 'En cours' ? 'background: rgba(249, 115, 22, 0.1); color: #c2410c; border-color: rgba(249, 115, 22, 0.2);' : 
+                                          'background: rgba(34, 197, 94, 0.1); color: #15803d; border-color: rgba(34, 197, 94, 0.2);'}"
+                                    >${o.status}</span>
+                                </td>
+                                <td style="padding: 1.25rem 1rem; text-align: right;">
+                                    <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
+                                        <select onchange="Admin.updateOrderStatus('${o.id}', this.value)" style="padding: 0.4rem 0.6rem; border-radius: var(--radius-sm); border: 1px solid #cbd5e1; font-size: 0.8rem; font-weight: 700; background: white; cursor: pointer;">
+                                            <option value="Nouveau" ${o.status === 'Nouveau' ? 'selected' : ''}>Nouveau</option>
+                                            <option value="En cours" ${o.status === 'En cours' ? 'selected' : ''}>En cours</option>
+                                            <option value="Livré" ${o.status === 'Livré' ? 'selected' : ''}>Livré</option>
+                                        </select>
+                                        <button class="admin-action-btn" style="width:34px; height:34px; border:1px solid #cbd5e1; border-radius:var(--radius-sm); background:white; cursor:pointer; color:#64748b; transition:all 0.2s; display:flex; align-items:center; justify-content:center;" onmouseover="this.style.background='#f1f5f9'; this.style.color='var(--accent-blue)';" onmouseout="this.style.background='white'; this.style.color='#64748b';" onclick="Admin.openOrderDetails('${o.id}')">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
         `;
     },
 
@@ -597,6 +635,18 @@ const Admin = {
             if (success) {
                 this.renderProducts();
                 this.notify('Produit supprimé !');
+            }
+        }
+    },
+
+    async deleteAllProducts() {
+        if (confirm('ATTENTION : Voulez-vous supprimer TOUS les produits du catalogue ?')) {
+            if (confirm('Dernière confirmation : cette action est irréversible.')) {
+                const results = await Promise.all(PRODUCTS.map(p => ProductDB.delete(p.id)));
+                if (results.every(r => r)) {
+                    this.renderProducts();
+                    this.notify('Tous les produits ont été supprimés.');
+                }
             }
         }
     },

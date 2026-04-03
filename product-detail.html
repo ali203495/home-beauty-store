@@ -13,30 +13,70 @@
 <body>
   <div class="scroll-progress" id="scroll-progress"></div>
 
-  <!-- Navigation -->
-  <nav class="navbar scrolled">
-    <div class="container">
-      <a href="/" class="nav-logo">MARRAKECH <span>LUXE</span></a>
-      <div class="nav-links">
-        <a href="/">Accueil</a>
-        <a href="/products">Produits</a>
-        <a href="/contact">Contact</a>
-      </div>
-      <div class="nav-actions">
-        <button aria-label="Action Button" class="nav-icon-btn" onclick="window.location.href='/cart'" aria-label="Voir le panier">
-          <i class="fas fa-shopping-bag"></i>
-          <span class="cart-badge" id="cart-badge" style="display:none">0</span>
-        </button>
-      </div>
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="container flex-between">
+            <div class="flex gap-md">
+                <span><i class="fas fa-truck"></i> Livraison Gratuite sur Marrakech</span>
+                <span><i class="fas fa-phone"></i> +212 699-705617</span>
+            </div>
+            <div class="flex gap-md">
+                <a href="/contact">Support 24/7</a>
+                <a href="https://www.facebook.com/share/g/18L9fxx9pG/" target="_blank"><i class="fab fa-facebook-f"></i></a>
+            </div>
+        </div>
     </div>
-  </nav>
 
-  <section class="section" style="padding-top: calc(var(--nav-height) + var(--space-2xl))">
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="flex-between w-full" style="width: 100%;">
+                <a href="/" class="nav-logo" id="site-name-display">EL-WALI<span>.SHOP</span></a>
+
+                <div class="search-bar" style="flex: 1; margin: 0 2rem; position: relative;">
+                    <i class="fas fa-search" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-muted);"></i>
+                    <input type="text" data-i18n="nav_search" placeholder="Rechercher un produit, une marque..." 
+                           style="width: 100%; padding: 0.8rem 1rem 0.8rem 2.8rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); background: var(--bg-primary);">
+                </div>
+
+                <div class="nav-actions">
+                    <div class="lang-switcher">
+                        <button class="lang-btn active" onclick="I18n.setLang('fr')" id="lang-fr">FR</button>
+                        <button class="lang-btn" onclick="I18n.setLang('ar')" id="lang-ar">AR</button>
+                    </div>
+                    
+                    <button class="nav-icon-btn" onclick="window.location.href='/cart'" aria-label="Panier">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-badge" id="cart-badge-nav" style="display:none">0</span>
+                    </button>
+                    <button class="hamburger">
+                        <span></span><span></span><span></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Secondary Nav (Categories) -->
+    <div class="secondary-nav">
+        <div class="container">
+            <div class="flex gap-xl">
+                <a href="/products">Tous les Produits</a>
+                <a href="/products?cat=Electroménager">Electroménager</a>
+                <a href="/products?cat=Climatisation">Climatisation</a>
+                <a href="/products?cat=TV">TV & Audio</a>
+                <a href="/products?cat=Cuisine">Cuisine</a>
+                <a href="/products?cat=Beauté">Beauté & Soin</a>
+            </div>
+        </div>
+    </div>
+
+  <section class="section" style="padding-top: 2rem;">
     <div class="container">
-      <div class="breadcrumb">
-        <a href="/">Accueil</a>
+      <div class="breadcrumb" style="font-size: 0.82rem; margin-bottom: 2rem; color: var(--text-muted);">
+        <a href="/" style="text-decoration: underline;">Accueil</a>
         <span class="breadcrumb-sep">/</span>
-        <a href="/products">Produits</a>
+        <a href="/products" style="text-decoration: underline;">Produits</a>
         <span class="breadcrumb-sep">/</span>
         <span id="breadcrumb-current">Produit</span>
       </div>
@@ -48,16 +88,16 @@
   </section>
 
   <!-- Related Products -->
-  <section class="section bg-secondary">
+  <section class="section" style="background: var(--bg-primary); border-top: 1px solid var(--border-subtle);">
     <div class="container">
-      <h2 class="section-title">Produits Similaires</h2>
-      <div class="product-grid" id="related-grid" style="margin-top: var(--space-xl)"></div>
+      <h2 class="section-title" style="font-weight: 800; font-size: 1.8rem; margin-bottom: 2rem;">Produits Similaires</h2>
+      <div class="product-grid" id="related-grid"></div>
     </div>
   </section>
 
-  <footer class="footer">
-    <div class="container text-center">
-      <p>&copy; <span id="current-year"></span> EL-WALI-SHOP. Tous droits réservés.</p>
+  <footer class="footer" style="background: var(--bg-secondary); border-top: 1px solid var(--border-subtle); padding: 4rem 0 2rem;">
+    <div class="container footer-bottom" style="text-align: center; color: var(--text-muted); font-size: 0.85rem;">
+      <p>&copy; <span id="current-year"></span> EL-WALI-SHOP. Votre partenaire Electroménager & Beauté à Marrakech.</p>
     </div>
   </footer>
 
@@ -80,53 +120,60 @@
 
       document.title = `${product.name} — EL-WALI-SHOP`;
       document.getElementById('breadcrumb-current').textContent = product.name;
-
       const container = document.getElementById('product-detail-container');
       container.innerHTML = `
-        <div class="product-detail-image-wrap">
-          <img alt="EL-WALI-SHOP Product" src="${product.image}" alt="${product.name}">
+        <div class="product-detail-image-wrap" style="background: white; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1.5rem;">
+          <img src="${product.image}" alt="${product.name}" style="width: 100%; border-radius: var(--radius-sm);">
         </div>
         <div class="product-detail-content">
-          <span class="product-detail-category">${product.category}</span>
-          <h1 class="product-detail-title">${product.name}</h1>
-          <div class="product-rating" style="margin-bottom: 1rem">
-            <div class="stars">${'★'.repeat(Math.floor(product.rating))}</div>
-            <span class="rating-count">(${product.reviews} avis clients)</span>
+          <span class="product-detail-category" style="color: var(--accent-blue); font-weight: 700; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em; display: inline-block; margin-bottom: 0.5rem;">${product.category}</span>
+          <h1 class="product-detail-title" style="font-size: 2.5rem; font-weight: 800; color: var(--black); line-height: 1.1; margin-bottom: 1rem;">${product.name}</h1>
+          
+          <div class="product-rating" style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1.5rem;">
+            <div class="stars" style="color: #fbbf24;">${'★'.repeat(Math.floor(product.rating))}</div>
+            <span class="rating-count" style="font-size: 0.85rem; color: var(--text-muted);">(${product.reviews} avis clients)</span>
           </div>
-          <div class="product-detail-price">${product.price} DH</div>
-          <p class="product-detail-desc">${product.description}</p>
 
-          <div class="qty-row">
-            <div class="qty-control">
-              <button aria-label="Action Button" class="qty-btn" onclick="updateQty(-1)">-</button>
-              <span class="qty-value" id="qty-val">1</span>
-              <button aria-label="Action Button" class="qty-btn" onclick="updateQty(1)">+</button>
+          <div class="product-detail-price" style="font-size: 2.2rem; font-weight: 800; color: var(--accent-blue); margin-bottom: 1.5rem;">${product.price} DH</div>
+          
+          <div style="background: var(--bg-primary); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 2rem; font-size: 0.95rem; color: var(--text-secondary); line-height: 1.6; border-left: 4px solid var(--accent-blue);">
+            ${product.description}
+          </div>
+
+          <div class="qty-row" style="display: flex; gap: 1rem; margin-bottom: 1rem; align-items: stretch;">
+            <div class="qty-control" style="display: flex; align-items: center; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); overflow: hidden; background: white;">
+              <button class="qty-btn" onclick="updateQty(-1)" style="padding: 0.8rem 1.2rem; border: none; background: none; cursor: pointer; font-weight: 800;">-</button>
+              <span class="qty-value" id="qty-val" style="padding: 0 1rem; font-weight: 800; border-left: 1px solid var(--border-subtle); border-right: 1px solid var(--border-subtle);">1</span>
+              <button class="qty-btn" onclick="updateQty(1)" style="padding: 0.8rem 1.2rem; border: none; background: none; cursor: pointer; font-weight: 800;">+</button>
             </div>
-            <button aria-label="Action Button" class="btn btn-primary btn-lg" onclick="handleAddToCart('${product.id}')" style="flex:1">
-              Ajouter au Panier
-            </button>
-            <button aria-label="Action Button" class="btn btn-secondary btn-lg" onclick="window.location.href='/quick-buy?id=${product.id}'" style="flex:1; background: var(--gold); color: black; border:none">
-              Achat Rapide
+            <button class="btn btn-primary btn-lg" onclick="handleAddToCart('${product.id}')" style="flex: 2; border-radius: var(--radius-sm);">
+                <i class="fas fa-shopping-cart"></i> Ajouter au Panier
             </button>
           </div>
 
-          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom: 2rem;">
-            <button aria-label="Action Button" class="btn btn-secondary" onclick="shareToWhatsApp('${product.id}')">
-              <i class="fab fa-whatsapp"></i> Commander via WhatsApp
+          <button class="btn btn-secondary btn-lg" onclick="window.location.href='/quick-buy?id=${product.id}'" style="width: 100%; background: var(--accent-orange); color: white; border: none; font-weight: 800; margin-bottom: 1.5rem; border-radius: var(--radius-sm);">
+              ACHAT RAPIDE (PAIEMENT À LA LIVRAISON)
+          </button>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 2rem;">
+            <button class="btn btn-secondary" onclick="shareToWhatsApp('${product.id}')" style="text-transform: none; font-size: 0.75rem; padding: 0.6rem; border-radius: var(--radius-sm);">
+              <i class="fab fa-whatsapp" style="color: #25D366;"></i> WhatsApp
             </button>
-            <button aria-label="Action Button" class="btn btn-secondary" onclick="shareToFacebook('${product.id}')">
-              <i class="fab fa-facebook"></i> Partager sur FB
+            <button class="btn btn-secondary" onclick="shareToFacebook('${product.id}')" style="text-transform: none; font-size: 0.75rem; padding: 0.6rem; border-radius: var(--radius-sm);">
+              <i class="fab fa-facebook-f" style="color: #1877F2;"></i> Facebook
             </button>
           </div>
 
-          <div class="detail-specs">
-            <h4>Spécifications</h4>
-            ${Object.entries(product.specs || {}).map(([key, val]) => `
-              <div class="detail-spec-row">
-                <span class="spec-key">${key}</span>
-                <span class="spec-val">${val}</span>
-              </div>
-            `).join('')}
+          <div class="detail-specs" style="background: white; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1.5rem;">
+            <h4 style="font-weight: 800; margin-bottom: 1rem; color: var(--black); border-bottom: 2px solid var(--bg-primary); padding-bottom: 0.5rem;">Spécifications Techniques</h4>
+            <div style="display: flex; flex-direction: column; gap: 0.8rem;">
+                ${Object.entries(product.specs || {}).map(([key, val]) => `
+                <div class="detail-spec-row" style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--bg-primary); padding-bottom: 0.5rem; font-size: 0.85rem;">
+                    <span class="spec-key" style="font-weight: 700; color: var(--text-secondary);">${key}</span>
+                    <span class="spec-val" style="color: var(--black); font-weight: 500;">${val || '-'}</span>
+                </div>
+                `).join('')}
+            </div>
           </div>
         </div>
       `;
@@ -139,11 +186,19 @@
     let currentQty = 1;
     function updateQty(delta) {
       currentQty = Math.max(1, currentQty + delta);
-      document.getElementById('qty-val').textContent = currentQty;
+      const qtyVal = document.getElementById('qty-val');
+      if (qtyVal) qtyVal.textContent = currentQty;
     }
 
     function handleAddToCart(id) {
       Cart.add(id, currentQty);
+      // Optional: Update nav badge if not automatic
+      const badge = document.getElementById('cart-badge-nav');
+      if(badge) {
+          const total = Cart.items.reduce((sum, item) => sum + item.qty, 0);
+          badge.textContent = total;
+          badge.style.display = total > 0 ? 'flex' : 'none';
+      }
     }
 
     /**

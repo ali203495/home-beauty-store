@@ -12,104 +12,93 @@
     <style>
         .admin-layout {
             display: grid;
-            grid-template-columns: 300px 1fr;
-            gap: var(--space-2xl);
-            padding-top: calc(var(--nav-height) + var(--space-xl));
+            grid-template-columns: 280px 1fr;
+            min-height: calc(100vh - var(--nav-height));
+            background: #f8fafc;
         }
 
         .admin-sidebar {
-            background: var(--bg-card);
-            border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-lg);
-            padding: var(--space-xl);
-            height: fit-content;
-            position: sticky;
-            top: calc(var(--nav-height) + var(--space-xl));
-        }
-
-        .admin-item {
+            background: white;
+            border-right: 1px solid var(--border-subtle);
+            padding: 2rem 1.5rem;
             display: flex;
             flex-direction: column;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-md);
-            padding: 1rem;
-            transition: all 0.3s var(--ease);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .admin-item:hover {
-            transform: translateY(-5px);
-            border-color: var(--gold);
-            box-shadow: var(--shadow-card);
-        }
-
-        .admin-item-img {
-            width: 100%;
-            height: 150px;
-            border-radius: var(--radius-sm);
-            object-fit: contain;
-            background: #111;
-            margin-bottom: 1rem;
-        }
-
-        .admin-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 1.5rem;
-            margin-top: 1.5rem;
-        }
-
-        .admin-item-info {
-            flex: 1;
-            margin-bottom: 1rem;
-        }
-
-        .admin-item-actions {
-            display: flex;
             gap: 0.5rem;
-            border-top: 1px solid var(--border-subtle);
-            padding-top: 0.8rem;
+            position: sticky;
+            top: var(--nav-height);
+            height: calc(100vh - var(--nav-height));
         }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.8rem 1.2rem;
+            color: #64748b;
+            font-weight: 600;
+            border-radius: var(--radius-sm);
+            transition: all 0.2s var(--ease);
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .sidebar-link i { font-size: 1.1rem; width: 20px; text-align: center; }
+        .sidebar-link:hover { background: #f8fafc; color: var(--accent-red); }
+        .sidebar-link.active { background: #fff1f2; color: var(--accent-red); border-right: 3px solid var(--accent-red); border-radius: var(--radius-sm) 0 0 var(--radius-sm); }
+
+        .admin-main {
+            padding: 2.5rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-subtle);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .stat-card-label { color: #64748b; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 0.5rem; }
+        .stat-card-val { font-size: 1.8rem; font-weight: 800; color: var(--black); }
 
         .admin-nav {
             display: flex;
             gap: 2rem;
-            margin-bottom: 2rem;
-            border-bottom: 1px solid var(--border-subtle);
-            padding-bottom: 1rem;
+            margin-bottom: 2.5rem;
+            background: white;
+            padding: 1rem 2rem;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-subtle);
+            box-shadow: var(--shadow-sm);
         }
 
         .admin-nav-item {
-            color: var(--text-muted);
+            color: #64748b;
             cursor: pointer;
-            font-weight: 600;
-            font-size: 0.9rem;
+            font-weight: 800;
+            font-size: 0.85rem;
             text-transform: uppercase;
-            letter-spacing: 0.1em;
-            transition: color 0.3s;
+            letter-spacing: 0.05em;
+            transition: all 0.2s;
             position: relative;
+            padding: 0.5rem 0;
         }
 
-        .admin-nav-item.active {
-            color: var(--gold);
-        }
-
+        .admin-nav-item:hover { color: var(--accent-blue); }
+        .admin-nav-item.active { color: var(--accent-blue); }
         .admin-nav-item.active::after {
             content: '';
             position: absolute;
-            bottom: -1.1rem;
+            bottom: -1rem;
             left: 0;
             width: 100%;
-            height: 2px;
-            background: var(--gold);
-        }
-
-        .stats-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
             margin-bottom: 2rem;
         }
 
@@ -263,334 +252,227 @@
 </head>
 
 <body>
-
-    <!-- Minimal Nav -->
-    <nav class="navbar scrolled">
-        <div class="container" style="display:flex; justify-content: space-between; align-items: center;">
-            <div style="display: flex; align-items: center; gap: 1rem">
-                <button aria-label="Action Button" class="admin-mobile-toggle" onclick="Admin.toggleSidebar()"
-                    style="background:none; border:none; color:white; font-size:1.2rem; cursor:pointer"
-                    aria-label="Menu">
-                    <i class="fas fa-bars"></i>
-                </button>
-                <a href="/" class="nav-logo">EL-WALI-<span>SHOP</span> Admin</a>
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="container flex-between">
+            <div class="flex gap-md">
+                <span><i class="fas fa-lock"></i> Zone Sécurisée Administration</span>
             </div>
-            <button aria-label="Action Button" class="btn btn-secondary btn-sm" onclick="Admin.logout()">Déconnexion</button>
-        </div>
-    </nav>
-
-    <div class="container">
-        <div class="admin-layout">
-            <!-- Add Product Sidebar -->
-            <aside class="admin-sidebar">
-                <h3>Ajouter un Produit</h3>
-                <form id="add-product-form" style="margin-top: 1.5rem">
-                    <div class="form-group">
-                        <label class="form-label">Nom du Produit</label>
-                        <input type="text" name="name" class="form-input" placeholder="Ex: Climatiseur LG" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Catégorie</label>
-                        <select name="category" class="form-input" required>
-                            <option value="Electroménager">Electroménager</option>
-                            <option value="Maquillage">Maquillage</option>
-                            <option value="Placyour">Placyour</option>
-                            <option value="Parfum">Parfum</option>
-                            <option value="Produits de Cuisine">Produits de Cuisine</option>
-                            <option value="Produits de Ménage">Produits de Ménage</option>
-                            <option value="Plastique">Plastique</option>
-                            <option value="Jeux">Jeux</option>
-                            <option value="Produits de Jwanizani">Produits de Jwanizani</option>
-                            <option value="Autres">Autres</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Image du Produit (Cliquer pour choisir)</label>
-                        <div id="add-preview" onclick="document.getElementById('add-file-input').click()"
-                            style="width:100%; height:140px; border:2px dashed var(--border-subtle); border-radius:12px; display:flex; flex-direction:column; align-items:center; justify-content:center; overflow:hidden; cursor:pointer; background: rgba(255,255,255,0.02); transition: all 0.3s">
-                            <i class="fas fa-cloud-upload-alt" style="font-size: 2rem; margin-bottom: 0.5rem; color: var(--gold)"></i>
-                            <span style="color:var(--text-muted); font-size:0.8rem">Charger une photo</span>
-                        </div>
-                        <input type="file" id="add-file-input" accept="image/*" style="display:none" onchange="Admin.handleImageSelect(event, 'add-preview', 'add-image-data')">
-                        <input type="hidden" name="image" id="add-image-data">
-                    </div>
-                    <button aria-label="Action Button" type="submit" class="btn btn-primary" style="width: 100%">Enregistrer le Produit</button>
-                </form>
-
-                <div style="margin-top: 2rem; border-top: 1px solid var(--border-subtle); padding-top: 1.5rem">
-                    <h4 style="font-size: 0.9rem; margin-bottom: 1rem">Accès Rapide B2B</h4>
-                    <a href="/airport-presentation" target="_blank" class="btn btn-secondary btn-sm"
-                        style="width: 100%; display: flex; align-items: center; gap: 0.5rem; justify-content: center">
-                        <i class="fas fa-plane"></i> Offre Aéroport (PDF)
-                    </a>
-                </div>
-            </aside>
-
-            <!-- Product List Main -->
-            <main class="admin-main">
-                <div class="admin-nav">
-                    <div class="admin-nav-item active" onclick="Admin.switchTab('products', this)">Produits</div>
-                    <div class="admin-nav-item" onclick="Admin.switchTab('orders', this)">Commandes</div>
-                    <div class="admin-nav-item" onclick="Admin.switchTab('settings', this)">Paramètres du Site</div>
-                    <div class="admin-nav-item" onclick="Admin.switchTab('admins', this)">Administrateurs</div>
-                </div>
-
-                <!-- Stats Section -->
-                <div class="stats-cards">
-                    <div class="stat-card">
-                        <span class="stat-card-val" id="stat-products">0</span>
-                        <span class="stat-card-label">Produits Totaux</span>
-                    </div>
-                    <div class="stat-card">
-                        <span class="stat-card-val" id="stat-orders">0</span>
-                        <span class="stat-card-label">Commandes</span>
-                    </div>
-                    <div class="stat-card">
-                        <span class="stat-card-val" id="stat-total-dh">0 DH</span>
-                        <span class="stat-card-label">Ventes Totales</span>
-                    </div>
-                    <div class="stat-card" id="alert-new-orders" style="display: none; border: 1px solid var(--rose)">
-                        <span class="stat-card-val" style="color: var(--rose)" id="stat-new-today">0</span>
-                        <span class="stat-card-label">Nouvelles (24h)</span>
-                    </div>
-                </div>
-
-                <!-- Analytics Tab (Hidden by default or integrated) -->
-                <div id="analytics-section" class="analytics-grid">
-                    <div class="chart-container">
-                        <h4 style="margin-bottom: 1.5rem">Ventes par Catégorie</h4>
-                        <div id="category-chart">
-                            <!-- Bars here -->
-                        </div>
-                    </div>
-                    <div class="chart-container">
-                        <h4 style="margin-bottom: 1.5rem">Top Items</h4>
-                        <div id="top-items-chart">
-                            <!-- Bars here -->
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Products Tab -->
-                <div id="tab-products">
-                    <div
-                        style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem">
-                        <h2>Gestion du Catalogue</h2>
-                        <div id="admin-status" class="text-xs text-gold"></div>
-                    </div>
-
-                    <div class="search-wrapper">
-                        <i class="fas fa-search"></i>
-                        <input type="text" id="product-search" class="form-input"
-                            placeholder="Rechercher un produit par nom ou catégorie..."
-                            oninput="Admin.filterProducts(this.value)">
-                    </div>
-
-                    <div id="product-list-admin" class="admin-grid">
-                        <!-- Populated as cards by JS -->
-                    </div>
-                </div>
-
-                <!-- Orders Tab -->
-                <div id="tab-orders" style="display: none">
-                    <div
-                        style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem">
-                        <h2>Gestion des Commandes</h2>
-                        <button aria-label="Action Button" class="btn btn-secondary btn-sm" onclick="Admin.exportOrders()">
-                            <i class="fas fa-file-export"></i> Exporter CSV
-                        </button>
-                    </div>
-
-                    <div class="search-wrapper">
-                        <i class="fas fa-search"></i>
-                        <input type="text" id="order-search" class="form-input"
-                            placeholder="Rechercher une commande par ID ou nom client..."
-                            oninput="Admin.filterOrders(this.value)">
-                    </div>
-
-                    <div id="order-list-admin" class="admin-content-card">
-                        <!-- Populated by JS -->
-                    </div>
-                </div>
-
-                <!-- Settings Tab -->
-                <div id="tab-settings" style="display: none">
-                    <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem">
-                        <h2>Paramètres Globaux du Site</h2>
-                    </div>
-
-                    <div class="chart-container" style="max-width: 800px">
-                        <form id="settings-form">
-                            <h4 style="margin-bottom: 1rem; color: var(--gold)">Contact & Communication</h4>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem">
-                                <div class="form-group">
-                                    <label class="form-label">Numéro WhatsApp Principal</label>
-                                    <input type="text" name="whatsappNumber" id="set_whatsapp" class="form-input">
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">Email de Support</label>
-                                    <input type="email" name="supportEmail" id="set_email" class="form-input">
-                                </div>
-                            </div>
-                            <div class="form-group" style="margin-bottom: 2rem">
-                                <label class="form-label">Nom du Magasin</label>
-                                <input type="text" name="storeName" id="set_storename" class="form-input">
-                            </div>
-
-                            <h4 style="margin-bottom: 1rem; color: var(--gold)">Page d'Accueil (Home)</h4>
-                            <div class="form-group">
-                                <label class="form-label">Titre Principal (Hero)</label>
-                                <input type="text" name="heroTitle" id="set_herotitle" class="form-input">
-                            </div>
-                            <div class="form-group" style="margin-bottom: 2rem">
-                                <label class="form-label">Sous-titre Principal</label>
-                                <textarea name="heroSubtitle" id="set_herosub" class="form-input" rows="2"></textarea>
-                            </div>
-
-                            <h4 style="margin-bottom: 1rem; color: var(--gold)">Bannière Promotionnelle</h4>
-                            <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem">
-                                <input type="checkbox" name="promoBannerVisible" id="set_promovis">
-                                <label for="set_promovis" class="form-label" style="margin-bottom:0">Afficher la bannière promotionnelle</label>
-                            </div>
-                            <div class="form-group" style="margin-bottom: 2rem">
-                                <label class="form-label">Titre de la Bannière</label>
-                                <input type="text" name="promoBannerTitle" id="set_promotitle" class="form-input">
-                            </div>
-
-                            <div style="border-top: 1px solid var(--border-subtle); padding-top: 1.5rem; display: flex; gap: 1rem; flex-wrap: wrap;">
-                                <button aria-label="Action Button" type="submit" class="btn btn-primary" style="flex: 1 1 200px;"><i class="fas fa-save"></i> Sauvegarder les Paramètres</button>
-                                <button aria-label="Action Button" type="button" class="btn btn-secondary" style="color:var(--rose); flex: 1 1 200px;" onclick="Admin.resetSettings()"><i class="fas fa-undo"></i> Paramètres par défaut</button>
-                                <button aria-label="Action Button" type="button" class="btn btn-secondary" style="flex: 1 1 200px; color: crimson; border-color: crimson;" onclick="Admin.factoryResetProducts()"><i class="fas fa-trash-alt"></i> Remettre BD à 0</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-
-                <!-- Admins Tab -->
-                <div id="tab-admins" style="display: none">
-                    <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem">
-                        <h2>Gestion des Administrateurs</h2>
-                        <button aria-label="Action Button" class="btn btn-primary" onclick="document.getElementById('add-admin-form-container').style.display = 'block'"><i class="fas fa-plus"></i> Nouvel Admin</button>
-                    </div>
-
-                    <div id="add-admin-form-container" class="chart-container" style="display: none; margin-bottom: 2rem; border-color: var(--gold)">
-                        <form id="add-admin-form">
-                            <h4 style="margin-bottom: 1rem; color: var(--gold)">Ajouter un administrateur</h4>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem">
-                                <div class="form-group">
-                                    <label class="form-label">Nom complet</label>
-                                    <input type="text" name="name" class="form-input" required>
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">Email</label>
-                                    <input type="email" name="email" class="form-input" required>
-                                </div>
-                            </div>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem">
-                                <div class="form-group">
-                                    <label class="form-label">Mot de passe temporaire</label>
-                                    <input type="text" name="password" class="form-input" required>
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">Rôle</label>
-                                    <select name="role" class="form-input" required>
-                                        <option value="Propriétaire">Propriétaire (Accès Total)</option>
-                                        <option value="Éditeur">Éditeur (Produits/Commandes)</option>
-                                        <option value="Livreur">Livreur (Commandes Uniquement)</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div style="display: flex; gap: 1rem; justify-content: flex-end">
-                                <button aria-label="Action Button" type="button" class="btn btn-secondary" onclick="document.getElementById('add-admin-form-container').style.display = 'none'">Annuler</button>
-                                <button aria-label="Action Button" type="submit" class="btn btn-primary">Créer l'Admin</button>
-                            </div>
-                        </form>
-                    </div>
-
-                    <div id="admin-list-container" class="admin-content-card" style="padding: 1rem; overflow-x: auto;">
-                        <table style="width: 100%; border-collapse: collapse; text-align: left;">
-                            <thead>
-                                <tr style="border-bottom: 1px solid var(--border-subtle)">
-                                    <th style="padding: 1rem">Nom</th>
-                                    <th style="padding: 1rem">Email</th>
-                                    <th style="padding: 1rem">Rôle</th>
-                                    <th style="padding: 1rem; text-align: right">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="admin-table-body">
-                                <!-- JS Populated -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </main>
+            <div class="flex gap-md">
+                <span id="admin-user-display" style="font-weight: 700;">Admin</span>
+                <button onclick="Admin.logout()" style="background:none; border:none; color:white; cursor:pointer; text-decoration:underline;">Déconnexion</button>
+            </div>
         </div>
     </div>
 
-    <!-- Product Edit Modal -->
-    <div class="admin-modal-overlay" id="product-modal">
-        <div class="admin-modal">
-            <h3 id="modal-title" style="margin-bottom: 1.5rem">Modifier le Produit</h3>
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="nav-logo">EL-WALI<span>.SHOP</span></a>
+            <div class="nav-actions">
+                <a href="/" class="btn btn-secondary btn-sm"><i class="fas fa-external-link-alt"></i> Voir Boutique</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="admin-layout">
+        <!-- Dashboard Sidebar -->
+        <aside class="admin-sidebar">
+            <div style="margin-bottom: 2rem;">
+                <h3 style="font-size: 0.8rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 1rem;">Navigation</h3>
+                <a class="sidebar-link active" onclick="Admin.switchTab('products', this)">
+                    <i class="fas fa-box"></i> Produits
+                </a>
+                <a class="sidebar-link" onclick="Admin.switchTab('orders', this)">
+                    <i class="fas fa-shopping-cart"></i> Commandes
+                </a>
+                <a class="sidebar-link" onclick="Admin.switchTab('settings', this)">
+                    <i class="fas fa-cog"></i> Paramètres
+                </a>
+                <a class="sidebar-link" onclick="Admin.switchTab('admins', this)">
+                    <i class="fas fa-users-cog"></i> Équipe
+                </a>
+            </div>
+
+            <div style="border-top: 1px solid #f1f5f9; padding-top: 2rem;">
+                <h3 style="font-size: 0.8rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 1.5rem;">Actions Rapides</h3>
+                <form id="add-product-form">
+                    <div class="form-group" style="margin-bottom: 1rem;">
+                        <label class="form-label" style="font-size: 0.75rem;">Nouveau Produit</label>
+                        <input type="text" name="name" class="login-input" placeholder="Nom de l'article" required style="padding: 0.6rem 0.8rem; font-size: 0.85rem;">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 1rem;">
+                        <select name="category" class="login-input" required style="padding: 0.6rem 0.8rem; font-size: 0.85rem;">
+                            <option value="Electroménager">Electroménager</option>
+                            <option value="Beauté">Beauté</option>
+                            <option value="Cuisine">Cuisine</option>
+                            <option value="Ménage">Ménage</option>
+                            <option value="Autres">Autres</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 1rem;">
+                        <input type="hidden" name="image" id="add-image-data">
+                        <button type="button" onclick="document.getElementById('add-file-input').click()" style="width: 100%; padding: 0.6rem; background: #f8fafc; border: 2px dashed #e2e8f0; border-radius: var(--radius-sm); color: #64748b; font-size: 0.75rem; font-weight: 700; cursor: pointer;">
+                            <i class="fas fa-image"></i> IMAGE
+                        </button>
+                        <input type="file" id="add-file-input" accept="image/*" style="display:none" onchange="Admin.handleImageSelect(event, 'add-preview', 'add-image-data')">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 1rem;">
+                        <textarea name="description" class="login-input" placeholder="Description du produit..." style="padding: 0.6rem 0.8rem; font-size: 0.85rem; height: 80px; resize: none;"></textarea>
+                    </div>
+                    <button type="submit" class="login-btn" style="padding: 0.6rem; font-size: 0.85rem; margin-top: 0.5rem; background: var(--accent-red);">CRÉER PRODUIT</button>
+                </form>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="admin-main">
+            <!-- Stats Dashboard Summary -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-card-label">Articles Actifs</span>
+                    <span id="stat-products" class="stat-card-val">0</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-card-label">Flux Commandes</span>
+                    <span id="stat-orders" class="stat-card-val">0</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-card-label">Chiffre Affaires</span>
+                    <span id="stat-total-dh" class="stat-card-val">0 DH</span>
+                </div>
+                <div class="stat-card" id="alert-new-orders" style="display: none; border-left: 4px solid #ef4444; background: #fff1f2;">
+                    <span class="stat-card-label" style="color: #be123c;">Aujourd'hui</span>
+                    <span id="stat-new-today" class="stat-card-val" style="color: #be123c;">0</span>
+                </div>
+            </div>
+
+            <!-- Products Tab -->
+            <div id="tab-products" class="content-section active">
+                <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 2rem">
+                    <h2 style="font-weight: 800; font-size: 1.5rem; color: #1e293b;">Gestion du Catalogue</h2>
+                    <button class="admin-action-btn" style="background: #fee2e2; color: #ef4444; border: 1px solid #fecaca; border-radius: var(--radius-sm); font-weight: 800; font-size: 0.7rem; padding: 0.5rem 1rem;" onclick="Admin.deleteAllProducts()">
+                        <i class="fas fa-exclamation-triangle"></i> SUPPRIMER TOUT
+                    </button>
+                </div>
+                <div class="search-wrapper">
+                    <i class="fas fa-search" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: #94a3b8;"></i>
+                    <input type="text" id="product-search" class="login-input" placeholder="Rechercher un produit..." oninput="Admin.filterProducts(this.value)" style="padding-left: 3rem;">
+                </div>
+                <div id="product-list-admin" class="admin-grid">
+                    <!-- Cards -->
+                </div>
+            </div>
+
+            <!-- Orders Tab -->
+            <div id="tab-orders" class="content-section">
+                <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 2rem">
+                    <h2 style="font-weight: 800; font-size: 1.5rem; color: #1e293b;">Commandes Clients</h2>
+                    <button class="admin-action-btn" style="border: 1px solid #e2e8f0; border-radius: var(--radius-sm); font-weight: 700; font-size: 0.75rem; padding: 0.5rem 1rem;" onclick="Admin.exportOrders()">
+                        <i class="fas fa-download"></i> EXPORTER
+                    </button>
+                </div>
+                <div id="order-list-admin" style="background: white; border: 1px solid #e2e8f0; border-radius: var(--radius-md); overflow: hidden;">
+                    <!-- Table -->
+                </div>
+            </div>
+
+            <!-- Settings Tab -->
+            <div id="tab-settings" class="content-section">
+                <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 2rem">
+                    <h2 style="font-weight: 800; font-size: 1.5rem; color: #1e293b;">Configuration du Magasin</h2>
+                </div>
+                <div style="background: white; border: 1px solid #e2e8f0; border-radius: var(--radius-md); padding: 2.5rem; box-shadow: var(--shadow-sm); max-width: 900px;">
+                    <form id="settings-form">
+                        <h4 style="margin-bottom: 1.5rem; color: var(--accent-blue); font-weight: 800; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.05em; border-bottom: 1px solid #f1f5f9; padding-bottom: 0.5rem;">Canaux de Communication</h4>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2.5rem">
+                            <div class="form-group">
+                                <label class="form-label">Ligne WhatsApp Directe</label>
+                                <input type="text" name="whatsappNumber" id="set_whatsapp" class="login-input">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Email Support</label>
+                                <input type="email" name="supportEmail" id="set_email" class="login-input">
+                            </div>
+                        </div>
+                        <div style="border-top: 1px solid #f1f5f9; padding-top: 2rem; display: flex; gap: 1rem;">
+                            <button type="submit" class="login-btn" style="flex: 2; margin-top: 0;">APPLIQUER</button>
+                            <button type="button" class="admin-action-btn" style="flex: 1; border: 1px solid #e2e8f0; border-radius: var(--radius-sm); font-weight: 800; font-size: 0.85rem;" onclick="Admin.resetSettings()">RÉINIT.</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Admins Tab -->
+            <div id="tab-admins" class="content-section">
+                <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 2rem">
+                    <h2 style="font-weight: 800; font-size: 1.5rem; color: #1e293b;">Gestion de l'Équipe</h2>
+                </div>
+                <div id="admin-list-container" style="background: white; border: 1px solid #e2e8f0; border-radius: var(--radius-md); overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                        <thead>
+                            <tr style="background: #f8fafc; border-bottom: 2px solid #e2e8f0;">
+                                <th style="padding: 1.25rem 1rem; color: #475569; font-weight: 800; font-size: 0.75rem; text-transform: uppercase;">Nom</th>
+                                <th style="padding: 1.25rem 1rem; color: #475569; font-weight: 800; font-size: 0.75rem; text-transform: uppercase;">Email</th>
+                                <th style="padding: 1.25rem 1rem; color: #475569; font-weight: 800; font-size: 0.75rem; text-transform: uppercase;">Rôle</th>
+                                <th style="padding: 1.25rem 1rem; color: #475569; font-weight: 800; font-size: 0.75rem; text-transform: uppercase; text-align: right;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div class="form-overlay" id="product-modal">
+        <div class="form-modal">
+            <h3 class="form-title">Édition Article</h3>
             <form id="edit-product-form">
                 <input type="hidden" name="id">
-                <div class="form-group">
-                    <label class="form-label">Nom du Produit</label>
-                    <input type="text" name="name" class="form-input" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Catégorie</label>
-                    <select name="category" class="form-input" required>
-                        <option value="Electroménager">Electroménager</option>
-                        <option value="Maquillage">Maquillage</option>
-                        <option value="Placyour">Placyour</option>
-                        <option value="Parfum">Parfum</option>
-                        <option value="Produits de Cuisine">Produits de Cuisine</option>
-                        <option value="Produits de Ménage">Produits de Ménage</option>
-                        <option value="Plastique">Plastique</option>
-                        <option value="Jeux">Jeux</option>
-                        <option value="Produits de Jwanizani">Produits de Jwanizani</option>
-                        <option value="Autres">Autres</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Prix (DH)</label>
-                    <input type="number" name="price" class="form-input" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Image du Produit (Cliquer pour changer)</label>
-                    <div id="edit-preview" onclick="document.getElementById('edit-file-input').click()"
-                        style="width:100%; height:140px; border:2px dashed var(--border-subtle); border-radius:12px; display:flex; flex-direction:column; align-items:center; justify-content:center; overflow:hidden; cursor:pointer; background: rgba(255,255,255,0.02); transition: all 0.3s; margin-bottom: 1rem">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem">
+                    <div class="form-group">
+                        <label class="form-label">Nom</label>
+                        <input type="text" name="name" class="login-input" required>
                     </div>
-                    <input type="file" id="edit-file-input" accept="image/*" style="display:none" onchange="Admin.handleImageSelect(event, 'edit-preview', 'edit-image-data')">
-                    <input type="hidden" name="image" id="edit-image-data">
+                    <div class="form-group">
+                        <label class="form-label">Catégorie</label>
+                        <select name="category" class="login-input" required>
+                            <option value="Electroménager">Electroménager</option>
+                            <option value="Beauté">Beauté</option>
+                            <option value="Cuisine">Cuisine</option>
+                            <option value="Ménage">Ménage</option>
+                            <option value="Autres">Autres</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="form-group">
+                <div class="form-group" style="margin-bottom: 1.5rem">
+                    <label class="form-label">Prix (DH)</label>
+                    <input type="number" name="price" class="login-input" required>
+                </div>
+                <div class="form-group" style="margin-bottom: 1.5rem">
                     <label class="form-label">Description</label>
-                    <textarea name="description" class="form-input" rows="3"></textarea>
+                    <textarea name="description" class="login-input" style="height: 100px; padding: 0.8rem; resize: vertical;"></textarea>
                 </div>
                 <div style="display:flex; gap: 1rem; margin-top: 2rem">
-                    <button aria-label="Action Button" type="submit" class="btn btn-primary" style="flex: 1">Enregistrer</button>
-                    <button aria-label="Action Button" type="button" class="btn btn-secondary" onclick="Admin.closeModal()"
-                        style="flex: 1">Annuler</button>
+                    <button type="submit" class="login-btn" style="flex: 2; margin-top: 0;">SAUVEGARDER</button>
+                    <button type="button" class="admin-action-btn" style="flex: 1; border: 1px solid #e2e8f0; border-radius: var(--radius-sm); font-weight: 800; font-size: 0.85rem;" onclick="Admin.closeModal()">ANNULER</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- Order Details Modal -->
-    <div class="admin-modal-overlay" id="order-modal">
-        <div class="admin-modal" style="max-width: 700px">
-            <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem">
-                <h3 id="order-modal-title">Détails de la Commande</h3>
-                <button aria-label="Action Button" class="btn btn-secondary btn-sm" onclick="Admin.closeOrderModal()">Fermer</button>
+    <div class="form-overlay" id="order-modal">
+        <div class="form-modal" style="max-width: 800px;">
+            <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-bottom: 2px solid #f1f5f9; padding-bottom: 1rem;">
+                <h3 style="font-weight: 800; font-size: 1.5rem; color: #1e293b; margin: 0;">Détails Commande</h3>
+                <button type="button" class="admin-action-btn" style="border: 1px solid #e2e8f0; border-radius: var(--radius-sm); font-weight: 700; font-size: 0.75rem; padding: 0.5rem 1rem;" onclick="Admin.closeOrderModal()">FERMER</button>
             </div>
-            <div id="order-modal-content">
-                <!-- Populated by JS -->
-            </div>
+            <div id="order-modal-content"></div>
         </div>
     </div>
 
-            <script src="js/config.js"></script>
+    <script src="js/config.js"></script>
     <script src="js/products.js"></script>
     <script src="js/admin.js"></script>
 </body>

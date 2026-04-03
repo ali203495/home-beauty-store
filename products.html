@@ -21,120 +21,148 @@
 
 <body>
 
-    <!-- Navigation -->
-    <nav class="navbar scrolled">
-        <div class="container">
-            <a href="/" class="nav-logo">MARRAKECH <span>LUXE</span></a>
-            <div class="nav-links">
-                <a href="/">Accueil</a>
-                <a href="/products" class="active">Produits</a>
-                <a href="/contact">Contact</a>
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="container flex-between">
+            <div class="flex gap-md">
+                <span><i class="fas fa-truck"></i> Livraison Gratuite sur Marrakech</span>
+                <span><i class="fas fa-phone"></i> +212 699-705617</span>
             </div>
-            <div class="nav-actions">
-                <!-- Language Switcher -->
-                <div class="lang-switcher">
-                    <button aria-label="Action Button" class="lang-btn" onclick="I18n.setLang('fr')" id="lang-fr">FR</button>
-                    <button aria-label="Action Button" class="lang-btn" onclick="I18n.setLang('ar')" id="lang-ar">AR</button>
+            <div class="flex gap-md">
+                <a href="/contact">Support 24/7</a>
+                <a href="https://www.facebook.com/share/g/18L9fxx9pG/" target="_blank"><i class="fab fa-facebook-f"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="flex-between w-full" style="width: 100%;">
+                <a href="/" class="nav-logo" id="site-name-display">EL-WALI<span>.SHOP</span></a>
+
+                <div class="search-bar" style="flex: 1; margin: 0 2rem; position: relative;">
+                    <i class="fas fa-search" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-muted);"></i>
+                    <input type="text" data-i18n="nav_search" placeholder="Rechercher un produit, une marque..." 
+                           style="width: 100%; padding: 0.8rem 1rem 0.8rem 2.8rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); background: var(--bg-primary);">
                 </div>
 
-                <div class="search-bar">
-                    <i class="fas fa-search search-bar-icon"></i>
-                    <input type="text" data-i18n="nav_search" placeholder="Rechercher...">
+                <div class="nav-actions">
+                    <div class="lang-switcher">
+                        <button class="lang-btn active" onclick="I18n.setLang('fr')" id="lang-fr">FR</button>
+                        <button class="lang-btn" onclick="I18n.setLang('ar')" id="lang-ar">AR</button>
+                    </div>
+                    
+                    <button class="nav-icon-btn" onclick="window.location.href='/cart'" aria-label="Panier">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-badge" style="display:none">0</span>
+                    </button>
+                    <button class="hamburger">
+                        <span></span><span></span><span></span>
+                    </button>
                 </div>
-                <button aria-label="Action Button" class="nav-icon-btn" onclick="window.location.href='/cart'">
-                    <i class="fas fa-shopping-bag"></i>
-                    <span class="cart-badge" style="display:none">00</span>
-                </button>
-                <div class="hamburger"><span></span><span></span><span></span></div>
             </div>
         </div>
     </nav>
+    
+    <!-- Secondary Nav (Categories) -->
+    <div class="secondary-nav">
+        <div class="container">
+            <div class="flex gap-xl">
+                <a href="/products">Tous les Produits</a>
+                <a href="/products?cat=Electroménager">Electroménager</a>
+                <a href="/products?cat=Climatisation">Climatisation</a>
+                <a href="/products?cat=TV">TV & Audio</a>
+                <a href="/products?cat=Cuisine">Cuisine</a>
+                <a href="/products?cat=Beauté">Beauté & Soin</a>
+            </div>
+        </div>
+    </div>
 
     <!-- Page Hero -->
-    <header class="page-hero bg-secondary">
+    <header class="page-hero" style="background: var(--bg-primary); padding: 2.5rem 0; text-align: left;">
         <div class="container">
-            <div class="breadcrumb">
-                <a href="/">Accueil</a>
+            <div class="breadcrumb" style="font-size: 0.8rem; margin-bottom: 0.5rem; color: var(--text-muted);">
+                <a href="/" style="text-decoration: underline;">Accueil</a>
                 <span class="breadcrumb-sep">/</span>
-                <span>Produits</span>
+                <span>Catalogue</span>
             </div>
-            <h1 class="page-title" data-i18n="nav_products">Notre Catalogue</h1>
+            <h1 class="page-title" data-i18n="nav_products" style="font-size: 2.2rem; font-weight: 800; color: var(--black);">Notre Catalogue</h1>
         </div>
     </header>
 
-    <section class="section">
+    <section class="section" style="padding-top: 1rem;">
         <div class="container">
-            <div class="shop-layout">
+            <div class="shop-layout" style="display: grid; grid-template-columns: 280px 1fr; gap: 2.5rem;">
 
                 <!-- Sidebar Filter -->
                 <aside class="filter-sidebar">
-                    <div class="filter-card">
-                        <h4>Filtre par Catégorie</h4>
+                    <div class="filter-card" style="background: white; border: 1px solid var(--border-subtle); padding: 1.5rem; border-radius: var(--radius-md); margin-bottom: 1.5rem;">
+                        <h4 style="font-size: 1rem; border-bottom: 2px solid var(--accent-blue); padding-bottom: 0.5rem; margin-bottom: 1.2rem;">Catégories</h4>
                         <div id="category-filters">
-                            <div class="filter-option">
+                            <div class="filter-option" style="margin-bottom: 0.8rem;">
                                 <input type="radio" name="cat" id="cat-all" value="all" checked>
-                                <label for="cat-all">Toutes les catégories</label>
+                                <label for="cat-all" style="font-weight: 600; cursor: pointer;">Tout voir</label>
                             </div>
-                            <!-- Categories will be injected by JS -->
                         </div>
                     </div>
 
-                    <div class="filter-card">
-                        <h4>Prix</h4>
-                        <div class="price-range-inputs">
-                            <input type="number" id="min-price" class="form-input" placeholder="Min" min="0">
-                            <input type="number" id="max-price" class="form-input" placeholder="Max" min="0">
+                    <div class="filter-card" style="background: white; border: 1px solid var(--border-subtle); padding: 1.5rem; border-radius: var(--radius-md); margin-bottom: 1.5rem;">
+                        <h4 style="font-size: 1rem; padding-bottom: 0.5rem; margin-bottom: 1.2rem;">Budget (DH)</h4>
+                        <div class="price-range-inputs" style="display: flex; gap: 0.5rem;">
+                            <input type="number" id="min-price" class="form-input" placeholder="Min" style="width: 50%; padding: 0.5rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm);">
+                            <input type="number" id="max-price" class="form-input" placeholder="Max" style="width: 50%; padding: 0.5rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm);">
                         </div>
-                        <button aria-label="Action Button" class="btn btn-secondary btn-sm" style="width:100%; margin-top:1rem"
-                            onclick="updateFilters()">Appliquer</button>
+                        <button class="btn btn-primary btn-sm" style="width:100%; margin-top:1rem; border-radius: var(--radius-sm);"
+                            onclick="updateFilters()">Filtrer</button>
                     </div>
 
-                    <div class="filter-card">
-                        <h4>Support Rapide</h4>
-                        <p class="text-sm text-muted">Besoin d'aide ? Contactez-nous sur WhatsApp.</p>
-                        <a href="https://wa.me/212699705617" target="_blank" class="btn btn-primary btn-sm"
-                            style="width:100%; margin-top:1rem">
-                            Chater avec nous
+                    <div class="filter-card" style="background: var(--bg-primary); padding: 1.5rem; border-radius: var(--radius-md); text-align: center; border: 1px dashed var(--accent-blue);">
+                        <i class="fab fa-whatsapp" style="font-size: 2rem; color: #25D366; margin-bottom: 0.5rem;"></i>
+                        <h4 style="font-size: 0.9rem; margin-bottom: 0.5rem;">Aide à l'achat ?</h4>
+                        <p class="text-xs text-muted">Contactez un conseiller expert directement sur WhatsApp.</p>
+                        <a href="https://wa.me/212699705617" target="_blank" class="btn btn-secondary btn-sm" style="width:100%; margin-top:1rem; font-size: 0.7rem;">
+                            Démarrer la discussion
                         </a>
                     </div>
                 </aside>
 
                 <!-- Main Content -->
                 <main class="shop-content">
-                    <div class="shop-header">
-                        <div class="shop-results">
-                            Affichage de <span id="results-count">0</span> produits
+                    <div class="shop-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; background: white; padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+                        <div class="shop-results" style="font-weight: 700; color: var(--text-secondary);">
+                            <span id="results-count" style="color: var(--accent-blue);">0</span> produits trouvés
                         </div>
                         <div class="shop-actions">
-                            <select class="sort-select" id="sort-by" onchange="updateFilters()">
-                                <option value="featured">Phare</option>
-                                <option value="price-asc">Prix: Croissant</option>
-                                <option value="price-desc">Prix: Décroissant</option>
-                                <option value="rating">Mieux notés</option>
+                            <label style="font-size: 0.8rem; font-weight: 700; margin-right: 0.5rem;">Trier par :</label>
+                            <select class="sort-select" id="sort-by" onchange="updateFilters()" style="padding: 0.5rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+                                <option value="featured">Sélection</option>
+                                <option value="price-asc">Prix croissant</option>
+                                <option value="price-desc">Prix décroissant</option>
+                                <option value="rating">Meilleures notes</option>
                             </select>
                         </div>
                     </div>
 
-                    <div class="product-grid" id="catalog-grid">
+                    <div class="product-grid" id="catalog-grid" style="grid-template-columns: repeat(3, 1fr);">
                         <!-- Products injected by JS -->
                     </div>
 
-                    <div id="no-results" class="text-center" style="display:none; padding: 4rem 0;">
-                        <i class="fas fa-search" style="font-size: 3rem; opacity: 0.2; margin-bottom: 1rem;"></i>
-                        <h3>Aucun produit trouvé</h3>
-                        <p class="text-muted">Essayez de modifier vos filtres.</p>
+                    <div id="no-results" class="text-center" style="display:none; padding: 5rem 0; background: white; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+                        <i class="fas fa-search-minus" style="font-size: 4rem; color: var(--text-muted); opacity: 0.3; margin-bottom: 1.5rem;"></i>
+                        <h3 style="font-weight: 800;">Aucun résultat trouvé</h3>
+                        <p class="text-muted">Désolé, nous n'avons trouvé aucun produit correspondant à vos critères.</p>
+                        <button onclick="location.href='/products'" class="btn btn-secondary btn-sm" style="margin-top: 1.5rem;">Réinitialiser les filtres</button>
                     </div>
                 </main>
             </div>
         </div>
     </section>
 
-    <!-- Footer (copied from index) -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-bottom">
-                <p>&copy; <span id="current-year"></span> EL-WALI-SHOP. Tous droits réservés.</p>
-            </div>
+    <!-- Footer -->
+    <footer class="footer" style="background: var(--bg-secondary); border-top: 1px solid var(--border-subtle); padding: 4rem 0 2rem;">
+        <div class="container footer-bottom" style="text-align: center; color: var(--text-muted); font-size: 0.85rem;">
+            <p>&copy; <span id="current-year"></span> EL-WALI-SHOP. Votre partenaire Electroménager & Beauté à Marrakech.</p>
         </div>
     </footer>
 
@@ -205,23 +233,7 @@
             else if (sortBy === 'price-desc') filtered.sort((a, b) => b.price - a.price);
             else if (sortBy === 'rating') filtered.sort((a, b) => b.rating - a.rating);
 
-            // Dynamic Background based on selected Category
-            const shopContent = document.querySelector('.shop-content');
-            shopContent.style.transition = 'background 0.4s ease'; // smooth fade 
-            if (selectedCat !== 'all' && filtered.length > 0) {
-                const bgImage = filtered[0].image; // Extract image from the first item of the category
-                shopContent.style.backgroundImage = `linear-gradient(rgba(10, 10, 10, 0.85), rgba(10, 10, 10, 0.95)), url('${bgImage}')`;
-                shopContent.style.backgroundSize = 'cover';
-                shopContent.style.backgroundPosition = 'center';
-                shopContent.style.backgroundAttachment = 'fixed';
-                shopContent.style.borderRadius = '16px';
-                shopContent.style.padding = '2rem';
-            } else {
-                shopContent.style.backgroundImage = 'none';
-                shopContent.style.borderRadius = '0px';
-                shopContent.style.padding = '0';
-            }
-
+            // Style updates for the shop content are now handled by CSS classes
             renderProducts(filtered);
         }
 

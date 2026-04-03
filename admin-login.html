@@ -9,102 +9,136 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body {
-            background: radial-gradient(circle at center, #1a1a1a 0%, #0a0a0a 100%);
+            background-color: #f8fafc;
+            background-image: radial-gradient(#cbd5e1 0.5px, transparent 0.5px);
+            background-size: 24px 24px;
             height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             margin: 0;
-            overflow: hidden;
+            font-family: 'Inter', sans-serif;
+            color: #1e293b;
         }
 
         .login-container {
             width: 100%;
-            max-width: 400px;
+            max-width: 440px;
             padding: 2rem;
-            animation: fadeUp 0.8s var(--ease) forwards;
+            animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
         .login-card {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 24px;
-            padding: 2.5rem;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: var(--radius-lg);
+            padding: 3rem 2.5rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
             text-align: center;
         }
 
         .login-logo {
-            font-size: 1.8rem;
-            font-weight: 800;
-            margin-bottom: 2rem;
-            letter-spacing: -1px;
+            font-size: 2rem;
+            font-weight: 900;
+            margin-bottom: 0.5rem;
+            letter-spacing: -1.5px;
+            color: var(--black);
         }
 
-        .login-logo span { color: var(--gold); }
+        .login-logo span { color: var(--accent-blue); }
+
+        .admin-tag {
+            display: inline-block;
+            background: #f1f5f9;
+            color: #64748b;
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 2.5rem;
+        }
 
         .form-group {
             text-align: left;
             margin-bottom: 1.5rem;
         }
 
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #475569;
+        }
+
         .login-input {
             width: 100%;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: white;
-            padding: 12px 16px;
-            border-radius: 12px;
+            background: white;
+            border: 1px solid #cbd5e1;
+            color: #1e293b;
+            padding: 0.8rem 1rem;
+            border-radius: var(--radius-sm);
             font-size: 1rem;
-            transition: all 0.3s var(--ease);
+            transition: all 0.2s var(--ease);
         }
 
         .login-input:focus {
-            border-color: var(--gold);
-            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--accent-blue);
             outline: none;
-            box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.1);
+            box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.1);
         }
 
         .login-btn {
             width: 100%;
-            padding: 14px;
-            border-radius: 12px;
-            font-weight: 700;
-            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: var(--radius-sm);
+            font-weight: 800;
+            margin-top: 1.5rem;
             cursor: pointer;
             border: none;
-            background: var(--gold);
-            color: black;
-            transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
+            background: var(--accent-blue);
+            color: white;
+            font-size: 1rem;
+            transition: all 0.2s var(--ease);
+            letter-spacing: 0.02em;
         }
 
         .login-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            background: #1e40af;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(29, 78, 216, 0.2);
         }
 
         .error-msg {
-            color: var(--rose);
+            background: #fee2e2;
+            color: #b91c1c;
+            padding: 0.8rem;
+            border-radius: var(--radius-sm);
             font-size: 0.85rem;
-            margin-top: 1rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
             display: none;
+            border: 1px solid #fecaca;
         }
 
         .back-link {
-            display: block;
-            margin-top: 2rem;
-            color: var(--text-muted);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 2.5rem;
+            color: #64748b;
             text-decoration: none;
             font-size: 0.9rem;
-            transition: color 0.3s;
+            font-weight: 600;
+            transition: color 0.2s;
         }
 
-        .back-link:hover { color: white; }
+        .back-link:hover { color: var(--accent-blue); }
 
         @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(20px); }
+            from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
     </style>
@@ -112,23 +146,28 @@
 <body>
     <div class="login-container">
         <div class="login-card">
-            <div class="login-logo">EL-WALI-<span>SHOP</span></div>
-            <p style="color: var(--text-muted); margin-bottom: 2rem;">Administration</p>
+            <div class="login-logo">EL-WALI<span>.SHOP</span></div>
+            <span class="admin-tag">Portail Administration</span>
 
             <form id="login-form">
+                <div id="login-error" class="error-msg">Identifiants incorrects.</div>
+                
                 <div class="form-group">
-                    <label style="display:block; margin-bottom:8px; font-size:0.85rem; color:var(--text-muted)">Utilisateur</label>
+                    <label class="form-label">Identifiant</label>
                     <input type="text" id="username" class="login-input" placeholder="Nom d'utilisateur" required spellcheck="false" autocomplete="username">
                 </div>
+                
                 <div class="form-group">
-                    <label style="display:block; margin-bottom:8px; font-size:0.85rem; color:var(--text-muted)">Mot de passe</label>
+                    <label class="form-label">Mot de passe</label>
                     <input type="password" id="password" class="login-input" placeholder="••••••••" required autocomplete="current-password">
                 </div>
-                <div id="login-error" class="error-msg">Identifiants incorrects.</div>
-                <button aria-label="Action Button" type="submit" class="login-btn">SE CONNECTER</button>
+                
+                <button type="submit" class="login-btn">SE CONNECTER</button>
             </form>
 
-            <a href="/" class="back-link">← Retour au magasin</a>
+            <a href="/" class="back-link">
+                <i class="fas fa-arrow-left"></i> Retour à la boutique
+            </a>
         </div>
     </div>
 
