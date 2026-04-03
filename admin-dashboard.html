@@ -305,20 +305,14 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Aperçu de l'Image</label>
-                        <div id="add-preview"
-                            style="width:100%; height:120px; border:1px dashed var(--border-subtle); border-radius:8px; display:flex; align-items:center; justify-content:center; overflow:hidden">
-                            <span style="color:var(--text-muted); font-size:0.8rem">Entrez une URL d'image</span>
+                        <label class="form-label">Image du Produit (Cliquer pour choisir)</label>
+                        <div id="add-preview" onclick="document.getElementById('add-file-input').click()"
+                            style="width:100%; height:140px; border:2px dashed var(--border-subtle); border-radius:12px; display:flex; flex-direction:column; align-items:center; justify-content:center; overflow:hidden; cursor:pointer; background: rgba(255,255,255,0.02); transition: all 0.3s">
+                            <i class="fas fa-cloud-upload-alt" style="font-size: 2rem; margin-bottom: 0.5rem; color: var(--gold)"></i>
+                            <span style="color:var(--text-muted); font-size:0.8rem">Charger une photo</span>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Prix (DH)</label>
-                        <input type="number" name="price" class="form-input" placeholder="2500" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">URL de l'Image</label>
-                        <input type="text" name="image" class="form-input" placeholder="assets/webp/..."
-                            oninput="Admin.updatePreview(this.value, 'add-preview')">
+                        <input type="file" id="add-file-input" accept="image/*" style="display:none" onchange="Admin.handleImageSelect(event, 'add-preview', 'add-image-data')">
+                        <input type="hidden" name="image" id="add-image-data">
                     </div>
                     <button aria-label="Action Button" type="submit" class="btn btn-primary" style="width: 100%">Enregistrer le Produit</button>
                 </form>
@@ -562,12 +556,12 @@
                     <input type="number" name="price" class="form-input" required>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Image URL</label>
-                    <input type="text" name="image" class="form-input" placeholder="assets/webp/..."
-                        oninput="Admin.updatePreview(this.value, 'edit-preview')">
-                </div>
-                <div id="edit-preview"
-                    style="width:100%; height:120px; border:1px dashed var(--border-subtle); border-radius:8px; display:flex; align-items:center; justify-content:center; overflow:hidden; margin-bottom:1rem">
+                    <label class="form-label">Image du Produit (Cliquer pour changer)</label>
+                    <div id="edit-preview" onclick="document.getElementById('edit-file-input').click()"
+                        style="width:100%; height:140px; border:2px dashed var(--border-subtle); border-radius:12px; display:flex; flex-direction:column; align-items:center; justify-content:center; overflow:hidden; cursor:pointer; background: rgba(255,255,255,0.02); transition: all 0.3s; margin-bottom: 1rem">
+                    </div>
+                    <input type="file" id="edit-file-input" accept="image/*" style="display:none" onchange="Admin.handleImageSelect(event, 'edit-preview', 'edit-image-data')">
+                    <input type="hidden" name="image" id="edit-image-data">
                 </div>
                 <div class="form-group">
                     <label class="form-label">Description</label>

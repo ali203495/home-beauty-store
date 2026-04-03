@@ -190,8 +190,33 @@ const Admin = {
         if (url && url.length > 5) {
             container.innerHTML = `<img src="${url}" style="width:100%; height:100%; object-fit:contain">`;
         } else {
-            container.innerHTML = `<span style="color:var(--text-muted); font-size:0.8rem">Prévisualisation</span>`;
+            container.innerHTML = `
+                <i class="fas fa-image" style="font-size: 2rem; opacity: 0.3"></i>
+                <span style="color:var(--text-muted); font-size:0.8rem; margin-top: 5px">Prévisualisation</span>
+            `;
         }
+    },
+
+    handleImageSelect(event, previewId, dataInputId) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        // Basic size check (max 2MB for storage efficiency)
+        if (file.size > 2 * 1024 * 1024) {
+            alert('L\'image est trop lourde pour le moment (max 2MB).');
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const base64 = e.target.result;
+            // Update preview
+            this.updatePreview(base64, previewId);
+            // Update hidden input
+            const input = document.getElementById(dataInputId);
+            if (input) input.value = base64;
+        };
+        reader.readAsDataURL(file);
     },
 
     switchTab(tab, el) {
@@ -532,13 +557,19 @@ const Admin = {
             return;
         }
 
+        const imageData = formData.get('image');
+        if (!imageData) {
+            alert('Veuillez choisir une image pour le produit.');
+            return;
+        }
+
         const newProduct = {
             id: 'p-' + Date.now(),
             name: name,
             category: formData.get('category'),
             price: price,
             description: formData.get('description'),
-            image: 'assets/images/placeholder.png', // Default
+            image: imageData,
             rating: 5,
             reviews: 0
         };
@@ -547,6 +578,15 @@ const Admin = {
         this.renderProducts();
         await this.renderStats();
         e.target.reset();
+        
+        // Reset preview box
+        const preview = document.getElementById('add-preview');
+        preview.innerHTML = `
+            <i class="fas fa-cloud-upload-alt" style="font-size: 2rem; margin-bottom: 0.5rem; color: var(--gold)"></i>
+            <span style="color:var(--text-muted); font-size:0.8rem">Charger une photo</span>
+        `;
+        document.getElementById('add-image-data').value = '';
+
         this.notify('Produit ajouté avec succès !');
     },
 
@@ -569,7 +609,7 @@ const Admin = {
             form.name.value = p.name;
             form.category.value = p.category;
             form.price.value = p.price;
-            form.image.value = p.image;
+            form.image.value = p.image; // Populate the hidden input
             this.updatePreview(p.image, 'edit-preview');
             form.description.value = p.description || '';
         } else {
