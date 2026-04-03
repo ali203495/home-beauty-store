@@ -58,13 +58,16 @@ const App = {
         const menu = document.getElementById('mega-menu');
         if (toggle && menu) {
             toggle.addEventListener('click', (e) => {
+                e.preventDefault();
                 e.stopPropagation();
                 menu.classList.toggle('open');
+                toggle.classList.toggle('active');
             });
 
             document.addEventListener('click', (e) => {
                 if (!menu.contains(e.target) && !toggle.contains(e.target)) {
                     menu.classList.remove('open');
+                    toggle.classList.remove('active');
                 }
             });
         }

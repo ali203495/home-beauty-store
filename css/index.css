@@ -73,24 +73,22 @@
 html {
   scroll-behavior: smooth;
   font-size: 16px;
+  background-color: var(--bg-primary);
 }
 
 body {
-  font-family: var(--font-body);
+  font-family: var(--font-body) !important;
   background-color: var(--bg-primary);
   color: var(--text-primary);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
 }
 
-button, input, select, textarea {
-  font-family: inherit;
-}
-
-a {
+button, input, select, textarea, a {
+  font-family: var(--font-body) !important;
   text-decoration: none;
   color: inherit;
-  transition: color var(--duration) var(--ease);
+  transition: all var(--duration) var(--ease);
 }
 
 ul { list-style: none; }

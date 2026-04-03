@@ -19,68 +19,86 @@
 
 /* ── Main Header ───────────────────────────────────────── */
 .main-header {
-  background-color: var(--white);
-  padding: 1.25rem 0;
-  border-bottom: 1px solid var(--border-subtle);
+  background-color: var(--white) !important;
+  padding: 1rem 0;
+  border-bottom: 2px solid var(--border-subtle);
   position: sticky;
   top: 0;
   z-index: 1000;
+  box-shadow: var(--shadow-sm);
+}
+
+.main-header .container {
+  display: flex !important;
+  align-items: center;
+  gap: 3rem;
 }
 
 .nav-logo {
-  font-size: 1.75rem;
+  flex-shrink: 0;
+  font-size: 1.8rem;
   font-weight: 900;
   color: var(--accent-red);
-  letter-spacing: -2px;
-  line-height:1;
+  letter-spacing: -1px;
+  line-height: 1;
+  min-width: 180px;
 }
 .nav-logo span { color: var(--accent-slate); }
 
 .search-bar {
-  flex: 1;
-  max-width: 700px;
+  flex-grow: 1;
+  max-width: 600px;
+  display: flex !important;
+  align-items: center;
   position: relative;
-  display: flex;
 }
 
 .search-bar input {
-  width: 100%;
-  height: 48px;
-  padding: 0 1.25rem 0 3.5rem;
-  border: 2px solid var(--accent-red);
-  border-radius: var(--radius-sm);
-  font-size: 0.95rem;
+  flex: 1;
+  height: 44px;
+  padding: 0 1.25rem 0 3rem;
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+  font-size: 0.9rem;
   font-weight: 500;
   outline: none;
+  background: #f8fafc;
+  transition: all 0.2s;
+}
+
+.search-bar input:focus {
+  border-color: var(--accent-red);
+  background: white;
 }
 
 .search-bar i.search-icon {
   position: absolute;
-  left: 1.25rem;
+  left: 1rem;
   top: 50%;
   transform: translateY(-50%);
   color: var(--text-muted);
-  font-size: 1.1rem;
+  font-size: 1rem;
 }
 
 .search-btn {
   background-color: var(--accent-red);
   color: white;
   border: none;
-  padding: 0 1.5rem;
-  height: 48px;
-  margin-left: -2px;
+  padding: 0 1.25rem;
+  height: 44px;
   border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-  font-weight: 800;
+  font-weight: 900;
   cursor: pointer;
   text-transform: uppercase;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
+  flex-shrink: 0;
 }
 
 .nav-actions {
+  flex-shrink: 0;
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  gap: 2rem;
 }
 
 .nav-action-item {
@@ -164,37 +182,56 @@
 .mega-item span { font-size: 0.85rem; font-weight: 800; text-transform: uppercase; color: var(--accent-slate); }
 
 .cat-toggle-btn {
-  background-color: var(--accent-slate);
+  background-color: var(--accent-red);
   color: white;
   height: 100%;
   padding: 0 1.5rem;
-  display: flex;
+  display: flex !important;
   align-items: center;
   gap: 0.75rem;
-  font-weight: 800;
+  font-weight: 900;
   font-size: 0.75rem;
   text-transform: uppercase;
   cursor: pointer;
   border: none;
+  flex-shrink: 0;
+  letter-spacing: 0.02em;
 }
 
+.cat-toggle-btn:hover { background-color: var(--accent-slate); }
+
 .mega-nav-links {
-  display: flex;
+  display: flex !important;
   align-items: center;
-  gap: 2rem;
-  padding: 0 2rem;
+  gap: 2.25rem;
+  padding-left: 2.25rem;
+  flex-grow: 1;
 }
 
 .mega-nav-links a {
   font-size: 0.75rem;
   font-weight: 800;
-  color: var(--text-secondary);
+  color: var(--accent-slate);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  white-space: nowrap;
+  letter-spacing: 0.03em;
+  opacity: 0.8;
+  position: relative;
 }
 
 .mega-nav-links a:hover, .mega-nav-links a.active {
+  opacity: 1;
   color: var(--accent-red);
+}
+
+.mega-nav-links a.active::after {
+  content: '';
+  position: absolute;
+  bottom: -13px;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: var(--accent-red);
 }
 
 /* ── Hero Grid ─────────────────────────────────────────── */
