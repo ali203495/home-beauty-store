@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion Admin — EL-WALI-SHOP</title>
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: radial-gradient(circle at center, #1a1a1a 0%, #0a0a0a 100%);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+            padding: 2rem;
+            animation: fadeUp 0.8s var(--ease) forwards;
+        }
+
+        .login-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 2.5rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+
+        .login-logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
+            letter-spacing: -1px;
+        }
+
+        .login-logo span { color: var(--gold); }
+
+        .form-group {
+            text-align: left;
+            margin-bottom: 1.5rem;
+        }
+
+        .login-input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s var(--ease);
+        }
+
+        .login-input:focus {
+            border-color: var(--gold);
+            background: rgba(255, 255, 255, 0.08);
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.1);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            font-weight: 700;
+            margin-top: 1rem;
+            cursor: pointer;
+            border: none;
+            background: var(--gold);
+            color: black;
+            transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+
+        .error-msg {
+            color: var(--rose);
+            font-size: 0.85rem;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .back-link {
+            display: block;
+            margin-top: 2rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+
+        .back-link:hover { color: white; }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-logo">EL-WALI-<span>SHOP</span></div>
+            <p style="color: var(--text-muted); margin-bottom: 2rem;">Administration</p>
+            
+            <form id="login-form">
+                <div class="form-group">
+                    <label style="display:block; margin-bottom:8px; font-size:0.85rem; color:var(--text-muted)">Utilisateur</label>
+                    <input type="text" id="username" class="login-input" placeholder="Nom d'utilisateur" required spellcheck="false" autocomplete="username">
+                </div>
+                <div class="form-group">
+                    <label style="display:block; margin-bottom:8px; font-size:0.85rem; color:var(--text-muted)">Mot de passe</label>
+                    <input type="password" id="password" class="login-input" placeholder="••••••••" required autocomplete="current-password">
+                </div>
+                <div id="login-error" class="error-msg">Identifiants incorrects.</div>
+                <button aria-label="Action Button" type="submit" class="login-btn">SE CONNECTER</button>
+            </form>
+
+            <a href="/" class="back-link">← Retour au magasin</a>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/admin.js"></script>
+    <script>
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const user = document.getElementById('username').value;
+            const pass = document.getElementById('password').value;
+            const error = document.getElementById('login-error');
+
+            const success = await Admin.login(user, pass);
+            if (success) {
+                window.location.href = 'admin-dashboard.html';
+            } else {
+                error.style.display = 'block';
+                document.querySelector('.login-card').style.animation = 'none';
+                void document.querySelector('.login-card').offsetWidth; // trigger reflow
+                document.querySelector('.login-card').style.animation = 'shake 0.4s';
+            }
+        });
+
+        // Add shake animation
+        const style = document.createElement('style');
+        style.innerHTML = `
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                25% { transform: translateX(-8px); }
+                75% { transform: translateX(8px); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

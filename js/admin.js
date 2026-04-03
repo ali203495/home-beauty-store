@@ -4,8 +4,8 @@
 
 const ADMIN_CREDENTIALS = {
     username: 'abdelaali',
-    // SHA-256 hash of 'abdelaali.markabi1234!@#$'
-    passwordHash: '37a7f7690623a492ad21a0a588b49911e9f2913c1fce988f91885f679e0ba891',
+    // SHA-256 hash of '!@#$1234'
+    passwordHash: '0fb2c3ee97570dcf77fb841e26b3678fb2bf7f25e6d5f949c926454825ffc764',
     pin: '1337', // Secondary legacy-style PIN for 2FA demonstration
     recoveryEmail: 'abdelaali.markabi@gmail.com'
 };
@@ -31,9 +31,12 @@ const Admin = {
     },
 
     checkAuth() {
-        // Authentication bypassed completely.
-        // Users can freely access the dashboard without logging in.
-        return;
+        const isLoggedIn = sessionStorage.getItem('mlh_admin_logged_in') === 'true';
+        const isLoginPage = window.location.pathname.includes('admin-login.html');
+        
+        if (!isLoggedIn && !isLoginPage) {
+            window.location.href = 'admin-login.html';
+        }
     },
 
     /**
@@ -86,10 +89,23 @@ const Admin = {
             sessionStorage.setItem('mlh_admin_login_time', Date.now().toString());
 
             // Direct redirect
-            window.location.href = '/admin-dashboard';
+            window.location.href = 'admin-dashboard.html';
+            return true;
         } else {
+            // Check secondary admins in localStorage
+            const admins = this.getAdmins();
+            const adminMatch = admins.find(a => a.email.toLowerCase() === username.toLowerCase() && a.tempPassword === password);
+            
+            if (adminMatch) {
+                sessionStorage.setItem('mlh_admin_logged_in', 'true');
+                sessionStorage.setItem('mlh_admin_role', adminMatch.role);
+                window.location.href = 'admin-dashboard.html';
+                return true;
+            }
+
             console.warn('Login Mismatch!');
             this.handleFailedAttempt('Identifiants incorrects');
+            return false;
         }
     },
 
