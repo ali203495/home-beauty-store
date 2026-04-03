@@ -2,9 +2,15 @@
  * Main UI Logic & Integrations
  */
 
-const WHATSAPP_NUMBER = '212699705617';
-const WHATSAPP_GROUP_URL = 'https://chat.whatsapp.com/JvGXnQd8fGB4vbZwNJNBUG?mode=gi_t';
-const FB_GROUP_URL = 'https://www.facebook.com/share/g/18L9fxx9pG/';
+const getWhatsAppClean = () => {
+    let clean = (CONFIG.whatsappNumber || '0615653798').replace(/\D/g, '');
+    if (clean.startsWith('0')) clean = '212' + clean.substring(1);
+    return clean;
+};
+
+const WHATSAPP_NUMBER = getWhatsAppClean();
+const WHATSAPP_GROUP_URL = CONFIG.socialLinks && CONFIG.socialLinks.whatsapp ? CONFIG.socialLinks.whatsapp : 'https://wa.me/' + WHATSAPP_NUMBER;
+const FB_GROUP_URL = CONFIG.socialLinks && CONFIG.socialLinks.facebook ? CONFIG.socialLinks.facebook : 'https://www.facebook.com/share/g/18L9fxx9pG/';
 
 const App = {
   /**
@@ -17,6 +23,34 @@ const App = {
     this.updateCurrentYear();
     this.setupScrollEffects();
     this.setupWhatsAppButton();
+    this.applySiteSettings();
+  },
+
+  applySiteSettings() {
+    // Dynamic injection of CONFIG text onto the frontend
+    const els = {
+      'site-name-display': CONFIG.storeName,
+      'hero-title-display': CONFIG.heroTitle,
+      'hero-sub-display': CONFIG.heroSubtitle,
+      'contact-email-display': CONFIG.supportEmail,
+      'contact-phone-display': CONFIG.whatsappNumber
+    };
+
+    for (const [id, value] of Object.entries(els)) {
+      if (value) {
+        document.querySelectorAll('.' + id + ', #' + id).forEach(el => {
+          if (el.tagName === 'A' && el.href.includes('mailto:')) {
+            el.href = 'mailto:' + value;
+            el.innerText = value;
+          } else if (el.tagName === 'A' && el.href.includes('tel:')) {
+            el.href = 'tel:' + value;
+            el.innerText = value;
+          } else {
+            el.innerText = value;
+          }
+        });
+      }
+    }
   },
 
 

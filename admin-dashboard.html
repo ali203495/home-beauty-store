@@ -342,6 +342,7 @@
                 <div class="admin-nav">
                     <div class="admin-nav-item active" onclick="Admin.switchTab('products', this)">Produits</div>
                     <div class="admin-nav-item" onclick="Admin.switchTab('orders', this)">Commandes</div>
+                    <div class="admin-nav-item" onclick="Admin.switchTab('settings', this)">Paramètres du Site</div>
                 </div>
 
                 <!-- Stats Section -->
@@ -419,6 +420,58 @@
 
                     <div id="order-list-admin" class="admin-content-card">
                         <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Settings Tab -->
+                <div id="tab-settings" style="display: none">
+                    <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem">
+                        <h2>Paramètres Globaux du Site</h2>
+                    </div>
+
+                    <div class="chart-container" style="max-width: 800px">
+                        <form id="settings-form">
+                            <h4 style="margin-bottom: 1rem; color: var(--gold)">Contact & Communication</h4>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem">
+                                <div class="form-group">
+                                    <label class="form-label">Numéro WhatsApp Principal</label>
+                                    <input type="text" name="whatsappNumber" id="set_whatsapp" class="form-input">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Email de Support</label>
+                                    <input type="email" name="supportEmail" id="set_email" class="form-input">
+                                </div>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 2rem">
+                                <label class="form-label">Nom du Magasin</label>
+                                <input type="text" name="storeName" id="set_storename" class="form-input">
+                            </div>
+
+                            <h4 style="margin-bottom: 1rem; color: var(--gold)">Page d'Accueil (Home)</h4>
+                            <div class="form-group">
+                                <label class="form-label">Titre Principal (Hero)</label>
+                                <input type="text" name="heroTitle" id="set_herotitle" class="form-input">
+                            </div>
+                            <div class="form-group" style="margin-bottom: 2rem">
+                                <label class="form-label">Sous-titre Principal</label>
+                                <textarea name="heroSubtitle" id="set_herosub" class="form-input" rows="2"></textarea>
+                            </div>
+
+                            <h4 style="margin-bottom: 1rem; color: var(--gold)">Bannière Promotionnelle</h4>
+                            <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem">
+                                <input type="checkbox" name="promoBannerVisible" id="set_promovis">
+                                <label for="set_promovis" class="form-label" style="margin-bottom:0">Afficher la bannière promotionnelle</label>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 2rem">
+                                <label class="form-label">Titre de la Bannière</label>
+                                <input type="text" name="promoBannerTitle" id="set_promotitle" class="form-input">
+                            </div>
+
+                            <div style="border-top: 1px solid var(--border-subtle); padding-top: 1.5rem; display: flex; gap: 1rem">
+                                <button aria-label="Action Button" type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Sauvegarder les Paramètres</button>
+                                <button aria-label="Action Button" type="button" class="btn btn-secondary" style="color:var(--rose)" onclick="Admin.resetSettings()"><i class="fas fa-undo"></i> Réinitialiser par défaut</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </main>

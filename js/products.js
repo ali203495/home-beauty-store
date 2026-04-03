@@ -305,36 +305,66 @@ const ProductDB = {
  */
 const OrderDB = {
     async getOrders() {
-        if(!window.supabaseClient) return JSON.parse(localStorage.getItem('mlh_orders')) || [];
+        const localOrders = JSON.parse(localStorage.getItem('mlh_orders')) || [];
+        if(!window.supabaseClient) return localOrders;
+        
         const { data, error } = await window.supabaseClient.from('orders').select('*').order('date', { ascending: false });
         if (error) {
-            console.error('Error fetching orders:', error);
-            return [];
+            console.error('Supabase error (Table orders might be missing). Using local storage instead:', error.message);
+            return localOrders;
         }
-        return data;
+        return data || localOrders;
     },
 
     async saveOrder(order) {
-        if(!window.supabaseClient) {
+        const fallbackLocal = () => {
             const orders = JSON.parse(localStorage.getItem('mlh_orders')) || [];
             orders.unshift(order);
             localStorage.setItem('mlh_orders', JSON.stringify(orders));
+        };
+
+        if(!window.supabaseClient) {
+            fallbackLocal();
             return;
         }
+        
         const { error } = await window.supabaseClient.from('orders').insert([order]);
-        if (error) console.error('Error saving order:', error);
+        if (error) {
+            console.error('Error saving order to Supabase:', error.message);
+            fallbackLocal(); // Save locally so the order isn't lost!
+        }
     },
 
     async updateStatus(orderId, status) {
-        if(!window.supabaseClient) return;
+        if(!window.supabaseClient) return this.updateLocalStatus(orderId, status);
+        
         const { error } = await window.supabaseClient.from('orders').update({status}).eq('id', orderId);
-        if (error) console.error('Error updating order status:', error);
+        if (error) {
+            console.error('Error updating order status in Supabase:', error.message);
+            this.updateLocalStatus(orderId, status);
+        }
+    },
+
+    updateLocalStatus(orderId, status) {
+        let orders = JSON.parse(localStorage.getItem('mlh_orders')) || [];
+        orders = orders.map(o => o.id === orderId ? { ...o, status } : o);
+        localStorage.setItem('mlh_orders', JSON.stringify(orders));
     },
 
     async deleteOrder(orderId) {
-        if(!window.supabaseClient) return;
+        if(!window.supabaseClient) return this.deleteLocalOrder(orderId);
+        
         const { error } = await window.supabaseClient.from('orders').delete().eq('id', orderId);
-        if (error) console.error('Error deleting order:', error);
+        if (error) {
+            console.error('Error deleting order in Supabase:', error.message);
+            this.deleteLocalOrder(orderId);
+        }
+    },
+
+    deleteLocalOrder(orderId) {
+        let orders = JSON.parse(localStorage.getItem('mlh_orders')) || [];
+        orders = orders.filter(o => o.id !== orderId);
+        localStorage.setItem('mlh_orders', JSON.stringify(orders));
     }
 };
 

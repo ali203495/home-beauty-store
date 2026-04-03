@@ -25,6 +25,7 @@ const Admin = {
         if (document.getElementById('order-list-admin')) {
             await this.renderOrders();
         }
+        this.loadSettings();
         this.setupEventListeners();
     },
 
@@ -584,6 +585,55 @@ const Admin = {
         alert('Produit mis à jour !');
     },
 
+    loadSettings() {
+        const form = document.getElementById('settings-form');
+        if (!form) return;
+        
+        // CONFIG is already defined globally in config.js
+        form.whatsappNumber.value = CONFIG.whatsappNumber || '';
+        form.supportEmail.value = CONFIG.supportEmail || '';
+        form.storeName.value = CONFIG.storeName || '';
+        form.heroTitle.value = CONFIG.heroTitle || '';
+        form.heroSubtitle.value = CONFIG.heroSubtitle || '';
+        form.promoBannerVisible.checked = CONFIG.promoBannerVisible !== false;
+        form.promoBannerTitle.value = CONFIG.promoBannerTitle || '';
+    },
+
+    saveSettings(e) {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        
+        const newSettings = {
+            whatsappNumber: formData.get('whatsappNumber'),
+            supportEmail: formData.get('supportEmail'),
+            storeName: formData.get('storeName'),
+            heroTitle: formData.get('heroTitle'),
+            heroSubtitle: formData.get('heroSubtitle'),
+            promoBannerVisible: formData.get('promoBannerVisible') === 'on',
+            promoBannerTitle: formData.get('promoBannerTitle')
+        };
+
+        // Merge with existing stored settings so we don't lose anything
+        const existingSettings = JSON.parse(localStorage.getItem('elwali_site_settings') || '{}');
+        const finalSettings = { ...existingSettings, ...newSettings };
+        
+        localStorage.setItem('elwali_site_settings', JSON.stringify(finalSettings));
+        
+        this.notify('Paramètres sauvegardés ! Les modifications sont en ligne.');
+        alert('Paramètres sauvegardés avec succès !');
+    },
+
+    resetSettings() {
+        if(confirm('Êtes-vous sûr de vouloir réinitialiser aux paramètres par défaut ?')) {
+            if (typeof window.resetSiteSettings === 'function') {
+                window.resetSiteSettings();
+            } else {
+                localStorage.removeItem('elwali_site_settings');
+                window.location.reload();
+            }
+        }
+    },
+
     setupEventListeners() {
         // Redundant login form listener removed to prevent conflict with AdminAuth
         
@@ -603,6 +653,11 @@ const Admin = {
         const editForm = document.getElementById('edit-product-form');
         if (editForm) {
             editForm.addEventListener('submit', (e) => this.saveProduct(e));
+        }
+
+        const settingsForm = document.getElementById('settings-form');
+        if (settingsForm) {
+            settingsForm.addEventListener('submit', (e) => this.saveSettings(e));
         }
     }
 };
