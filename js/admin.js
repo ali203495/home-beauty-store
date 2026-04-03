@@ -26,6 +26,7 @@ const Admin = {
             await this.renderOrders();
         }
         this.loadSettings();
+        this.renderAdmins();
         this.setupEventListeners();
     },
 
@@ -599,6 +600,68 @@ const Admin = {
         form.promoBannerTitle.value = CONFIG.promoBannerTitle || '';
     },
 
+    getAdmins() {
+        return JSON.parse(localStorage.getItem('elwali_admins')) || [
+            { id: '1', name: 'Abdelaali (Owner)', email: 'abdelaali.markabi@gmail.com', role: 'Propriétaire' }
+        ];
+    },
+
+    saveAdmin(e) {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const newAdmin = {
+            id: Date.now().toString(),
+            name: formData.get('name'),
+            email: formData.get('email'),
+            role: formData.get('role'),
+            tempPassword: formData.get('password')
+        };
+        const admins = this.getAdmins();
+        admins.push(newAdmin);
+        localStorage.setItem('elwali_admins', JSON.stringify(admins));
+        e.target.reset();
+        document.getElementById('add-admin-form-container').style.display = 'none';
+        this.notify('Administrateur ajouté avec succès');
+        this.renderAdmins();
+    },
+
+    deleteAdmin(id) {
+        if(confirm('Êtes-vous sûr de vouloir supprimer cet administrateur ?')) {
+            let admins = this.getAdmins();
+            admins = admins.filter(a => a.id !== id);
+            localStorage.setItem('elwali_admins', JSON.stringify(admins));
+            this.notify('Administrateur supprimé');
+            this.renderAdmins();
+        }
+    },
+
+    renderAdmins() {
+        const tbody = document.getElementById('admin-table-body');
+        if (!tbody) return;
+        
+        const admins = this.getAdmins();
+        tbody.innerHTML = '';
+        
+        if (admins.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:1.5rem">Aucun administrateur trouvé</td></tr>';
+            return;
+        }
+
+        admins.forEach(admin => {
+            const tr = document.createElement('tr');
+            tr.style.borderBottom = '1px solid var(--border-subtle)';
+            tr.innerHTML = `
+                <td style="padding: 1rem"><strong>${admin.name}</strong></td>
+                <td style="padding: 1rem; color: var(--gold)">${admin.email}</td>
+                <td style="padding: 1rem"><span style="background:var(--bg-glass); border:1px solid var(--border-subtle); padding: 0.2rem 0.5rem; border-radius:4px; font-size:0.8rem">${admin.role}</span></td>
+                <td style="padding: 1rem; text-align: right">
+                    ${admin.id !== '1' ? `<button aria-label="Action Button" class="btn btn-secondary btn-sm" style="color:var(--rose)" onclick="Admin.deleteAdmin('${admin.id}')" title="Supprimer"><i class="fas fa-trash"></i></button>` : '<span style="color:var(--text-muted); font-size:0.8rem">Intouchable</span>'}
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    },
+
     saveSettings(e) {
         e.preventDefault();
         const formData = new FormData(e.target);
@@ -658,6 +721,11 @@ const Admin = {
         const settingsForm = document.getElementById('settings-form');
         if (settingsForm) {
             settingsForm.addEventListener('submit', (e) => this.saveSettings(e));
+        }
+
+        const addAdminForm = document.getElementById('add-admin-form');
+        if (addAdminForm) {
+            addAdminForm.addEventListener('submit', (e) => this.saveAdmin(e));
         }
     }
 };

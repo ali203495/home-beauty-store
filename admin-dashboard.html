@@ -338,6 +338,7 @@
                     <div class="admin-nav-item active" onclick="Admin.switchTab('products', this)">Produits</div>
                     <div class="admin-nav-item" onclick="Admin.switchTab('orders', this)">Commandes</div>
                     <div class="admin-nav-item" onclick="Admin.switchTab('settings', this)">Paramètres du Site</div>
+                    <div class="admin-nav-item" onclick="Admin.switchTab('admins', this)">Administrateurs</div>
                 </div>
 
                 <!-- Stats Section -->
@@ -467,6 +468,64 @@
                                 <button aria-label="Action Button" type="button" class="btn btn-secondary" style="color:var(--rose)" onclick="Admin.resetSettings()"><i class="fas fa-undo"></i> Réinitialiser par défaut</button>
                             </div>
                         </form>
+                    </div>
+                </div>
+
+                <!-- Admins Tab -->
+                <div id="tab-admins" style="display: none">
+                    <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem">
+                        <h2>Gestion des Administrateurs</h2>
+                        <button aria-label="Action Button" class="btn btn-primary" onclick="document.getElementById('add-admin-form-container').style.display = 'block'"><i class="fas fa-plus"></i> Nouvel Admin</button>
+                    </div>
+
+                    <div id="add-admin-form-container" class="chart-container" style="display: none; margin-bottom: 2rem; border-color: var(--gold)">
+                        <form id="add-admin-form">
+                            <h4 style="margin-bottom: 1rem; color: var(--gold)">Ajouter un administrateur</h4>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem">
+                                <div class="form-group">
+                                    <label class="form-label">Nom complet</label>
+                                    <input type="text" name="name" class="form-input" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" name="email" class="form-input" required>
+                                </div>
+                            </div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem">
+                                <div class="form-group">
+                                    <label class="form-label">Mot de passe temporaire</label>
+                                    <input type="text" name="password" class="form-input" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Rôle</label>
+                                    <select name="role" class="form-input" required>
+                                        <option value="Propriétaire">Propriétaire (Accès Total)</option>
+                                        <option value="Éditeur">Éditeur (Produits/Commandes)</option>
+                                        <option value="Livreur">Livreur (Commandes Uniquement)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 1rem; justify-content: flex-end">
+                                <button aria-label="Action Button" type="button" class="btn btn-secondary" onclick="document.getElementById('add-admin-form-container').style.display = 'none'">Annuler</button>
+                                <button aria-label="Action Button" type="submit" class="btn btn-primary">Créer l'Admin</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div id="admin-list-container" class="admin-content-card" style="padding: 1rem; overflow-x: auto;">
+                        <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                            <thead>
+                                <tr style="border-bottom: 1px solid var(--border-subtle)">
+                                    <th style="padding: 1rem">Nom</th>
+                                    <th style="padding: 1rem">Email</th>
+                                    <th style="padding: 1rem">Rôle</th>
+                                    <th style="padding: 1rem; text-align: right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-table-body">
+                                <!-- JS Populated -->
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </main>
