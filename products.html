@@ -208,6 +208,23 @@
             else if (sortBy === 'price-desc') filtered.sort((a, b) => b.price - a.price);
             else if (sortBy === 'rating') filtered.sort((a, b) => b.rating - a.rating);
 
+            // Dynamic Background based on selected Category
+            const shopContent = document.querySelector('.shop-content');
+            shopContent.style.transition = 'background 0.4s ease'; // smooth fade 
+            if (selectedCat !== 'all' && filtered.length > 0) {
+                const bgImage = filtered[0].image; // Extract image from the first item of the category
+                shopContent.style.backgroundImage = `linear-gradient(rgba(10, 10, 10, 0.85), rgba(10, 10, 10, 0.95)), url('${bgImage}')`;
+                shopContent.style.backgroundSize = 'cover';
+                shopContent.style.backgroundPosition = 'center';
+                shopContent.style.backgroundAttachment = 'fixed';
+                shopContent.style.borderRadius = '16px';
+                shopContent.style.padding = '2rem';
+            } else {
+                shopContent.style.backgroundImage = 'none';
+                shopContent.style.borderRadius = '0px';
+                shopContent.style.padding = '0';
+            }
+
             renderProducts(filtered);
         }
 
