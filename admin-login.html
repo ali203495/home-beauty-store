@@ -38,14 +38,14 @@
         }
 
         .login-logo {
-            font-size: 2rem;
+            font-size: 2.2rem;
             font-weight: 900;
             margin-bottom: 0.5rem;
             letter-spacing: -1.5px;
-            color: var(--black);
+            color: var(--accent-red);
         }
 
-        .login-logo span { color: var(--accent-blue); }
+        .login-logo span { color: var(--accent-slate); }
 
         .admin-tag {
             display: inline-block;
@@ -85,30 +85,31 @@
         }
 
         .login-input:focus {
-            border-color: var(--accent-blue);
+            border-color: var(--accent-red);
             outline: none;
-            box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.1);
+            box-shadow: 0 0 0 3px rgba(225, 29, 72, 0.1);
         }
 
         .login-btn {
             width: 100%;
             padding: 1rem;
             border-radius: var(--radius-sm);
-            font-weight: 800;
+            font-weight: 900;
             margin-top: 1.5rem;
             cursor: pointer;
             border: none;
-            background: var(--accent-blue);
+            background: var(--accent-red);
             color: white;
-            font-size: 1rem;
+            font-size: 0.9rem;
             transition: all 0.2s var(--ease);
-            letter-spacing: 0.02em;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
         }
 
         .login-btn:hover {
-            background: #1e40af;
+            background: var(--accent-slate);
             transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(29, 78, 216, 0.2);
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
         }
 
         .error-msg {
@@ -135,7 +136,7 @@
             transition: color 0.2s;
         }
 
-        .back-link:hover { color: var(--accent-blue); }
+        .back-link:hover { color: var(--accent-red); }
 
         @keyframes fadeUp {
             from { opacity: 0; transform: translateY(10px); }
