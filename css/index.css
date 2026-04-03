@@ -187,7 +187,7 @@ h3 { font-size: 1.1rem; font-weight: 700; }
 }
 
 @media (max-width: 768px) {
-  .grid-6, .grid-5, .grid-3 { grid-template-columns: repeat(2, 1fr); }
+  .grid-6, .grid-5, .grid-4, .grid-3 { grid-template-columns: repeat(2, 1fr); }
   .grid-2 { grid-template-columns: 1fr; }
   h1 { font-size: 1.8rem; }
   .container { padding: 0 var(--space-md); }

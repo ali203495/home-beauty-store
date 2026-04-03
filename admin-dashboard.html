@@ -91,15 +91,16 @@
             padding: 0.5rem 0;
         }
 
-        .admin-nav-item:hover { color: var(--accent-blue); }
-        .admin-nav-item.active { color: var(--accent-blue); }
+        .admin-nav-item:hover { color: var(--accent-red); }
+        .admin-nav-item.active { color: var(--accent-red); }
         .admin-nav-item.active::after {
             content: '';
             position: absolute;
             bottom: -1rem;
             left: 0;
             width: 100%;
-            margin-bottom: 2rem;
+            height: 3px;
+            background: var(--accent-red);
         }
 
         .stat-card {
@@ -111,9 +112,10 @@
         }
 
         .stat-card-val {
-            font-family: var(--font-display);
+            font-family: var(--font-primary);
             font-size: 1.8rem;
-            color: var(--gold);
+            color: var(--accent-red);
+            font-weight: 800;
             display: block;
         }
 
@@ -145,8 +147,8 @@
         }
 
         .status-new {
-            background: rgba(201, 149, 108, 0.2);
-            color: var(--gold);
+            background: #fff1f2;
+            color: var(--accent-red);
         }
 
         .status-processing {
@@ -217,7 +219,7 @@
 
         .chart-bar-fill {
             height: 100%;
-            background: var(--gold);
+            background: var(--accent-red);
             width: 0%;
             transition: width 1s ease-out;
         }
@@ -252,27 +254,28 @@
 </head>
 
 <body>
-    <!-- Top Bar -->
+    <!-- 1. TOP BAR (RED) -->
     <div class="top-bar">
         <div class="container flex-between">
-            <div class="flex gap-md">
-                <span><i class="fas fa-lock"></i> Zone Sécurisée Administration</span>
+            <div class="flex gap-lg">
+                <span><i class="fas fa-lock"></i> ZONE SÉCURISÉE ADMINISTRATION</span>
             </div>
-            <div class="flex gap-md">
-                <span id="admin-user-display" style="font-weight: 700;">Admin</span>
-                <button onclick="Admin.logout()" style="background:none; border:none; color:white; cursor:pointer; text-decoration:underline;">Déconnexion</button>
+            <div class="flex gap-lg">
+                <span id="admin-user-display" style="font-weight: 800; font-size: 0.75rem;">ADMINISTRATEUR</span>
+                <button onclick="Admin.logout()" style="background:none; border:none; color:white; cursor:pointer; font-weight: 800; font-size: 0.7rem; text-decoration: underline;">DÉCONNEXION</button>
             </div>
         </div>
     </div>
 
-    <nav class="navbar">
-        <div class="container">
+    <!-- 2. MAIN HEADER -->
+    <header class="main-header" style="padding: 1rem 0;">
+        <div class="container flex-between">
             <a href="/" class="nav-logo">EL-WALI<span>.SHOP</span></a>
             <div class="nav-actions">
-                <a href="/" class="btn btn-secondary btn-sm"><i class="fas fa-external-link-alt"></i> Voir Boutique</a>
+                <a href="/" class="card-btn" style="width: auto; padding: 0.5rem 1.5rem; background: var(--accent-slate);"><i class="fas fa-external-link-alt"></i> VOIR LA BOUTIQUE</a>
             </div>
         </div>
-    </nav>
+    </header>
 
     <div class="admin-layout">
         <!-- Dashboard Sidebar -->

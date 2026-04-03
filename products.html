@@ -21,63 +21,87 @@
 
 <body>
 
-    <!-- Top Bar -->
+    <!-- 1. TOP BAR (RED) -->
     <div class="top-bar">
         <div class="container flex-between">
-            <div class="flex gap-md">
-                <span><i class="fas fa-truck"></i> Livraison Gratuite sur Marrakech</span>
+            <div class="flex gap-lg">
+                <span><i class="fas fa-truck"></i> LIVRAISON GRATUITE SUR TOUT MARRAKECH</span>
                 <span><i class="fas fa-phone"></i> +212 699-705617</span>
             </div>
-            <div class="flex gap-md">
-                <a href="/contact">Support 24/7</a>
-                <a href="https://www.facebook.com/share/g/18L9fxx9pG/" target="_blank"><i class="fab fa-facebook-f"></i></a>
+            <div class="flex gap-lg">
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-whatsapp"></i></a>
+                <a href="/admin-login.html" style="opacity: 0.5;">ADMIN</a>
             </div>
         </div>
     </div>
 
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="container">
-            <div class="flex-between w-full" style="width: 100%;">
-                <a href="/" class="nav-logo" id="site-name-display">EL-WALI<span>.SHOP</span></a>
+    <!-- 2. MAIN HEADER -->
+    <header class="main-header">
+        <div class="container flex-between gap-xl">
+            <a href="/" class="nav-logo">EL-WALI<span>.SHOP</span></a>
 
-                <div class="search-bar" style="flex: 1; margin: 0 2rem; position: relative;">
-                    <i class="fas fa-search" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-muted);"></i>
-                    <input type="text" data-i18n="nav_search" placeholder="Rechercher un produit, une marque..." 
-                           style="width: 100%; padding: 0.8rem 1rem 0.8rem 2.8rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); background: var(--bg-primary);">
-                </div>
+            <div class="search-bar">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" placeholder="Rechercher un produit, une marque, une catégorie...">
+                <button class="search-btn">Rechercher</button>
+            </div>
 
-                <div class="nav-actions">
-                    <div class="lang-switcher">
-                        <button class="lang-btn active" onclick="I18n.setLang('fr')" id="lang-fr">FR</button>
-                        <button class="lang-btn" onclick="I18n.setLang('ar')" id="lang-ar">AR</button>
-                    </div>
-                    
-                    <button class="nav-icon-btn" onclick="window.location.href='/cart'" aria-label="Panier">
-                        <i class="fas fa-shopping-cart"></i>
-                        <span class="cart-badge" style="display:none">0</span>
-                    </button>
-                    <button class="hamburger">
-                        <span></span><span></span><span></span>
-                    </button>
+            <div class="nav-actions">
+                <div class="nav-action-item">
+                    <i class="fas fa-user-circle"></i>
+                    <span>Compte</span>
                 </div>
+                <div class="nav-action-item cart-icon-wrapper" onclick="window.location.href='/cart'">
+                    <i class="fas fa-shopping-basket"></i>
+                    <span>Panier</span>
+                    <span class="cart-badge">0</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 3. SECONDARY NAVBAR -->
+    <nav class="secondary-nav">
+        <div class="container flex">
+            <button class="cat-toggle-btn" id="mega-menu-btn">
+                <i class="fas fa-bars"></i> NOS CATÉGORIES
+            </button>
+            <div class="mega-menu" id="mega-menu">
+                <div class="mega-menu-grid">
+                    <a href="/products?cat=Electroménager" class="mega-item">
+                        <i class="fas fa-refrigerator"></i>
+                        <span>Electroménager</span>
+                    </a>
+                    <a href="/products?cat=TV" class="mega-item">
+                        <i class="fas fa-tv"></i>
+                        <span>TV & Audio</span>
+                    </a>
+                    <a href="/products?cat=Climatisation" class="mega-item">
+                        <i class="fas fa-wind"></i>
+                        <span>Climatisation</span>
+                    </a>
+                    <a href="/products?cat=Cuisine" class="mega-item">
+                        <i class="fas fa-blender"></i>
+                        <span>Cuisine</span>
+                    </a>
+                    <a href="/products?cat=Beauté" class="mega-item">
+                        <i class="fas fa-spa"></i>
+                        <span>Beauté & Soin</span>
+                    </a>
+                </div>
+            </div>
+            <div class="mega-nav-links">
+                <a href="/products?cat=Electroménager">Electroménager</a>
+                <a href="/products?cat=TV">TV & Audio</a>
+                <a href="/products?cat=Climatisation">Climatisation</a>
+                <a href="/products?cat=Cuisine">Cuisine</a>
+                <a href="/products?cat=Beauté">Beauté & Soin</a>
+                <a href="/products?cat=Promos" style="color: var(--accent-red); font-weight: 900;">PROMOTIONS %</a>
             </div>
         </div>
     </nav>
-    
-    <!-- Secondary Nav (Categories) -->
-    <div class="secondary-nav">
-        <div class="container">
-            <div class="flex gap-xl">
-                <a href="/products">Tous les Produits</a>
-                <a href="/products?cat=Electroménager">Electroménager</a>
-                <a href="/products?cat=Climatisation">Climatisation</a>
-                <a href="/products?cat=TV">TV & Audio</a>
-                <a href="/products?cat=Cuisine">Cuisine</a>
-                <a href="/products?cat=Beauté">Beauté & Soin</a>
-            </div>
-        </div>
-    </div>
 
     <!-- Page Hero -->
     <header class="page-hero" style="background: var(--bg-primary); padding: 2.5rem 0; text-align: left;">
@@ -98,11 +122,11 @@
                 <!-- Sidebar Filter -->
                 <aside class="filter-sidebar">
                     <div class="filter-card" style="background: white; border: 1px solid var(--border-subtle); padding: 1.5rem; border-radius: var(--radius-md); margin-bottom: 1.5rem;">
-                        <h4 style="font-size: 1rem; border-bottom: 2px solid var(--accent-blue); padding-bottom: 0.5rem; margin-bottom: 1.2rem;">Catégories</h4>
+                        <h4 style="font-size: 1rem; border-bottom: 2px solid var(--accent-red); padding-bottom: 0.5rem; margin-bottom: 1.2rem;">Catégories</h4>
                         <div id="category-filters">
                             <div class="filter-option" style="margin-bottom: 0.8rem;">
                                 <input type="radio" name="cat" id="cat-all" value="all" checked>
-                                <label for="cat-all" style="font-weight: 600; cursor: pointer;">Tout voir</label>
+                                <label for="cat-all" style="font-weight: 800; cursor: pointer; text-transform: uppercase; font-size: 0.75rem;">Tout voir</label>
                             </div>
                         </div>
                     </div>
@@ -113,15 +137,15 @@
                             <input type="number" id="min-price" class="form-input" placeholder="Min" style="width: 50%; padding: 0.5rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm);">
                             <input type="number" id="max-price" class="form-input" placeholder="Max" style="width: 50%; padding: 0.5rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm);">
                         </div>
-                        <button class="btn btn-primary btn-sm" style="width:100%; margin-top:1rem; border-radius: var(--radius-sm);"
+                        <button class="btn btn-primary btn-sm" style="width:100%; margin-top:1rem; border-radius: var(--radius-sm); background: var(--accent-red); border: none; font-weight: 800;"
                             onclick="updateFilters()">Filtrer</button>
                     </div>
 
-                    <div class="filter-card" style="background: var(--bg-primary); padding: 1.5rem; border-radius: var(--radius-md); text-align: center; border: 1px dashed var(--accent-blue);">
+                    <div class="filter-card" style="background: var(--bg-primary); padding: 1.5rem; border-radius: var(--radius-md); text-align: center; border: 1px dashed var(--accent-red);">
                         <i class="fab fa-whatsapp" style="font-size: 2rem; color: #25D366; margin-bottom: 0.5rem;"></i>
-                        <h4 style="font-size: 0.9rem; margin-bottom: 0.5rem;">Aide à l'achat ?</h4>
+                        <h4 style="font-size: 0.9rem; margin-bottom: 0.5rem; font-weight: 800;">Aide à l'achat ?</h4>
                         <p class="text-xs text-muted">Contactez un conseiller expert directement sur WhatsApp.</p>
-                        <a href="https://wa.me/212699705617" target="_blank" class="btn btn-secondary btn-sm" style="width:100%; margin-top:1rem; font-size: 0.7rem;">
+                        <a href="https://wa.me/212699705617" target="_blank" class="btn btn-secondary btn-sm" style="width:100%; margin-top:1rem; font-size: 0.7rem; background: var(--accent-slate); border: none; color: white;">
                             Démarrer la discussion
                         </a>
                     </div>
@@ -130,8 +154,8 @@
                 <!-- Main Content -->
                 <main class="shop-content">
                     <div class="shop-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; background: white; padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
-                        <div class="shop-results" style="font-weight: 700; color: var(--text-secondary);">
-                            <span id="results-count" style="color: var(--accent-blue);">0</span> produits trouvés
+                        <div class="shop-results" style="font-weight: 800; color: var(--text-secondary); font-size: 0.85rem; text-transform: uppercase;">
+                            <span id="results-count" style="color: var(--accent-red);">0</span> produits trouvés
                         </div>
                         <div class="shop-actions">
                             <label style="font-size: 0.8rem; font-weight: 700; margin-right: 0.5rem;">Trier par :</label>
@@ -144,7 +168,7 @@
                         </div>
                     </div>
 
-                    <div class="product-grid" id="catalog-grid" style="grid-template-columns: repeat(3, 1fr);">
+                    <div class="product-grid" id="catalog-grid" style="grid-template-columns: repeat(4, 1fr); gap: var(--gap-dense);">
                         <!-- Products injected by JS -->
                     </div>
 
