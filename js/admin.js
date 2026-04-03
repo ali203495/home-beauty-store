@@ -574,26 +574,30 @@ const Admin = {
             reviews: 0
         };
 
-        await ProductDB.saveProduct(newProduct);
-        this.renderProducts();
-        await this.renderStats();
-        e.target.reset();
-        
-        // Reset preview box
-        const preview = document.getElementById('add-preview');
-        preview.innerHTML = `
-            <i class="fas fa-cloud-upload-alt" style="font-size: 2rem; margin-bottom: 0.5rem; color: var(--gold)"></i>
-            <span style="color:var(--text-muted); font-size:0.8rem">Charger une photo</span>
-        `;
-        document.getElementById('add-image-data').value = '';
-
-        this.notify('Produit ajouté avec succès !');
+        const result = await ProductDB.saveProduct(newProduct);
+        if (result) {
+            this.renderProducts();
+            await this.renderStats();
+            e.target.reset();
+            
+            // Reset preview box
+            const preview = document.getElementById('add-preview');
+            preview.innerHTML = `
+                <i class="fas fa-cloud-upload-alt" style="font-size: 2rem; margin-bottom: 0.5rem; color: var(--gold)"></i>
+                <span style="color:var(--text-muted); font-size:0.8rem">Charger une photo</span>
+            `;
+            document.getElementById('add-image-data').value = '';
+            this.notify('Produit ajouté avec succès !');
+        }
     },
 
     async deleteProduct(id) {
         if (confirm('Êtes-vous sûr de vouloir supprimer ce produit ?')) {
-            await ProductDB.delete(id);
-            this.renderProducts();
+            const success = await ProductDB.delete(id);
+            if (success) {
+                this.renderProducts();
+                this.notify('Produit supprimé !');
+            }
         }
     },
 
@@ -604,17 +608,16 @@ const Admin = {
 
         if (id) {
             const p = PRODUCTS.find(prod => prod.id === id);
+            if (!p) return;
+
             title.innerText = 'Modifier le Produit';
-            form.id.value = p.id;
-            form.name.value = p.name;
-            form.category.value = p.category;
-            form.price.value = p.price;
-            form.image.value = p.image; // Populate the hidden input
+            form.elements['id'].value = p.id;
+            form.elements['name'].value = p.name;
+            form.elements['category'].value = p.category;
+            form.elements['price'].value = p.price;
+            form.elements['image'].value = p.image; // Populate the hidden input
             this.updatePreview(p.image, 'edit-preview');
-            form.description.value = p.description || '';
-        } else {
-            // This could be used for adding too, but we have a sidebar form
-            // Let's stick to using modal for editing as requested
+            form.elements['description'].value = p.description || '';
         }
 
         modal.style.display = 'flex';
@@ -637,10 +640,12 @@ const Admin = {
             description: formData.get('description')
         };
 
-        await ProductDB.update(id, updatedData);
-        this.renderProducts();
-        this.closeModal();
-        alert('Produit mis à jour !');
+        const success = await ProductDB.update(id, updatedData);
+        if (success) {
+            this.renderProducts();
+            this.closeModal();
+            this.notify('Produit mis à jour !');
+        }
     },
 
     loadSettings() {
@@ -751,6 +756,15 @@ const Admin = {
                 localStorage.removeItem('elwali_site_settings');
                 window.location.reload();
             }
+        }
+    },
+
+    factoryResetProducts() {
+        if(confirm('ATTENTION ! Ceci va effacer tous les produits modifiés et toutes les commandes de la base locale.\nVoulez-vous remettre votre boutique à zéro ?')) {
+            localStorage.removeItem('elwali_products');
+            localStorage.removeItem('mlh_orders');
+            alert('Base de données remise à zéro. La page va se recharger.');
+            window.location.reload();
         }
     },
 

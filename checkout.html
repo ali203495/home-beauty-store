@@ -165,10 +165,7 @@
         </div>
     </div>
 
-    
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="js/supabase.js"></script>
-    <script src="js/config.js"></script>
+            <script src="js/config.js"></script>
     <script src="js/products.js"></script>
     <script src="js/cart.js"></script>
     <script src="js/i18n.js"></script>
@@ -206,7 +203,7 @@
 
         document.getElementById('checkout-form').addEventListener('submit', async function (e) {
             e.preventDefault();
-            
+
             const btn = this.querySelector('button[type="submit"]');
             const originalText = btn.innerHTML;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Traitement...';

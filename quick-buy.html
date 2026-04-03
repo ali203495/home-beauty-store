@@ -200,17 +200,14 @@
         <button aria-label="Action Button" class="btn btn-primary" onclick="window.location.href='/'">Retour à la Boutique</button>
     </div>
 
-    
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="js/supabase.js"></script>
-    <script src="js/config.js"></script>
+            <script src="js/config.js"></script>
     <script src="js/products.js"></script>
     <script>
         let product = null;
 
         document.addEventListener('DOMContentLoaded', async () => {
             await ProductDB.fetchAll();
-            
+
             const params = new URLSearchParams(window.location.search);
             const productId = params.get('id');
             product = PRODUCTS.find(p => p.id === productId);
@@ -232,9 +229,9 @@
         // Handle Order
         document.getElementById('quick-order-form').addEventListener('submit', async function (e) {
             e.preventDefault();
-            
+
             if(!product) return;
-            
+
             const btn = this.querySelector('button[type="submit"]');
             const originalText = btn.innerHTML;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Traitement...';

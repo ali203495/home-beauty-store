@@ -246,123 +246,68 @@ let PRODUCTS = [];
 
 /**
  * Data Access Object for Products
- * Synchronizes with Supabase for persistence
+ * Operates purely on local storage
  */
 const ProductDB = {
     async fetchAll() {
-        if (!window.supabaseClient) {
-            console.warn('Supabase not connected. Falling back to local/initial.');
+        const localData = localStorage.getItem('elwali_products');
+        if (localData) {
+            PRODUCTS = JSON.parse(localData);
+        } else {
+            // Seed if empty
+            console.log('Seeding initial products to LocalStorage...');
             PRODUCTS = INITIAL_PRODUCTS;
-            return PRODUCTS;
+            localStorage.setItem('elwali_products', JSON.stringify(PRODUCTS));
         }
-
-        const { data, error } = await window.supabaseClient.from('products').select('*');
-        if (error) {
-            console.error('Error fetching products:', error);
-            PRODUCTS = INITIAL_PRODUCTS;
-            return PRODUCTS;
-        }
-        
-        // Seed if empty
-        if (!data || data.length === 0) {
-            console.log('Seeding initial products to Supabase...');
-            for (const p of INITIAL_PRODUCTS) {
-                await window.supabaseClient.from('products').insert([p]);
-            }
-            PRODUCTS = INITIAL_PRODUCTS;
-            return PRODUCTS;
-        }
-
-        PRODUCTS = data;
         return PRODUCTS;
     },
 
     async saveProduct(product) {
-        if(!window.supabaseClient) return;
-        const { error } = await window.supabaseClient.from('products').insert([product]);
-        if (error) console.error('Error saving product:', error);
-        await this.fetchAll();
+        PRODUCTS.push(product);
+        localStorage.setItem('elwali_products', JSON.stringify(PRODUCTS));
+        return true;
     },
 
     async update(id, updatedData) {
-        if(!window.supabaseClient) return;
-        const { error } = await window.supabaseClient.from('products').update(updatedData).eq('id', id);
-        if (error) console.error('Error updating product:', error);
-        await this.fetchAll();
+        const index = PRODUCTS.findIndex(p => p.id === id);
+        if (index !== -1) {
+            PRODUCTS[index] = { ...PRODUCTS[index], ...updatedData };
+            localStorage.setItem('elwali_products', JSON.stringify(PRODUCTS));
+            return true;
+        }
+        return false;
     },
 
     async delete(id) {
-        if(!window.supabaseClient) return;
-        const { error } = await window.supabaseClient.from('products').delete().eq('id', id);
-        if (error) console.error('Error deleting product:', error);
-        await this.fetchAll();
+        PRODUCTS = PRODUCTS.filter(p => p.id !== id);
+        localStorage.setItem('elwali_products', JSON.stringify(PRODUCTS));
+        return true;
     }
 };
 
 /**
  * Data Access Object for Orders
- * Synchronizes with Supabase for persistence
+ * Operates purely on local storage
  */
 const OrderDB = {
     async getOrders() {
-        const localOrders = JSON.parse(localStorage.getItem('mlh_orders')) || [];
-        if(!window.supabaseClient) return localOrders;
-        
-        const { data, error } = await window.supabaseClient.from('orders').select('*').order('date', { ascending: false });
-        if (error) {
-            console.error('Supabase error (Table orders might be missing). Using local storage instead:', error.message);
-            return localOrders;
-        }
-        return data || localOrders;
+        return JSON.parse(localStorage.getItem('mlh_orders')) || [];
     },
 
     async saveOrder(order) {
-        const fallbackLocal = () => {
-            const orders = JSON.parse(localStorage.getItem('mlh_orders')) || [];
-            orders.unshift(order);
-            localStorage.setItem('mlh_orders', JSON.stringify(orders));
-        };
-
-        if(!window.supabaseClient) {
-            fallbackLocal();
-            return;
-        }
-        
-        const { error } = await window.supabaseClient.from('orders').insert([order]);
-        if (error) {
-            console.error('Error saving order to Supabase:', error.message);
-            fallbackLocal(); // Save locally so the order isn't lost!
-        }
+        const orders = await this.getOrders();
+        orders.unshift(order);
+        localStorage.setItem('mlh_orders', JSON.stringify(orders));
     },
 
     async updateStatus(orderId, status) {
-        if(!window.supabaseClient) return this.updateLocalStatus(orderId, status);
-        
-        const { error } = await window.supabaseClient.from('orders').update({status}).eq('id', orderId);
-        if (error) {
-            console.error('Error updating order status in Supabase:', error.message);
-            this.updateLocalStatus(orderId, status);
-        }
-    },
-
-    updateLocalStatus(orderId, status) {
-        let orders = JSON.parse(localStorage.getItem('mlh_orders')) || [];
+        let orders = await this.getOrders();
         orders = orders.map(o => o.id === orderId ? { ...o, status } : o);
         localStorage.setItem('mlh_orders', JSON.stringify(orders));
     },
 
     async deleteOrder(orderId) {
-        if(!window.supabaseClient) return this.deleteLocalOrder(orderId);
-        
-        const { error } = await window.supabaseClient.from('orders').delete().eq('id', orderId);
-        if (error) {
-            console.error('Error deleting order in Supabase:', error.message);
-            this.deleteLocalOrder(orderId);
-        }
-    },
-
-    deleteLocalOrder(orderId) {
-        let orders = JSON.parse(localStorage.getItem('mlh_orders')) || [];
+        let orders = await this.getOrders();
         orders = orders.filter(o => o.id !== orderId);
         localStorage.setItem('mlh_orders', JSON.stringify(orders));
     }
