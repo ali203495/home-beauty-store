@@ -270,7 +270,7 @@ const Admin = {
             newOrdersEl.innerText = newOrdersToday;
             alertBox.style.display = newOrdersToday > 0 ? 'flex' : 'none';
             if (newOrdersToday > 0) {
-                this.notify('Nouvelles commandes reçues !');
+                this.notify(`ALERTE : ${newOrdersToday} nouvelle(s) commande(s) !`);
             }
         }
 
@@ -301,10 +301,10 @@ const Admin = {
                 <div class="chart-bar-row" style="margin-bottom: 1.25rem;">
                     <div class="chart-bar-label" style="display:flex; justify-content:space-between; margin-bottom:0.5rem;">
                         <span style="font-weight: 700; color: #475569; font-size: 0.85rem;">${cat}</span>
-                        <span style="font-weight: 800; color: var(--accent-blue); font-size: 0.85rem;">${sales} DH</span>
+                        <span style="font-weight: 900; color: var(--accent-red); font-size: 0.85rem;">${sales} DH</span>
                     </div>
                     <div class="chart-bar-bg" style="background: #f1f5f9; height: 8px; border-radius: 50px; overflow:hidden;">
-                        <div class="chart-bar-fill" style="width: ${(sales / maxCatSales) * 100}%; background: var(--accent-blue); height: 100%; border-radius: 50px;"></div>
+                        <div class="chart-bar-fill" style="width: ${(sales / maxCatSales) * 100}%; background: var(--accent-red); height: 100%; border-radius: 50px;"></div>
                     </div>
                 </div>
             `).join('');
@@ -357,10 +357,10 @@ const Admin = {
                 </div>
                 <div class="admin-item-content" style="padding:1.5rem; flex:1;">
                     <h4 style="font-weight: 800; font-size: 1rem; color: #1e293b; margin-bottom: 0.5rem; line-height: 1.3;">${p.name}</h4>
-                    <div class="admin-item-price" style="font-weight: 800; color: var(--accent-blue); font-size: 1.2rem;">${p.price} DH</div>
+                    <div class="admin-item-price" style="font-weight: 900; color: var(--accent-red); font-size: 1.25rem;">${p.price} DH</div>
                 </div>
                 <div class="admin-item-actions" style="display:grid; grid-template-columns:1fr 1fr; border-top:1px solid #e2e8f0;">
-                    <button class="admin-action-btn" style="padding:1rem; border:none; background:none; cursor:pointer; color:var(--accent-blue); font-weight:800; border-right:1px solid #e2e8f0; font-size:0.8rem; transition:background 0.2s;" onmouseover="this.style.background='#eff6ff'" onmouseout="this.style.background='none'" onclick="Admin.openModal('${p.id}')">
+                    <button class="admin-action-btn" style="padding:1rem; border:none; background:none; cursor:pointer; color:var(--accent-slate); font-weight:800; border-right:1px solid #e2e8f0; font-size:0.8rem; transition:background 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='none'" onclick="Admin.openModal('${p.id}')">
                         <i class="fas fa-edit"></i> MODIFIER
                     </button>
                     <button class="admin-action-btn" style="padding:1rem; border:none; background:none; cursor:pointer; color:#ef4444; font-weight:800; font-size:0.8rem; transition:background 0.2s;" onmouseover="this.style.background='#fef2f2'" onmouseout="this.style.background='none'" onclick="Admin.deleteProduct('${p.id}')">
@@ -398,19 +398,19 @@ const Admin = {
                         ${orders.map(o => `
                             <tr style="border-bottom: 1px solid #e2e8f0; transition: background 0.1s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='white'">
                                 <td style="padding: 1.25rem 1rem;">
-                                    <div style="font-weight: 800; color: var(--accent-blue); cursor: pointer;" onclick="Admin.openOrderDetails('${o.id}')">#${o.id}</div>
-                                    <div style="font-size: 0.8rem; color: #94a3b8; font-weight: 600; margin-top: 2px;">${new Date(o.date).toLocaleDateString('fr-FR', {day: 'numeric', month: 'short'})}</div>
+                                    <div style="font-weight: 900; color: var(--accent-red); cursor: pointer;" onclick="Admin.openOrderDetails('${o.id}')">#${o.id}</div>
+                                    <div style="font-size: 0.8rem; color: #94a3b8; font-weight: 700; margin-top: 2px;">${new Date(o.date).toLocaleDateString('fr-FR', {day: 'numeric', month: 'short'})}</div>
                                 </td>
                                 <td style="padding: 1.25rem 1rem;">
-                                    <div style="font-weight: 700; color: #1e293b;">${o.customer.name}</div>
-                                    <div style="font-size: 0.8rem; color: #64748b; font-weight: 500; margin-top: 2px;">${o.customer.phone} — <span style="color:#f97316; font-weight:700;">${o.customer.neighborhood}</span></div>
+                                    <div style="font-weight: 800; color: #1e293b;">${o.customer.name}</div>
+                                    <div style="font-size: 0.8rem; color: #64748b; font-weight: 600; margin-top: 2px;">${o.customer.phone} — <span style="color:var(--accent-red); font-weight:900;">${o.customer.neighborhood}</span></div>
                                 </td>
-                                <td style="padding: 1.25rem 1rem; font-weight: 800; color: #1e293b;">${o.total} DH</td>
+                                <td style="padding: 1.25rem 1rem; font-weight: 900; color: #1e293b;">${o.total} DH</td>
                                 <td style="padding: 1.25rem 1rem;">
-                                    <span style="display:inline-block; padding: 0.4rem 0.8rem; border-radius: 50px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.02em; border: 1px solid transparent; 
-                                        ${o.status === 'Nouveau' ? 'background: rgba(29, 78, 216, 0.1); color: #1d4ed8; border-color: rgba(29, 78, 216, 0.2);' : 
-                                          o.status === 'En cours' ? 'background: rgba(249, 115, 22, 0.1); color: #c2410c; border-color: rgba(249, 115, 22, 0.2);' : 
-                                          'background: rgba(34, 197, 94, 0.1); color: #15803d; border-color: rgba(34, 197, 94, 0.2);'}"
+                                    <span style="display:inline-block; padding: 0.4rem 0.8rem; border-radius: 4px; font-size: 0.65rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em; 
+                                        ${o.status === 'Nouveau' ? 'background: #fee2e2; color: #ef4444;' : 
+                                          o.status === 'En cours' ? 'background: #ffedd5; color: #f97316;' : 
+                                          'background: #dcfce7; color: #15803d;'}"
                                     >${o.status}</span>
                                 </td>
                                 <td style="padding: 1.25rem 1rem; text-align: right;">
@@ -475,54 +475,54 @@ const Admin = {
         const content = document.getElementById('order-modal-content');
 
         content.innerHTML = `
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem; background: rgba(255,255,255,0.02); padding: 1.5rem; border-radius: 8px">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem; background: #f8fafc; padding: 1.5rem; border-radius: 8px; border: 1px solid #e2e8f0;">
                 <div>
-                    <h4 style="color: var(--gold); margin-bottom: 0.5rem">Client</h4>
-                    <p><strong>${o.customer.name}</strong></p>
-                    <p>${o.customer.phone}</p>
+                    <h4 style="color: var(--accent-red); font-weight: 900; margin-bottom: 0.5rem; text-transform: uppercase; font-size: 0.75rem;">Client</h4>
+                    <p style="font-weight: 800; color: var(--accent-slate);">${o.customer.name}</p>
+                    <p style="font-weight: 600; color: #64748b;">${o.customer.phone}</p>
                 </div>
                 <div>
-                    <h4 style="color: var(--gold); margin-bottom: 0.5rem">Livraison</h4>
-                    <p>${o.customer.address}</p>
-                    <p>${o.customer.neighborhood}</p>
+                    <h4 style="color: var(--accent-red); font-weight: 900; margin-bottom: 0.5rem; text-transform: uppercase; font-size: 0.75rem;">Livraison</h4>
+                    <p style="font-weight: 700; color: var(--accent-slate);">${o.customer.address}</p>
+                    <p style="font-weight: 800; color: var(--accent-red);">${o.customer.neighborhood}</p>
                 </div>
             </div>
             
-            <h4 style="margin-bottom: 1rem">Articles</h4>
-            <div class="cart-items" style="margin-bottom: 2rem">
+            <h4 style="font-weight: 900; font-size: 0.85rem; color: var(--accent-slate); margin-bottom: 1rem; text-transform: uppercase; border-bottom: 2px solid #f1f5f9; padding-bottom: 0.5rem;">Articles Commandés</h4>
+            <div style="margin-bottom: 2rem">
                 ${o.items.map(item => `
-                    <div style="display: flex; justify-content: space-between; padding: 0.8rem 0; border-bottom: 1px solid var(--border-subtle)">
+                    <div style="display: flex; justify-content: space-between; padding: 1rem 0; border-bottom: 1px solid #f1f5f9; align-items: center;">
                         <div>
-                            <strong>${item.name}</strong><br>
-                            <small>${item.category} | ${item.price} DH x ${item.quantity}</small>
+                            <div style="font-weight: 800; color: var(--accent-slate);">${item.name}</div>
+                            <div style="font-size: 0.75rem; color: #94a3b8; font-weight: 700;">${item.category.toUpperCase()} | ${item.price} DH x ${item.quantity}</div>
                         </div>
-                        <strong>${item.price * item.quantity} DH</strong>
+                        <div style="font-weight: 900; color: var(--accent-red);">${item.price * item.quantity} DH</div>
                     </div>
                 `).join('')}
-                <div style="display: flex; justify-content: space-between; padding: 1.5rem 0; font-size: 1.2rem; color: var(--gold)">
-                    <span>Total</span>
-                    <strong>${o.total} DH</strong>
+                <div style="display: flex; justify-content: space-between; padding: 1.5rem 0; font-size: 1.4rem; color: var(--accent-slate); border-top: 2px solid #f1f5f9; margin-top: 1rem;">
+                    <span style="font-weight: 900;">TOTAL</span>
+                    <strong style="color: var(--accent-red); font-weight: 900;">${o.total} DH</strong>
                 </div>
             </div>
             
-            <div style="margin-top: 2rem; border-top: 1px solid var(--border-subtle); padding-top: 1.5rem">
-                <h4 style="margin-bottom: 1rem">Communication WhatsApp</h4>
+            <div style="margin-top: 2rem; border-top: 1px solid #e2e8f0; padding-top: 1.5rem">
+                <h4 style="font-weight: 900; font-size: 0.85rem; color: var(--accent-slate); margin-bottom: 1rem; text-transform: uppercase;">Actions de Suivi (WhatsApp)</h4>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem">
-                    <button class="btn btn-secondary btn-sm" onclick="Admin.sendWATemplate('${o.id}', 'confirm')">
-                        <i class="fas fa-check"></i> Confirmation
+                    <button class="admin-action-btn" style="background: #f1f5f9; border: 1px solid #cbd5e1; padding: 0.75rem; border-radius: 4px; font-weight: 800; font-size: 0.75rem; cursor: pointer;" onclick="Admin.sendWATemplate('${o.id}', 'confirm')">
+                        <i class="fas fa-check"></i> CONFIRMER
                     </button>
-                    <button class="btn btn-secondary btn-sm" onclick="Admin.sendWATemplate('${o.id}', 'shipping')">
-                        <i class="fas fa-truck"></i> En livraison
+                    <button class="admin-action-btn" style="background: #f1f5f9; border: 1px solid #cbd5e1; padding: 0.75rem; border-radius: 4px; font-weight: 800; font-size: 0.75rem; cursor: pointer;" onclick="Admin.sendWATemplate('${o.id}', 'shipping')">
+                        <i class="fas fa-truck"></i> EN LIVRAISON
                     </button>
                 </div>
             </div>
 
             <div style="display: flex; gap: 1rem; margin-top: 2rem">
-                <button class="btn btn-primary" style="flex: 1" onclick="window.open('https://wa.me/${o.customer.phone.replace(/\s+/g, '')}', '_blank')">
-                    <i class="fab fa-whatsapp"></i> Chat Libre
+                <button class="admin-action-btn" style="flex: 1; background: #25D366; color: white; border: none; padding: 1rem; border-radius: 4px; font-weight: 900; font-size: 0.85rem; cursor: pointer;" onclick="window.open('https://wa.me/${o.customer.phone.replace(/\s+/g, '')}', '_blank')">
+                    <i class="fab fa-whatsapp"></i> CHAT DIRECT
                 </button>
-                <button class="btn btn-secondary" style="flex: 1; color: var(--rose)" onclick="Admin.deleteOrder('${o.id}')">
-                    <i class="fas fa-trash"></i> Supprimer
+                <button class="admin-action-btn" style="flex: 1; background: white; color: #ef4444; border: 1px solid #ef4444; padding: 1rem; border-radius: 4px; font-weight: 900; font-size: 0.85rem; cursor: pointer;" onclick="Admin.deleteOrder('${o.id}')">
+                    <i class="fas fa-trash"></i> SUPPRIMER
                 </button>
             </div>
         `;
@@ -621,7 +621,7 @@ const Admin = {
             // Reset preview box
             const preview = document.getElementById('add-preview');
             preview.innerHTML = `
-                <i class="fas fa-cloud-upload-alt" style="font-size: 2rem; margin-bottom: 0.5rem; color: var(--gold)"></i>
+                <i class="fas fa-cloud-upload-alt" style="font-size: 2rem; margin-bottom: 0.5rem; color: var(--accent-red)"></i>
                 <span style="color:var(--text-muted); font-size:0.8rem">Charger une photo</span>
             `;
             document.getElementById('add-image-data').value = '';
@@ -764,8 +764,8 @@ const Admin = {
             tr.style.borderBottom = '1px solid var(--border-subtle)';
             tr.innerHTML = `
                 <td style="padding: 1rem"><strong>${admin.name}</strong></td>
-                <td style="padding: 1rem; color: var(--gold)">${admin.email}</td>
-                <td style="padding: 1rem"><span style="background:var(--bg-glass); border:1px solid var(--border-subtle); padding: 0.2rem 0.5rem; border-radius:4px; font-size:0.8rem">${admin.role}</span></td>
+                <td style="padding: 1rem; color: var(--accent-red); font-weight: 700;">${admin.email}</td>
+                <td style="padding: 1rem"><span style="background:#f1f5f9; border:1px solid #e2e8f0; padding: 0.2rem 0.5rem; border-radius:4px; font-size:0.75rem; font-weight:800; color:var(--accent-slate); text-transform:uppercase;">${admin.role}</span></td>
                 <td style="padding: 1rem; text-align: right">
                     ${admin.id !== '1' ? `<button aria-label="Action Button" class="btn btn-secondary btn-sm" style="color:var(--rose)" onclick="Admin.deleteAdmin('${admin.id}')" title="Supprimer"><i class="fas fa-trash"></i></button>` : '<span style="color:var(--text-muted); font-size:0.8rem">Intouchable</span>'}
                 </td>

@@ -20,26 +20,56 @@
                 <span><i class="fas fa-truck"></i> LIVRAISON GRATUITE SUR TOUT MARRAKECH</span>
                 <span><i class="fas fa-phone"></i> +212 699-705617</span>
             </div>
-                        <span></span><span></span><span></span>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </nav>
-    
-    <!-- Secondary Nav (Categories) -->
-    <div class="secondary-nav">
-        <div class="container">
-            <div class="flex gap-xl">
-                <a href="/products">Tous les Produits</a>
-                <a href="/products?cat=Electroménager">Electroménager</a>
-                <a href="/products?cat=Climatisation">Climatisation</a>
-                <a href="/products?cat=TV">TV & Audio</a>
-                <a href="/products?cat=Cuisine">Cuisine</a>
-                <a href="/products?cat=Beauté">Beauté & Soin</a>
+            <div class="flex gap-lg">
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-whatsapp"></i></a>
+                <a href="/admin-login.html" style="opacity: 0.5;">ADMIN</a>
             </div>
         </div>
     </div>
+
+    <!-- 2. MAIN HEADER -->
+    <header class="main-header">
+        <div class="container flex-between gap-xl">
+            <a href="/" class="nav-logo">EL-WALI<span>.SHOP</span></a>
+
+            <div class="search-bar">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" placeholder="Rechercher un produit, une marque, une catégorie...">
+                <button class="search-btn">Rechercher</button>
+            </div>
+
+            <div class="nav-actions">
+                <div class="nav-action-item">
+                    <i class="fas fa-user-circle"></i>
+                    <span>Compte</span>
+                </div>
+                <div class="nav-action-item cart-icon-wrapper" onclick="window.location.href='/cart'">
+                    <i class="fas fa-shopping-basket"></i>
+                    <span>Panier</span>
+                    <span class="cart-badge">0</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 3. SECONDARY NAVBAR -->
+    <nav class="secondary-nav">
+        <div class="container flex">
+            <button class="cat-toggle-btn" onclick="window.location.href='/'">
+                <i class="fas fa-bars"></i> NOS RAYONS
+            </button>
+            <div class="mega-nav-links">
+                <a href="/products?cat=Electroménager">Electroménager</a>
+                <a href="/products?cat=TV">TV & Audio</a>
+                <a href="/products?cat=Climatisation">Climatisation</a>
+                <a href="/products?cat=Cuisine">Cuisine</a>
+                <a href="/products?cat=Beauté">Beauté & Soin</a>
+                <a href="/products?cat=Promos" style="color: var(--accent-red); font-weight: 900;">PROMOTIONS %</a>
+            </div>
+        </div>
+    </nav>
 
   <section class="section" style="padding-top: 2rem;">
     <div class="container">
@@ -57,10 +87,9 @@
     </div>
   </section>
 
-  <!-- Related Products -->
   <section class="section" style="background: var(--bg-primary); border-top: 1px solid var(--border-subtle);">
     <div class="container">
-      <h2 class="section-title" style="font-weight: 800; font-size: 1.8rem; margin-bottom: 2rem;">Produits Similaires</h2>
+      <h2 class="section-title" style="font-weight: 900; font-size: 1.8rem; margin-bottom: 2rem; color: var(--accent-slate);">PRODUITS SIMILAIRES</h2>
       <div class="product-grid" id="related-grid"></div>
     </div>
   </section>
@@ -88,42 +117,55 @@
         return;
       }
 
-      document.title = `${product.name} — EL-WALI-SHOP`;
-      document.getElementById('breadcrumb-current').textContent = product.name;
+      document.title = `${product.name} — EL-WALI-SHOP.MA`;
+      document.getElementById('breadcrumb-current').textContent = product.name.toUpperCase();
       const container = document.getElementById('product-detail-container');
       container.innerHTML = `
-        <div class="product-detail-image-wrap" style="background: white; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1.5rem;">
-          <img src="${product.image}" alt="${product.name}" style="width: 100%; border-radius: var(--radius-sm);">
+        <div class="product-gallery" style="background: white; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 2rem; display: flex; align-items: center; justify-content: center;">
+          <img src="${product.image}" alt="${product.name}" style="max-width: 100%; max-height: 500px; object-fit: contain;">
         </div>
-        <div class="product-detail-content">
-          <span class="product-detail-category" style="color: var(--accent-blue); font-weight: 700; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em; display: inline-block; margin-bottom: 0.5rem;">${product.category}</span>
-          <h1 class="product-detail-title" style="font-size: 2.5rem; font-weight: 800; color: var(--black); line-height: 1.1; margin-bottom: 1rem;">${product.name}</h1>
+        <div class="product-info">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+            <span style="background: var(--accent-red); color: white; padding: 0.25rem 0.75rem; border-radius: 50px; font-weight: 900; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em;">${product.category}</span>
+            <span style="color: #22c55e; font-weight: 800; font-size: 0.75rem;"><i class="fas fa-check-circle"></i> EN STOCK</span>
+          </div>
           
-          <div class="product-rating" style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1.5rem;">
-            <div class="stars" style="color: #fbbf24;">${'★'.repeat(Math.floor(product.rating))}</div>
-            <span class="rating-count" style="font-size: 0.85rem; color: var(--text-muted);">(${product.reviews} avis clients)</span>
-          </div>
-
-          <div class="product-detail-price" style="font-size: 2.2rem; font-weight: 800; color: var(--accent-blue); margin-bottom: 1.5rem;">${product.price} DH</div>
+          <h1 style="font-size: 2.2rem; font-weight: 900; color: var(--accent-slate); line-height: 1.1; margin-bottom: 1rem; border-bottom: 2px solid var(--bg-primary); padding-bottom: 1rem;">${product.name}</h1>
           
-          <div style="background: var(--bg-primary); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 2rem; font-size: 0.95rem; color: var(--text-secondary); line-height: 1.6; border-left: 4px solid var(--accent-blue);">
-            ${product.description}
+          <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
+            <div style="font-size: 2.8rem; font-weight: 900; color: var(--accent-red);">${product.price} <span style="font-size: 1.2rem;">DH</span></div>
+            <div style="text-decoration: line-through; color: var(--text-muted); font-weight: 600;">${Math.round(product.price * 1.2)} DH</div>
+          </div>
+          
+          <div style="background: #f1f5f9; border-radius: var(--radius-md); padding: 1.5rem; margin-bottom: 2rem;">
+            <h4 style="font-weight: 900; font-size: 0.85rem; color: var(--accent-slate); text-transform: uppercase; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fas fa-info-circle" style="color: var(--accent-red);"></i> DESCRIPTION
+            </h4>
+            <p style="font-size: 0.95rem; color: var(--text-secondary); line-height: 1.6;">${product.description || 'Aucune description disponible pour cet article.'}</p>
           </div>
 
-          <div class="qty-row" style="display: flex; gap: 1rem; margin-bottom: 1rem; align-items: stretch;">
-            <div class="qty-control" style="display: flex; align-items: center; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); overflow: hidden; background: white;">
-              <button class="qty-btn" onclick="updateQty(-1)" style="padding: 0.8rem 1.2rem; border: none; background: none; cursor: pointer; font-weight: 800;">-</button>
-              <span class="qty-value" id="qty-val" style="padding: 0 1rem; font-weight: 800; border-left: 1px solid var(--border-subtle); border-right: 1px solid var(--border-subtle);">1</span>
-              <button class="qty-btn" onclick="updateQty(1)" style="padding: 0.8rem 1.2rem; border: none; background: none; cursor: pointer; font-weight: 800;">+</button>
-            </div>
-            <button class="btn btn-primary btn-lg" onclick="handleAddToCart('${product.id}')" style="flex: 2; border-radius: var(--radius-sm);">
-                <i class="fas fa-shopping-cart"></i> Ajouter au Panier
-            </button>
+          <div class="action-card" style="background: white; border: 2px solid var(--accent-red); border-radius: var(--radius-md); padding: 1.5rem; box-shadow: var(--shadow-md);">
+              <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                <div class="qty-control" style="display: flex; align-items: center; border: 2px solid var(--border-subtle); border-radius: var(--radius-sm); overflow: hidden; background: white; height: 54px;">
+                  <button onclick="updateQty(-1)" style="padding: 0 1.25rem; border: none; background: none; cursor: pointer; font-weight: 900; font-size: 1.2rem;">-</button>
+                  <span id="qty-val" style="padding: 0 1.5rem; font-weight: 900; border-left: 1px solid var(--border-subtle); border-right: 1px solid var(--border-subtle); font-size: 1.1rem; min-width: 60px; text-align: center;">1</span>
+                  <button onclick="updateQty(1)" style="padding: 0 1.25rem; border: none; background: none; cursor: pointer; font-weight: 900; font-size: 1.2rem;">+</button>
+                </div>
+                <button class="btn-retail" onclick="handleAddToCart('${product.id}')" style="flex: 1; background: var(--accent-slate); color: white; border: none; border-radius: var(--radius-sm); font-weight: 900; display: flex; align-items: center; justify-content: center; gap: 1rem; cursor: pointer; height: 54px; font-size: 0.9rem;">
+                    <i class="fas fa-shopping-basket"></i> AJOUTER AU PANIER
+                </button>
+              </div>
+              <button class="btn-retail" onclick="window.location.href='/checkout.html?id=${product.id}'" style="width: 100%; background: var(--accent-red); color: white; border: none; border-radius: var(--radius-sm); font-weight: 900; padding: 1.2rem; cursor: pointer; font-size: 1.1rem; letter-spacing: 0.02em; box-shadow: 0 4px 15px rgba(225, 29, 72, 0.3);">
+                ACHETER MAINTENANT — PAIEMENT À LA LIVRAISON
+              </button>
           </div>
-
-          <button class="btn btn-secondary btn-lg" onclick="window.location.href='/quick-buy?id=${product.id}'" style="width: 100%; background: var(--accent-orange); color: white; border: none; font-weight: 800; margin-bottom: 1.5rem; border-radius: var(--radius-sm);">
-              ACHAT RAPIDE (PAIEMENT À LA LIVRAISON)
-          </button>
+          
+          <div style="margin-top: 2rem; display: flex; gap: 1.5rem; font-size: 0.8rem; color: var(--text-secondary); font-weight: 700;">
+            <span><i class="fas fa-shield-alt" style="color: var(--accent-red);"></i> GARANTIE 1 AN</span>
+            <span><i class="fas fa-undo" style="color: var(--accent-red);"></i> RETOUR 7 JOURS</span>
+            <span><i class="fas fa-truck" style="color: var(--accent-red);"></i> LIVRAISON EXPRESS</span>
+          </div>
+        </div>
 
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 2rem;">
             <button class="btn btn-secondary" onclick="shareToWhatsApp('${product.id}')" style="text-transform: none; font-size: 0.75rem; padding: 0.6rem; border-radius: var(--radius-sm);">

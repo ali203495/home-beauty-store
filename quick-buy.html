@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg-quick: #0a0a0a;
+            --bg-quick: #f8fafc;
         }
 
         body {
@@ -20,16 +20,17 @@
             align-items: center;
             justify-content: center;
             padding: 2rem 1rem;
+            font-family: 'Inter', sans-serif;
         }
 
         .quick-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-accent);
-            border-radius: var(--radius-2xl);
+            background: white;
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
             width: 100%;
             max-width: 500px;
             padding: 2.5rem;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            box-shadow: var(--shadow-xl);
         }
 
         .quick-header {
@@ -38,82 +39,94 @@
         }
 
         .quick-logo {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: white;
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--accent-red);
             text-decoration: none;
             display: block;
-            margin-bottom: 1rem;
+            margin-bottom: 0.5rem;
+            letter-spacing: -1px;
         }
 
         .quick-logo span {
-            color: var(--gold);
+            color: var(--accent-slate);
         }
 
         .product-preview {
             display: flex;
             gap: 1.5rem;
-            padding: 1rem;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: var(--radius-lg);
+            padding: 1.25rem;
+            background: #f1f5f9;
+            border-radius: var(--radius-md);
             margin-bottom: 2rem;
             align-items: center;
+            border: 1px solid var(--border-subtle);
         }
 
         .product-preview img {
-            width: 80px;
-            height: 80px;
-            object-fit: cover;
-            border-radius: var(--radius-md);
+            width: 70px;
+            height: 70px;
+            object-fit: contain;
+            background: white;
+            padding: 5px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-subtle);
         }
 
         .product-preview-info h4 {
-            color: white;
+            color: var(--accent-slate);
+            font-size: 0.95rem;
+            font-weight: 800;
             margin-bottom: 0.3rem;
+            line-height: 1.2;
         }
 
         .product-preview-info p {
-            color: var(--gold);
-            font-weight: 700;
-            font-size: 1.1rem;
+            color: var(--accent-red);
+            font-weight: 900;
+            font-size: 1.25rem;
         }
 
         .btn-confirm {
-            background: var(--gold);
-            color: black;
-            font-weight: 800;
+            background: var(--accent-red);
+            color: white;
+            font-weight: 900;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            padding: 1.2rem;
+            letter-spacing: 0.05em;
+            padding: 1.25rem;
             width: 100%;
             border: none;
-            border-radius: var(--radius-lg);
+            border-radius: var(--radius-sm);
             cursor: pointer;
             margin-top: 1.5rem;
-            transition: all 0.3s var(--ease);
+            transition: all 0.2s var(--ease);
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
+            font-size: 1rem;
+            box-shadow: 0 4px 15px rgba(225, 29, 72, 0.3);
         }
 
         .btn-confirm:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(212, 175, 55, 0.3);
-            filter: brightness(1.1);
+            background: var(--accent-slate);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
         }
 
         .cod-badge {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            background: rgba(46, 204, 113, 0.1);
-            color: #2ecc71;
+            background: #fdf2f2;
+            color: var(--accent-red);
             padding: 0.5rem 1rem;
             border-radius: 50px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            margin-bottom: 1.5rem;
+            font-size: 0.7rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
         }
 
         .success-overlay {
@@ -272,7 +285,7 @@
                 }
 
                 // Show success
-                document.getElementById('success-screen').style.display = 'flex';
+                window.location.href = `order-success.html?id=${orderData.id}`;
             } catch (err) {
                 console.error("Erreur lors de la commande rapide:", err);
                 alert("Erreur lors de la validation. Veuillez réessayer.");

@@ -66,26 +66,26 @@
                         <form id="checkout-form">
                             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem">
                                 <div class="form-group">
-                                    <label class="form-label" data-i18n="form_fname" style="font-weight: 700; font-size: 0.85rem; margin-bottom: 0.5rem; display: block;">Prénom</label>
+                                    <label class="form-label" data-i18n="form_fname" style="font-weight: 800; font-size: 0.75rem; color: var(--accent-slate); text-transform: uppercase; margin-bottom: 0.5rem; display: block;">Prénom</label>
                                     <input type="text" name="firstname" class="form-input" data-i18n="form_fname_ph"
-                                        placeholder="Ex: Ahmed" style="width: 100%; padding: 0.8rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);" required>
+                                        placeholder="Ex: Ahmed" style="width: 100%; padding: 0.9rem; border-radius: var(--radius-sm); border: 2px solid var(--border-subtle); font-weight: 600;" required>
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label" data-i18n="form_lname" style="font-weight: 700; font-size: 0.85rem; margin-bottom: 0.5rem; display: block;">Nom</label>
+                                    <label class="form-label" data-i18n="form_lname" style="font-weight: 800; font-size: 0.75rem; color: var(--accent-slate); text-transform: uppercase; margin-bottom: 0.5rem; display: block;">Nom</label>
                                     <input type="text" name="lastname" class="form-input" data-i18n="form_lname_ph"
-                                        placeholder="Ex: Alami" style="width: 100%; padding: 0.8rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);" required>
+                                        placeholder="Ex: Alami" style="width: 100%; padding: 0.9rem; border-radius: var(--radius-sm); border: 2px solid var(--border-subtle); font-weight: 600;" required>
                                 </div>
                             </div>
 
                             <div class="form-group" style="margin-bottom: 1.5rem;">
-                                <label class="form-label" data-i18n="form_phone_label" style="font-weight: 700; font-size: 0.85rem; margin-bottom: 0.5rem; display: block;">Téléphone (WhatsApp)</label>
-                                <input type="tel" name="phone" class="form-input" placeholder="06XXXXXXXX" style="width: 100%; padding: 0.8rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);" required>
+                                <label class="form-label" data-i18n="form_phone_label" style="font-weight: 800; font-size: 0.75rem; color: var(--accent-slate); text-transform: uppercase; margin-bottom: 0.5rem; display: block;">Téléphone (WhatsApp)</label>
+                                <input type="tel" name="phone" class="form-input" placeholder="06XXXXXXXX" style="width: 100%; padding: 0.9rem; border-radius: var(--radius-sm); border: 2px solid var(--border-subtle); font-weight: 700; font-size: 1.1rem; color: var(--accent-red);" required>
                             </div>
 
                             <div class="form-group" style="margin-bottom: 1.5rem;">
-                                <label class="form-label" data-i18n="form_address_label" style="font-weight: 700; font-size: 0.85rem; margin-bottom: 0.5rem; display: block;">Adresse complète à Marrakech</label>
+                                <label class="form-label" data-i18n="form_address_label" style="font-weight: 800; font-size: 0.75rem; color: var(--accent-slate); text-transform: uppercase; margin-bottom: 0.5rem; display: block;">Adresse complète à Marrakech</label>
                                 <textarea name="address" class="form-input" rows="3" data-i18n="form_address_ph"
-                                    placeholder="N° de maison, Rue, Appartement..." style="width: 100%; padding: 0.8rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); resize: vertical;" required></textarea>
+                                    placeholder="N° de maison, Rue, Appartement..." style="width: 100%; padding: 0.9rem; border-radius: var(--radius-sm); border: 2px solid var(--border-subtle); resize: vertical; font-weight: 600;" required></textarea>
                             </div>
 
                             <div class="form-group" style="margin-bottom: 2rem;">
@@ -135,9 +135,9 @@
                             <span data-i18n="checkout_delivery">Livraison</span>
                             <span style="color: #22c55e; font-weight: 700;" data-i18n="cart_delivery_free">Gratuite</span>
                         </div>
-                        <div class="summary-row total" style="display: flex; justify-content: space-between; border-top: 2px solid var(--bg-primary); padding-top: 1rem;">
-                            <span data-i18n="checkout_total_label" style="font-weight: 800; font-size: 1.2rem;">Total TTC</span>
-                            <span id="summary-total" style="font-weight: 800; font-size: 1.4rem; color: var(--accent-blue);">0 DH</span>
+                        <div class="summary-row total" style="display: flex; justify-content: space-between; border-top: 3px solid var(--bg-primary); padding-top: 1.5rem;">
+                            <span data-i18n="checkout_total_label" style="font-weight: 900; font-size: 1.25rem; color: var(--accent-slate);">TOTAL À PAYER</span>
+                            <span id="summary-total" style="font-weight: 900; font-size: 1.6rem; color: var(--accent-red);">0 DH</span>
                         </div>
                     </div>
                 </aside>
@@ -230,8 +230,8 @@
                     localStorage.setItem('mlh_orders', JSON.stringify(orders));
                 }
 
-                document.getElementById('success-modal').classList.add('open');
                 Cart.clear();
+                window.location.href = `order-success.html?id=${orderData.id}`;
             } catch (err) {
                 console.error("Erreur lors de la commande:", err);
                 alert("Erreur lors de la validation. Veuillez réessayer.");
