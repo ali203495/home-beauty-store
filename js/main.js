@@ -15,6 +15,7 @@ const App = {
         this.updateCurrentYear();
         this.initSearch();
         this.renderFeaturedProducts();
+        this.renderHeroBanners();
         this.setupWhatsAppButton();
         this.setupMegaMenu();
         
@@ -29,6 +30,31 @@ const App = {
     updateCurrentYear() {
         const el = document.getElementById('current-year');
         if (el) el.textContent = new Date().getFullYear();
+    },
+
+    renderHeroBanners() {
+        const banners = CONFIG.heroBanners;
+        if (!banners) return;
+
+        const mainImg = document.getElementById('hero-main-img');
+        const mainTag = document.getElementById('hero-main-tag');
+        const mainTitle = document.getElementById('hero-main-title');
+        
+        const side1Img = document.getElementById('hero-side1-img');
+        const side1Title = document.getElementById('hero-side1-title');
+        
+        const side2Img = document.getElementById('hero-side2-img');
+        const side2Title = document.getElementById('hero-side2-title');
+
+        if (mainImg) mainImg.src = banners.main.img;
+        if (mainTag) mainTag.innerHTML = banners.main.tag;
+        if (mainTitle) mainTitle.innerHTML = banners.main.title;
+
+        if (side1Img) side1Img.src = banners.side1.img;
+        if (side1Title) side1Title.innerHTML = banners.side1.title;
+
+        if (side2Img) side2Img.src = banners.side2.img;
+        if (side2Title) side2Title.innerHTML = banners.side2.title;
     },
 
     initSearch() {

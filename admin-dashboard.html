@@ -270,6 +270,9 @@
             <a href="#" class="nav-link" onclick="Admin.switchTab('admins', this)">
                 <i class="fas fa-user-shield"></i> Gestion Admins
             </a>
+            <a href="#" class="nav-link" onclick="Admin.switchTab('media', this)">
+                <i class="fas fa-photo-video"></i> Contenu & IA
+            </a>
             <a href="#" class="nav-link" onclick="Admin.switchTab('logs', this)">
                 <i class="fas fa-history"></i> Logs Système
             </a>
@@ -583,7 +586,96 @@
                 </table>
             </div>
         </section>
-    </main>
+        <!-- TAB: MEDIA & AI -->
+        <section id="tab-media" class="tab-content animate-fade">
+            <div class="flex-between mb-xl">
+                <div>
+                    <h1>Contenu Visuel & Intelligence Artificielle</h1>
+                    <p class="text-muted">Gérez vos bannières et optimisez vos catégories avec l'IA.</p>
+                </div>
+            </div>
+
+            <!-- Image Management -->
+            <div class="grid-3 gap-xl mb-2xl">
+                <!-- Main Banner -->
+                <div class="glass p-xl">
+                    <h3 class="mb-lg">Bannière Principale</h3>
+                    <form onsubmit="Admin.saveMediaConfig(event, 'main')">
+                        <div class="form-group mb-md">
+                            <label class="nav-label">URL Image</label>
+                            <input type="text" name="img" class="w-full glass p-md text-primary" value="${CONFIG.heroBanners.main.img}">
+                        </div>
+                        <div class="form-group mb-md">
+                            <label class="nav-label">Tag (ex: PREMIUM)</label>
+                            <input type="text" name="tag" class="w-full glass p-md text-primary" value="${CONFIG.heroBanners.main.tag}">
+                        </div>
+                        <div class="form-group mb-md">
+                            <label class="nav-label">Titre (HTML autorisé)</label>
+                            <input type="text" name="title" class="w-full glass p-md text-primary" value="${CONFIG.heroBanners.main.title}">
+                        </div>
+                        <button type="submit" class="bg-red w-full p-md mt-md">METTRE À JOUR</button>
+                    </form>
+                </div>
+
+                <!-- Side 1 -->
+                <div class="glass p-xl">
+                    <h3 class="mb-lg">Bannière Latérale 1</h3>
+                    <form onsubmit="Admin.saveMediaConfig(event, 'side1')">
+                        <div class="form-group mb-md">
+                            <label class="nav-label">URL Image</label>
+                            <input type="text" name="img" class="w-full glass p-md text-primary" value="${CONFIG.heroBanners.side1.img}">
+                        </div>
+                        <div class="form-group mb-md">
+                            <label class="nav-label">Titre</label>
+                            <input type="text" name="title" class="w-full glass p-md text-primary" value="${CONFIG.heroBanners.side1.title}">
+                        </div>
+                        <button type="submit" class="bg-red w-full p-md mt-md">METTRE À JOUR</button>
+                    </form>
+                </div>
+
+                <!-- Side 2 -->
+                <div class="glass p-xl">
+                    <h3 class="mb-lg">Bannière Latérale 2</h3>
+                    <form onsubmit="Admin.saveMediaConfig(event, 'side2')">
+                        <div class="form-group mb-md">
+                            <label class="nav-label">URL Image</label>
+                            <input type="text" name="img" class="w-full glass p-md text-primary" value="${CONFIG.heroBanners.side2.img}">
+                        </div>
+                        <div class="form-group mb-md">
+                            <label class="nav-label">Titre</label>
+                            <input type="text" name="title" class="w-full glass p-md text-primary" value="${CONFIG.heroBanners.side2.title}">
+                        </div>
+                        <button type="submit" class="bg-red w-full p-md mt-md">METTRE À JOUR</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- AI Category Assistant -->
+            <div class="glass p-2xl">
+                <div class="flex-between mb-xl">
+                    <div>
+                        <h2 class="text-bold"><i class="fas fa-robot text-red"></i> IA Assistant : Diagnostic des Catégories</h2>
+                        <p class="text-muted">L'IA analyse votre inventaire pour optimiser votre SEO et votre navigation.</p>
+                    </div>
+                    <button class="glass p-md text-bold" onclick="Admin.runAIDiagnostics()" id="ai-diag-btn">
+                        <i class="fas fa-wand-magic-sparkles"></i> LANCER LE DIAGNOSTIC
+                    </button>
+                </div>
+
+                <div id="ai-results-container" class="animate-fade" style="display: none;">
+                    <div style="padding: 2rem; background: rgba(225, 29, 72, 0.05); border: 1px solid rgba(225, 29, 72, 0.2); border-radius: var(--radius-md);">
+                        <h4 class="text-bold mb-md">Recommandations de l'Intelligence Artificielle</h4>
+                        <ul id="ai-suggestions-list" class="flex-column gap-md mb-xl" style="padding-left: 1.5rem;">
+                            <!-- AI Suggestions -->
+                        </ul>
+                        <div class="flex gap-md">
+                            <button class="bg-red p-md" onclick="Admin.applyAISuggestions()">APPLIQUER LES RECOMMANDATIONS</button>
+                            <button class="glass p-md" onclick="document.getElementById('ai-results-container').style.display='none'">IGNORER</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
     <!-- ── MODALS ── -->
     <!-- Product Edit Modal -->

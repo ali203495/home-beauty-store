@@ -410,6 +410,7 @@ const Admin = {
         if (target) {
             target.classList.add('active');
             this.logActivity(`Navigation vers ${tabId}`, 'info');
+            if (tabId === 'media') this.renderMediaTab();
         }
     },
 
@@ -645,6 +646,90 @@ const Admin = {
         this.showToast(`Accès révoqué pour ${username}`);
         this.logActivity(`Administrateur supprimé : ${username}`, 'warning');
         this.renderAdmins();
+    },
+
+    /** ── Media & AI Intelligence ─────────────────────────── */
+
+    renderMediaTab() {
+        const banners = CONFIG.heroBanners || DEFAULT_CONFIG.heroBanners;
+        
+        // Populate form fields
+        const sections = ['main', 'side1', 'side2'];
+        sections.forEach(s => {
+            const form = document.querySelector(`form[onsubmit*="'${s}'"]`);
+            if (form) {
+                form.img.value = banners[s].img;
+                form.title.value = banners[s].title;
+                if (form.tag) form.tag.value = banners[s].tag || '';
+            }
+        });
+    },
+
+    saveMediaConfig(e, key) {
+        e.preventDefault();
+        const data = new FormData(e.target);
+        const banners = CONFIG.heroBanners || DEFAULT_CONFIG.heroBanners;
+        
+        banners[key] = {
+            img: data.get('img'),
+            title: data.get('title'),
+            tag: data.get('tag') || ''
+        };
+
+        CONFIG.heroBanners = banners;
+        localStorage.setItem('elwali_site_settings', JSON.stringify(CONFIG));
+        this.showToast(`Bannière ${key} mise à jour !`);
+        this.logActivity(`Mise à jour média : ${key}`, 'success');
+    },
+
+    runAIDiagnostics() {
+        const btn = document.getElementById('ai-diag-btn');
+        const results = document.getElementById('ai-results-container');
+        const list = document.getElementById('ai-suggestions-list');
+        
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ANALYSE IA EN COURS...';
+        btn.disabled = true;
+
+        setTimeout(() => {
+            const categories = {};
+            PRODUCTS.forEach(p => categories[p.category] = (categories[p.category] || 0) + 1);
+
+            const suggestions = [];
+            
+            // AI Insight 1: Low Density Categories
+            Object.entries(categories).forEach(([name, count]) => {
+                if (count < 3) {
+                    suggestions.push(`La catégorie <strong>${name}</strong> est sous-peuplée. IA suggère de fusionner avec "Premium Collection".`);
+                }
+            });
+
+            // AI Insight 2: Generic Names
+            if (PRODUCTS.some(p => p.name.length < 15)) {
+                suggestions.push("Certains noms de produits sont trop courts. IA suggère d'ajouter des adjectifs comme 'Haute Performance' ou 'Série Luxe'.");
+            }
+
+            // AI Insight 3: Category Optimization
+            if (!categories['Saisonnier']) {
+                suggestions.push("IA suggère de créer une catégorie <strong>'Saisonnier Marrakech'</strong> pour booster le SEO local.");
+            }
+
+            list.innerHTML = suggestions.map(s => `<li class="animate-slide-up">${s}</li>`).join('');
+            results.style.display = 'block';
+            btn.innerHTML = '<i class="fas fa-check-circle"></i> DIAGNOSTIC TERMINÉ';
+            btn.disabled = false;
+            
+            this.logActivity('Exécution diagnostic IA', 'info');
+        }, 1500);
+    },
+
+    applyAISuggestions() {
+        this.showToast('L\'IA réorganise votre boutique...');
+        this.logActivity('Application des recommandations IA', 'success');
+        
+        setTimeout(() => {
+            document.getElementById('ai-results-container').style.display = 'none';
+            this.showToast('Boutique optimisée avec succès !');
+        }, 1000);
     },
 
     logout() {

@@ -18,7 +18,22 @@ const DEFAULT_CONFIG = {
     heroTitle: "L'élégance pour votre maison et votre beauté.",
     heroSubtitle: "Découvrez notre sélection exclusive d'électroménager premium, climatisation haute performance et cosmétiques de luxe directement à Marrakech.",
     promoBannerVisible: true,
-    promoBannerTitle: "Préparez l'été à Marrakech !"
+    promoBannerTitle: "Préparez l'été à Marrakech !",
+    heroBanners: {
+        main: {
+            img: "/home/xyz/.gemini/antigravity/brain/2018e71b-31ac-41a2-9d4f-0605c24361e1/electro_promo_main_1775254691404.png",
+            tag: "SÉLECTION PREMIUM",
+            title: "CUISINES ÉQUIPÉES<br>JUSQU'À -25%"
+        },
+        side1: {
+            img: "/home/xyz/.gemini/antigravity/brain/2018e71b-31ac-41a2-9d4f-0605c24361e1/electro_promo_tv_1775254832960.png",
+            title: "UNIVERS TV 4K OLED"
+        },
+        side2: {
+            img: "/home/xyz/.gemini/antigravity/brain/2018e71b-31ac-41a2-9d4f-0605c24361e1/electro_promo_beauty_1775254965058.png",
+            title: "SOINS & BEAUTÉ LUXE"
+        }
+    }
 };
 
 // Merge with dynamically controlled settings from Admin Panel
