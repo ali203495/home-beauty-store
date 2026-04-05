@@ -267,41 +267,88 @@ const Admin = {
     },
 
     async renderAnalytics() {
-        const chart = document.getElementById('category-chart');
         const forecast = document.getElementById('forecast-value');
-        if (!chart || !forecast) return;
+        const aovEl = document.getElementById('stat-aov');
+        const velocityChart = document.getElementById('sales-velocity-chart');
+        const customerChart = document.getElementById('top-customers-ranking');
+        const categoryChart = document.getElementById('category-chart');
+        if (!forecast) return;
 
-        // 1. Forecast Calculation
         const orders = await OrderDB.getOrders();
-        const now = Date.now();
-        const sevenDaysAgo = now - (7 * 24 * 60 * 60 * 1000);
-        const recentOrders = orders.filter(o => new Date(o.date).getTime() > sevenDaysAgo);
-        const weekRevenue = recentOrders.reduce((sum, o) => sum + o.total, 0);
-        const dailyAvg = weekRevenue / 7;
-        const estimate30d = Math.round(dailyAvg * 30);
-        forecast.innerText = `${estimate30d.toLocaleString()} DH`;
-
-        // 2. Category Share
-        const cats = {};
-        PRODUCTS.forEach(p => {
-            cats[p.category] = (cats[p.category] || 0) + 1;
-        });
-        const total = PRODUCTS.length;
+        const customers = await CustomerDB.getCustomers();
+        const totalRev = orders.reduce((sum, o) => sum + o.total, 0);
         
-        chart.innerHTML = Object.entries(cats).map(([name, count]) => {
-            const pct = Math.round((count / total) * 100);
-            return `
-                <div class="flex-column gap-xs mb-md">
-                    <div class="flex-between" style="font-size: 0.75rem; font-weight: 800;">
-                        <span>${name.toUpperCase()}</span>
-                        <span>${pct}%</span>
+        // 1. AOV & Forecast
+        const aov = orders.length > 0 ? Math.round(totalRev / orders.length) : 0;
+        if (aovEl) aovEl.innerText = `${aov.toLocaleString()} DH`;
+
+        const now = new Date();
+        const sevenDaysAgo = new Date(now.getTime() - (7 * 24 * 60 * 60 * 1000));
+        const recentOrders = orders.filter(o => new Date(o.date) > sevenDaysAgo);
+        const weekRevenue = recentOrders.reduce((sum, o) => sum + o.total, 0);
+        const estimate30d = Math.round((weekRevenue / 7) * 30);
+        if (forecast) forecast.innerText = `${estimate30d.toLocaleString()} DH`;
+
+        // 2. Sales Velocity (Last 7 Days)
+        if (velocityChart) {
+            const days = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
+            const dailyData = Array(7).fill(0).map((_, i) => {
+                const d = new Date(now.getTime() - (i * 24 * 60 * 60 * 1000));
+                return { day: days[d.getDay()], date: d.toLocaleDateString(), value: 0 };
+            }).reverse();
+
+            orders.forEach(o => {
+                const oDate = new Date(o.date).toLocaleDateString();
+                const dIdx = dailyData.findIndex(d => d.date === oDate);
+                if (dIdx !== -1) dailyData[dIdx].value += o.total;
+            });
+
+            const maxVal = Math.max(...dailyData.map(d => d.value), 1);
+            velocityChart.innerHTML = dailyData.map(d => `
+                <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                    <div class="glass" style="width: 100%; height: ${(d.value / maxVal) * 100}%; background: var(--accent-red); border-radius: 4px; min-height: 4px; transition: height 1s ease;"></div>
+                    <span style="font-size: 0.65rem; font-weight: 800; color: var(--text-muted);">${d.day}</span>
+                </div>
+            `).join('');
+        }
+
+        // 3. Top Customers Ranking
+        if (customerChart) {
+            const top5 = customers.sort((a, b) => b.totalSpent - a.totalSpent).slice(0, 5);
+            const maxSpent = top5.length > 0 ? top5[0].totalSpent : 1;
+            customerChart.innerHTML = top5.map(c => `
+                <div class="flex-column gap-xs">
+                    <div class="flex-between" style="font-size: 0.8rem; font-weight: 700;">
+                        <span>${c.name}</span>
+                        <span class="text-red">${c.totalSpent.toLocaleString()} DH</span>
                     </div>
-                    <div style="height: 6px; background: rgba(255,255,255,0.05); border-radius: 3px; overflow: hidden;">
-                        <div style="width: ${pct}%; height: 100%; background: var(--accent-red); border-radius: 3px;"></div>
+                    <div style="height: 4px; background: rgba(255,255,255,0.05); border-radius: 2px;">
+                        <div style="width: ${(c.totalSpent / maxSpent) * 100}%; height: 100%; background: #22c55e; border-radius: 2px;"></div>
                     </div>
                 </div>
-            `;
-        }).join('');
+            `).join('') || '<p class="text-muted">Aucun client.</p>';
+        }
+
+        // 4. Category Distribution
+        if (categoryChart) {
+            const cats = {};
+            PRODUCTS.forEach(p => cats[p.category] = (cats[p.category] || 0) + 1);
+            const totalProds = PRODUCTS.length || 1;
+            categoryChart.innerHTML = Object.entries(cats).map(([name, count]) => {
+                const pct = Math.round((count / totalProds) * 100);
+                return `
+                    <div class="flex-column gap-xs">
+                        <div class="flex-between" style="font-size: 0.75rem; font-weight: 800;">
+                            <span>${name.toUpperCase()}</span>
+                            <span>${pct}% (${count})</span>
+                        </div>
+                        <div style="height: 6px; background: rgba(255,255,255,0.05); border-radius: 3px;">
+                            <div style="width: ${pct}%; height: 100%; background: var(--accent-red); border-radius: 3px;"></div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
     },
 
     /** ── Action Hub ────────────────────────────────────────── */

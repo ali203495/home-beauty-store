@@ -343,24 +343,43 @@
 
         <!-- TAB: ANALYTICS -->
         <section id="tab-analytics" class="tab-content animate-fade">
-            <h1 class="animate-slide-up">Analyses Prédictives</h1>
-            <p class="text-muted animate-slide-up stagger-1 mb-xl">Algorithmes de tendance et répartition du catalogue.</p>
+            <h1 class="animate-slide-up">Intelligence & Statistiques</h1>
+            <p class="text-muted animate-slide-up stagger-1 mb-xl">Analyses approfondies de performance et prévisions.</p>
             
-            <div class="grid-2 gap-xl">
+            <div class="grid-2 gap-xl mb-xl">
                 <div class="glass p-xl animate-scale">
-                    <h3 class="mb-lg">Répartition par Catégorie</h3>
-                    <div id="category-chart" class="flex-column gap-md">
-                        <!-- Dynamic Progress Bars -->
+                    <h3 class="mb-lg">Ventes Hebdomadaires (7 derniers jours)</h3>
+                    <div id="sales-velocity-chart" class="flex align-end gap-md" style="height: 150px; padding-bottom: 20px;">
+                        <!-- Dynamic CSS Bars -->
                     </div>
                 </div>
                 <div class="glass p-xl animate-scale stagger-2">
-                    <h3 class="mb-lg">Prévisions de Chiffre d'Affaires (30j)</h3>
-                    <div class="flex-column gap-md">
-                        <div style="font-size: 3rem; font-weight: 900; color: #22c55e;" id="forecast-value">0 DH</div>
-                        <p class="text-muted" style="font-size: 0.85rem">Cette estimation est basée sur votre volume de commandes actuel et le panier moyen calculé sur les 15 derniers jours.</p>
-                        <div style="padding: 1rem; background: rgba(34, 197, 94, 0.1); border-radius: var(--radius-md); border: 1px solid rgba(34, 197, 94, 0.2);">
-                            <span class="text-bold text-green"><i class="fas fa-check-circle"></i> État : Rentable</span>
+                    <h3 class="mb-lg">Panier Moyen & Prévisions (30j)</h3>
+                    <div class="flex-between align-center">
+                        <div>
+                            <div class="stat-label">Panier Moyen (AOV)</div>
+                            <div style="font-size: 2rem; font-weight: 900; color: var(--accent-red);" id="stat-aov">0 DH</div>
                         </div>
+                        <div class="text-right">
+                            <div class="stat-label">Projection CA</div>
+                            <div style="font-size: 2.2rem; font-weight: 900; color: #22c55e;" id="forecast-value">0 DH</div>
+                        </div>
+                    </div>
+                    <p class="text-muted mt-lg" style="font-size: 0.8rem">Prévisions basées sur le volume de commandes et la croissance hebdomadaire.</p>
+                </div>
+            </div>
+
+            <div class="grid-2 gap-xl">
+                <div class="glass p-xl animate-scale stagger-3">
+                    <h3 class="mb-lg">Top 5 Clients (Fidélité)</h3>
+                    <div id="top-customers-ranking" class="flex-column gap-md">
+                        <!-- Dynamic Customer Bars -->
+                    </div>
+                </div>
+                <div class="glass p-xl animate-scale stagger-4">
+                    <h3 class="mb-lg">Répartition par Catégorie</h3>
+                    <div id="category-chart" class="flex-column gap-md">
+                        <!-- Dynamic Progress Bars -->
                     </div>
                 </div>
             </div>
