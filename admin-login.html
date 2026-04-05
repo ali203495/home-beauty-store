@@ -157,6 +157,10 @@
         <i class="fas fa-exclamation-circle"></i> Accès refusé : Identifiants invalides
     </div>
 
+    <div id="toast" class="glass" style="position: fixed; bottom: 2rem; right: 2rem; padding: 1rem 2rem; border-radius: var(--radius-md); display: none; transform: translateY(100px); transition: transform 0.3s var(--ease); z-index: 3000;">
+        <span id="toast-msg">Action effectuée</span>
+    </div>
+
     <div class="login-card glass">
         <div class="login-logo">EL-WALI<span>.ADMIN</span></div>
         <span class="admin-label">Contrôle de Sécurité</span>
@@ -175,9 +179,55 @@
             <button type="submit" class="login-btn">S'AUTHENTIFIER</button>
         </form>
 
+        <div style="margin-top: 1.5rem;">
+            <a href="#" class="text-muted" style="font-size: 0.75rem; font-weight: 700;" onclick="showRecoveryModal()">Mot de passe oublié ?</a>
+        </div>
+
         <a href="/" class="back-link">
             <i class="fas fa-arrow-left"></i> Retour à la boutique
         </a>
+    </div>
+
+    <!-- RECOVERY MODAL -->
+    <div id="recovery-modal" class="glass" style="position: fixed; inset: 0; z-index: 2000; display: none; align-items: center; justify-content: center; background: rgba(0,0,0,0.85); backdrop-filter: blur(15px);">
+        <div class="login-card glass" id="recovery-card" style="margin: 0; border: 1px solid var(--border-subtle); animation: none;">
+            <!-- STEP 1: USERNAME -->
+            <div id="recovery-step-1">
+                <h3 class="mb-lg">Récupération de Compte</h3>
+                <p class="text-muted mb-xl" style="font-size: 0.85rem;">Saisissez votre identifiant pour recevoir un code de vérification.</p>
+                <div class="input-group">
+                    <label>Identifiant</label>
+                    <input type="text" id="rec-username" class="login-input" placeholder="Ex: abdelaali">
+                </div>
+                <button class="login-btn" onclick="handleRecoveryInit()">CONTINUER</button>
+            </div>
+
+            <!-- STEP 2: CODE -->
+            <div id="recovery-step-2" style="display: none;">
+                <h3 class="mb-lg">Vérification Email</h3>
+                <p class="text-muted mb-xl" style="font-size: 0.85rem;" id="rec-email-msg">Un code a été envoyé à votre adresse.</p>
+                <div class="input-group">
+                    <label>Code de Sécurité (6 chiffres)</label>
+                    <input type="text" id="rec-code" class="login-input text-center" placeholder="000000" maxlength="6" style="letter-spacing: 0.5em; font-size: 1.25rem;">
+                </div>
+                <button class="login-btn" onclick="handleRecoveryVerify()">VÉRIFIER LE CODE</button>
+            </div>
+
+            <!-- STEP 3: RESET -->
+            <div id="recovery-step-3" style="display: none;">
+                <h3 class="mb-lg">Nouveau Mot de Passe</h3>
+                <p class="text-muted mb-xl" style="font-size: 0.85rem;">Définissez vos nouveaux identifiants de sécurité.</p>
+                <div class="input-group">
+                    <label>Nouveau Mot de Passe</label>
+                    <input type="password" id="rec-new-pass" class="login-input" placeholder="••••••••">
+                </div>
+                <button class="login-btn" onclick="handleRecoveryReset()">RÉINITIALISER LE MOT DE PASSE</button>
+            </div>
+
+            <button class="back-link" style="background: none; border: none; cursor: pointer; margin-top: 1.5rem;" onclick="hideRecoveryModal()">
+                Annuler
+            </button>
+        </div>
     </div>
 
     <script src="js/admin.js"></script>
@@ -211,6 +261,63 @@
                 }
             }, 800);
         });
+
+        /* ── Recovery UI Logic ── */
+        let recoveryUsername = '';
+
+        function showRecoveryModal() {
+            document.getElementById('recovery-modal').style.display = 'flex';
+            switchStep(1);
+        }
+
+        function hideRecoveryModal() {
+            document.getElementById('recovery-modal').style.display = 'none';
+        }
+
+        function switchStep(n) {
+            [1, 2, 3].forEach(i => document.getElementById(`recovery-step-${i}`).style.display = i === n ? 'block' : 'none');
+        }
+
+        async function handleRecoveryInit() {
+            const user = document.getElementById('rec-username').value;
+            if (!user) return alert('Veuillez entrer votre identifiant');
+            
+            const res = await Admin.initiateRecovery(user);
+            if (res.success) {
+                recoveryUsername = user;
+                document.getElementById('rec-email-msg').innerText = `Un code de sécurité a été simulé pour : ${res.maskedEmail}. (Vérifiez la console ou le toast pour le code de démo).`;
+                
+                // Demo facilitation toast
+                Admin.showToast(`DÉMO: Le code est ${res.code}`);
+                
+                switchStep(2);
+            } else {
+                alert(res.msg);
+            }
+        }
+
+        async function handleRecoveryVerify() {
+            const code = document.getElementById('rec-code').value;
+            const valid = Admin.verifyRecoveryCode(recoveryUsername, code);
+            if (valid) {
+                switchStep(3);
+            } else {
+                alert('Code invalide ou expiré');
+            }
+        }
+
+        async function handleRecoveryReset() {
+            const pass = document.getElementById('rec-new-pass').value;
+            if (pass.length < 4) return alert('Le mot de passe est trop court');
+
+            const success = await Admin.resetPassword(recoveryUsername, pass);
+            if (success) {
+                Admin.showToast('Mot de passe mis à jour ! Connectez-vous.');
+                setTimeout(hideRecoveryModal, 2000);
+            } else {
+                alert('Erreur lors de la réinitialisation');
+            }
+        }
     </script>
 </body>
 </html>

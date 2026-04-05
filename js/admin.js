@@ -48,6 +48,31 @@ const AdminDB = {
     }
 };
 
+const RecoveryStore = {
+    codes: new Map(), // username -> {code, expires}
+    
+    generate(username) {
+        const code = Math.floor(100000 + Math.random() * 900000).toString();
+        this.codes.set(username.toLowerCase(), {
+            code,
+            expires: Date.now() + (10 * 60 * 1000) // 10 minutes
+        });
+        return code;
+    },
+
+    verify(username, code) {
+        const record = this.codes.get(username.toLowerCase());
+        if (!record) return false;
+        if (Date.now() > record.expires) {
+            this.codes.delete(username.toLowerCase());
+            return false;
+        }
+        const isValid = record.code === code;
+        if (isValid) this.codes.delete(username.toLowerCase());
+        return isValid;
+    }
+};
+
 const Admin = {
     async init() {
         this.checkAuth();
@@ -113,6 +138,40 @@ const Admin = {
         
         // Match specific role
         return user.role === requiredRole;
+    },
+
+    /** ── Password Recovery Logic ────────────────────────── */
+
+    async initiateRecovery(username) {
+        const admins = await AdminDB.fetchAll();
+        const user = admins.find(a => a.username.toLowerCase() === username.toLowerCase());
+        
+        if (!user) return { success: false, msg: 'Utilisateur introuvable' };
+        
+        const code = RecoveryStore.generate(username);
+        const email = user.recoveryEmail || 'votre email';
+        const masked = email.replace(/(..)(.*)(@.*)/, '$1***$3');
+
+        // Simulation toast (security display for demo/dev)
+        this.logActivity(`Récupération mdp : Code généré pour ${username}`, 'info');
+        console.log(`[RECOVERY] Code for ${username}: ${code}`);
+        
+        return { success: true, maskedEmail: masked, code }; // Code included for dev ease
+    },
+
+    verifyRecoveryCode(username, code) {
+        return RecoveryStore.verify(username, code);
+    },
+
+    async resetPassword(username, newPassword) {
+        const admins = await AdminDB.fetchAll();
+        const user = admins.find(a => a.username.toLowerCase() === username.toLowerCase());
+        if (!user) return false;
+
+        user.passwordHash = await this.hashPassword(newPassword);
+        await AdminDB.saveAdmin(user);
+        this.logActivity(`Réinitialisation mdp : Succès pour ${username}`, 'success');
+        return true;
     },
 
     /** ── Rendering Engine ─────────────────────────────────── */
