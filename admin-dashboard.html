@@ -680,6 +680,45 @@
             </div>
         </section>
 
+        <!-- TAB: AUTOMATION -->
+        <section id="tab-automation" class="tab-content animate-fade">
+            <div class="flex-between mb-xl">
+                <div>
+                    <h1>Automatisations Sociales</h1>
+                    <p class="text-muted">Synchronisez votre boutique avec vos réseaux sociaux.</p>
+                </div>
+            </div>
+
+            <div class="glass p-2xl border-subtle">
+                <div class="flex align-center gap-xl mb-xl">
+                    <div style="font-size: 3rem; color: #1877F2;"><i class="fab fa-facebook"></i></div>
+                    <div>
+                        <h2 class="text-bold">Facebook Group (EL-WALI-SHOP)</h2>
+                        <p class="text-muted">Publiez automatiquement vos produits en tant que Marque.</p>
+                    </div>
+                </div>
+
+                <form id="automation-config-form" onsubmit="Admin.saveAutomationConfig(event)">
+                    <div class="grid-2 gap-xl mb-xl">
+                        <div class="form-group border-right pr-xl" style="border-right: 1px solid var(--border-subtle);">
+                            <label class="nav-label">Statut du Service</label>
+                            <label class="flex align-center gap-md mt-md" style="cursor: pointer;">
+                                <input type="checkbox" name="fbEnabled"> Activer la publication automatique
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label class="nav-label">Webhook URL (Make.com/Zapier)</label>
+                            <input type="text" name="fbWebhook" class="w-full glass p-md text-primary mt-md" placeholder="https://hook.make.com/..." required>
+                        </div>
+                    </div>
+                    <div style="padding: 1.5rem; background: rgba(255,255,255,0.02); border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+                        <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.6;"><i class="fas fa-info-circle mr-sm text-red"></i> Une fois configuré, chaque nouveau produit créé pourra être envoyé instantanément vers votre groupe Facebook sans aucune connexion manuelle requise. Vos clients verront le produit avec son image, son titre et son prix.</p>
+                    </div>
+                    <button type="submit" class="bg-red p-md mt-xl w-full" style="border-radius: var(--radius-md); font-weight: 800;">ENREGISTRER LA CONFIGURATION</button>
+                </form>
+            </div>
+        </section>
+
     <!-- ── MODALS ── -->
     <!-- Product Edit Modal -->
     <div id="product-modal" class="glass" style="position: fixed; inset: 0; z-index: 2000; display: none; align-items: center; justify-content: center; background: rgba(0,0,0,0.8);">
