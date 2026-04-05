@@ -68,6 +68,7 @@ const Admin = {
         this.renderCustomers();
         this.renderPromos();
         this.renderLogs();
+        this.renderAnalytics();
     },
 
     async computeStats() {
@@ -265,6 +266,44 @@ const Admin = {
         `).join('') || '<p class="text-muted">Aucun journal disponible.</p>';
     },
 
+    async renderAnalytics() {
+        const chart = document.getElementById('category-chart');
+        const forecast = document.getElementById('forecast-value');
+        if (!chart || !forecast) return;
+
+        // 1. Forecast Calculation
+        const orders = await OrderDB.getOrders();
+        const now = Date.now();
+        const sevenDaysAgo = now - (7 * 24 * 60 * 60 * 1000);
+        const recentOrders = orders.filter(o => new Date(o.date).getTime() > sevenDaysAgo);
+        const weekRevenue = recentOrders.reduce((sum, o) => sum + o.total, 0);
+        const dailyAvg = weekRevenue / 7;
+        const estimate30d = Math.round(dailyAvg * 30);
+        forecast.innerText = `${estimate30d.toLocaleString()} DH`;
+
+        // 2. Category Share
+        const cats = {};
+        PRODUCTS.forEach(p => {
+            cats[p.category] = (cats[p.category] || 0) + 1;
+        });
+        const total = PRODUCTS.length;
+        
+        chart.innerHTML = Object.entries(cats).map(([name, count]) => {
+            const pct = Math.round((count / total) * 100);
+            return `
+                <div class="flex-column gap-xs mb-md">
+                    <div class="flex-between" style="font-size: 0.75rem; font-weight: 800;">
+                        <span>${name.toUpperCase()}</span>
+                        <span>${pct}%</span>
+                    </div>
+                    <div style="height: 6px; background: rgba(255,255,255,0.05); border-radius: 3px; overflow: hidden;">
+                        <div style="width: ${pct}%; height: 100%; background: var(--accent-red); border-radius: 3px;"></div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    },
+
     /** ── Action Hub ────────────────────────────────────────── */
     
     switchTab(tabId, el = null) {
@@ -455,6 +494,22 @@ const Admin = {
     logout() {
         sessionStorage.removeItem('mlh_admin_logged_in');
         window.location.href = 'admin-login.html';
+    },
+
+    async exportOrders() {
+        const orders = await OrderDB.getOrders();
+        let csv = 'ID,Date,Client,Telephone,Total,Status\n';
+        orders.forEach(o => {
+            csv += `${o.id},${o.date},"${o.customer.name}",${o.customer.phone},${o.total},${o.status}\n`;
+        });
+        
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `el-wali-orders-${new Date().toISOString().split('T')[0]}.csv`;
+        a.click();
+        this.logActivity('Export des commandes CSV', 'info');
     },
 
     setupEventListeners() {
