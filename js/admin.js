@@ -142,21 +142,25 @@ const Admin = {
 
     /** ── Password Recovery Logic ────────────────────────── */
 
-    async initiateRecovery(username) {
+    async initiateRecovery(emailInput) {
         const admins = await AdminDB.fetchAll();
-        const user = admins.find(a => a.username.toLowerCase() === username.toLowerCase());
+        const user = admins.find(a => a.recoveryEmail.toLowerCase() === emailInput.toLowerCase());
         
-        if (!user) return { success: false, msg: 'Utilisateur introuvable' };
+        if (!user) return { success: false, msg: 'Aucun compte associé à cet email' };
         
-        const code = RecoveryStore.generate(username);
-        const email = user.recoveryEmail || 'votre email';
-        const masked = email.replace(/(..)(.*)(@.*)/, '$1***$3');
+        const code = RecoveryStore.generate(user.username);
+        const masked = user.recoveryEmail.replace(/(..)(.*)(@.*)/, '$1***$3');
 
         // Simulation toast (security display for demo/dev)
-        this.logActivity(`Récupération mdp : Code généré pour ${username}`, 'info');
-        console.log(`[RECOVERY] Code for ${username}: ${code}`);
+        this.logActivity(`Récupération mdp initiée pour ${user.username}`, 'info');
+        console.log(`[RECOVERY] Code for ${user.username}: ${code}`);
         
-        return { success: true, maskedEmail: masked, code }; // Code included for dev ease
+        return { 
+            success: true, 
+            username: user.username,
+            maskedEmail: masked, 
+            code 
+        };
     },
 
     verifyRecoveryCode(username, code) {

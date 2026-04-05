@@ -191,15 +191,15 @@
     <!-- RECOVERY MODAL -->
     <div id="recovery-modal" class="glass" style="position: fixed; inset: 0; z-index: 2000; display: none; align-items: center; justify-content: center; background: rgba(0,0,0,0.85); backdrop-filter: blur(15px);">
         <div class="login-card glass" id="recovery-card" style="margin: 0; border: 1px solid var(--border-subtle); animation: none;">
-            <!-- STEP 1: USERNAME -->
+            <!-- STEP 1: EMAIL IDENTIFICATION -->
             <div id="recovery-step-1">
                 <h3 class="mb-lg">Récupération de Compte</h3>
-                <p class="text-muted mb-xl" style="font-size: 0.85rem;">Saisissez votre identifiant pour recevoir un code de vérification.</p>
+                <p class="text-muted mb-xl" style="font-size: 0.85rem;">Saisissez votre email Gmail enregistré pour identifier votre compte.</p>
                 <div class="input-group">
-                    <label>Identifiant</label>
-                    <input type="text" id="rec-username" class="login-input" placeholder="Ex: abdelaali">
+                    <label>Email de Récupération</label>
+                    <input type="email" id="rec-identifier" class="login-input" placeholder="Ex: votre.email@gmail.com">
                 </div>
-                <button class="login-btn" onclick="handleRecoveryInit()">CONTINUER</button>
+                <button class="login-btn" onclick="handleRecoveryInit()">TROUVER MON COMPTE</button>
             </div>
 
             <!-- STEP 2: CODE -->
@@ -279,13 +279,13 @@
         }
 
         async function handleRecoveryInit() {
-            const user = document.getElementById('rec-username').value;
-            if (!user) return alert('Veuillez entrer votre identifiant');
+            const identifier = document.getElementById('rec-identifier').value;
+            if (!identifier) return alert('Veuillez entrer votre email de récupération');
             
-            const res = await Admin.initiateRecovery(user);
+            const res = await Admin.initiateRecovery(identifier);
             if (res.success) {
-                recoveryUsername = user;
-                document.getElementById('rec-email-msg').innerText = `Un code de sécurité a été simulé pour : ${res.maskedEmail}. (Vérifiez la console ou le toast pour le code de démo).`;
+                recoveryUsername = res.username;
+                document.getElementById('rec-email-msg').innerText = `Un code de sécurité a été simulé pour : ${res.maskedEmail}. (Identifiant : ${res.username})`;
                 
                 // Demo facilitation toast
                 Admin.showToast(`DÉMO: Le code est ${res.code}`);
