@@ -37,6 +37,12 @@
             </div>
     <div class="secondary-nav">
         <div class="container">
+            <div class="search-bar">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" id="global-search" placeholder="Rechercher un produit, une marque, une catégorie...">
+                <button class="search-btn">Rechercher</button>
+                <div class="search-suggestions" id="search-suggestions"></div>
+            </div>
             <div class="flex gap-xl">
                 <a href="/products">Tous les Produits</a>
                 <a href="/products?cat=Electroménager">Electroménager</a>
@@ -228,6 +234,13 @@
                     const orders = JSON.parse(localStorage.getItem('mlh_orders')) || [];
                     orders.unshift(orderData);
                     localStorage.setItem('mlh_orders', JSON.stringify(orders));
+                }
+
+                // Deduct Stock
+                if (typeof ProductDB !== 'undefined') {
+                    for (const item of orderData.items) {
+                        await ProductDB.decrementStock(item.id, item.quantity);
+                    }
                 }
 
                 Cart.clear();

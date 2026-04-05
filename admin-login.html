@@ -1,127 +1,138 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Connexion Admin — EL-WALI-SHOP</title>
-    <link rel="stylesheet" href="css/index.css">
-    <link rel="stylesheet" href="css/components.css">
+    <title>Connexion — EL-WALI ADMIN</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/index.css">
     <style>
         body {
-            background-color: #f8fafc;
-            background-image: radial-gradient(#cbd5e1 0.5px, transparent 0.5px);
-            background-size: 24px 24px;
             height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0;
-            font-family: 'Inter', sans-serif;
-            color: #1e293b;
+            background: var(--bg-primary);
+            overflow: hidden;
         }
 
-        .login-container {
-            width: 100%;
-            max-width: 440px;
-            padding: 2rem;
-            animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        .login-orb {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, var(--accent-red) 0%, transparent 70%);
+            filter: blur(100px);
+            opacity: 0.15;
+            z-index: -1;
+            animation: moveOrb 20s infinite alternate;
+        }
+
+        @keyframes moveOrb {
+            from { transform: translate(-50%, -50%); }
+            to { transform: translate(50%, 50%); }
         }
 
         .login-card {
-            background: white;
-            border: 1px solid #e2e8f0;
-            border-radius: var(--radius-lg);
-            padding: 3rem 2.5rem;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            width: 100%;
+            max-width: 420px;
+            padding: 3rem;
+            border-radius: var(--radius-xl);
             text-align: center;
+            animation: slideUp 0.6s var(--ease);
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
         }
 
         .login-logo {
-            font-size: 2.2rem;
+            font-size: 2rem;
             font-weight: 900;
-            margin-bottom: 0.5rem;
-            letter-spacing: -1.5px;
             color: var(--accent-red);
+            margin-bottom: 0.5rem;
+            letter-spacing: -1px;
         }
 
-        .login-logo span { color: var(--accent-slate); }
+        .login-logo span { color: var(--text-primary); }
 
-        .admin-tag {
-            display: inline-block;
-            background: #f1f5f9;
-            color: #64748b;
-            padding: 0.4rem 1rem;
-            border-radius: 50px;
+        .admin-label {
             font-size: 0.75rem;
             font-weight: 800;
+            color: var(--text-muted);
             text-transform: uppercase;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.2em;
             margin-bottom: 2.5rem;
+            display: block;
         }
 
-        .form-group {
+        .input-group {
             text-align: left;
             margin-bottom: 1.5rem;
         }
 
-        .form-label {
+        .input-group label {
             display: block;
+            font-size: 0.7rem;
+            font-weight: 800;
+            color: var(--text-muted);
+            text-transform: uppercase;
             margin-bottom: 0.5rem;
-            font-size: 0.85rem;
-            font-weight: 700;
-            color: #475569;
+            padding-left: 0.5rem;
         }
 
         .login-input {
             width: 100%;
-            background: white;
-            border: 1px solid #cbd5e1;
-            color: #1e293b;
-            padding: 0.8rem 1rem;
-            border-radius: var(--radius-sm);
-            font-size: 1rem;
-            transition: all 0.2s var(--ease);
+            background: rgba(0,0,0,0.2);
+            border: 1px solid var(--border-subtle);
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            transition: all 0.3s var(--ease);
         }
 
         .login-input:focus {
-            border-color: var(--accent-red);
             outline: none;
-            box-shadow: 0 0 0 3px rgba(225, 29, 72, 0.1);
+            border-color: var(--accent-red);
+            background: rgba(0,0,0,0.3);
+            box-shadow: 0 0 0 4px rgba(225, 29, 72, 0.1);
         }
 
         .login-btn {
             width: 100%;
-            padding: 1rem;
-            border-radius: var(--radius-sm);
-            font-weight: 900;
-            margin-top: 1.5rem;
-            cursor: pointer;
-            border: none;
             background: var(--accent-red);
             color: white;
+            padding: 1rem;
+            border: none;
+            border-radius: var(--radius-md);
+            font-weight: 900;
             font-size: 0.9rem;
-            transition: all 0.2s var(--ease);
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
+            cursor: pointer;
+            margin-top: 1rem;
+            box-shadow: 0 10px 20px -5px rgba(225, 29, 72, 0.4);
+            transition: all 0.3s var(--ease);
         }
 
         .login-btn:hover {
-            background: var(--accent-slate);
-            transform: translateY(-1px);
-            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px -5px rgba(225, 29, 72, 0.5);
+            background: var(--accent-red-dark);
         }
 
-        .error-msg {
-            background: #fee2e2;
-            color: #b91c1c;
-            padding: 0.8rem;
-            border-radius: var(--radius-sm);
+        .error-toast {
+            position: absolute;
+            top: 2rem;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            padding: 1rem 2rem;
+            border-radius: var(--radius-md);
             font-size: 0.85rem;
-            font-weight: 600;
-            margin-bottom: 1.5rem;
+            font-weight: 700;
             display: none;
-            border: 1px solid #fecaca;
+            backdrop-filter: blur(10px);
         }
 
         .back-link {
@@ -129,79 +140,77 @@
             align-items: center;
             gap: 0.5rem;
             margin-top: 2.5rem;
-            color: #64748b;
+            color: var(--text-muted);
             text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 600;
+            font-size: 0.8rem;
+            font-weight: 700;
             transition: color 0.2s;
         }
 
         .back-link:hover { color: var(--accent-red); }
-
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
     </style>
 </head>
 <body>
-    <div class="login-container">
-        <div class="login-card">
-            <div class="login-logo">EL-WALI<span>.SHOP</span></div>
-            <span class="admin-tag">Portail Administration</span>
-
-            <form id="login-form">
-                <div id="login-error" class="error-msg">Identifiants incorrects.</div>
-                
-                <div class="form-group">
-                    <label class="form-label">Identifiant</label>
-                    <input type="text" id="username" class="login-input" placeholder="Nom d'utilisateur" required spellcheck="false" autocomplete="username">
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Mot de passe</label>
-                    <input type="password" id="password" class="login-input" placeholder="••••••••" required autocomplete="current-password">
-                </div>
-                
-                <button type="submit" class="login-btn">SE CONNECTER</button>
-            </form>
-
-            <a href="/" class="back-link">
-                <i class="fas fa-arrow-left"></i> Retour à la boutique
-            </a>
-        </div>
+    <div class="login-orb"></div>
+    
+    <div id="login-error" class="error-toast animate-scale">
+        <i class="fas fa-exclamation-circle"></i> Accès refusé : Identifiants invalides
     </div>
 
-    <!-- Scripts -->
+    <div class="login-card glass">
+        <div class="login-logo">EL-WALI<span>.ADMIN</span></div>
+        <span class="admin-label">Contrôle de Sécurité</span>
+
+        <form id="login-form">
+            <div class="input-group">
+                <label>Identifiant</label>
+                <input type="text" id="username" class="login-input" placeholder="Administrateur" required spellcheck="false">
+            </div>
+            
+            <div class="input-group">
+                <label>Mot de passe</label>
+                <input type="password" id="password" class="login-input" placeholder="••••••••" required>
+            </div>
+            
+            <button type="submit" class="login-btn">S'AUTHENTIFIER</button>
+        </form>
+
+        <a href="/" class="back-link">
+            <i class="fas fa-arrow-left"></i> Retour à la boutique
+        </a>
+    </div>
+
     <script src="js/admin.js"></script>
     <script>
         document.getElementById('login-form').addEventListener('submit', async (e) => {
             e.preventDefault();
+            const btn = e.target.querySelector('button');
+            const originalText = btn.innerText;
+            
+            btn.innerText = 'ÉVALUATION...';
+            btn.disabled = true;
+
             const user = document.getElementById('username').value;
             const pass = document.getElementById('password').value;
             const error = document.getElementById('login-error');
 
             const success = await Admin.login(user, pass);
-            if (success) {
-                window.location.href = 'admin-dashboard.html';
-            } else {
-                error.style.display = 'block';
-                document.querySelector('.login-card').style.animation = 'none';
-                void document.querySelector('.login-card').offsetWidth; // trigger reflow
-                document.querySelector('.login-card').style.animation = 'shake 0.4s';
-            }
+            
+            setTimeout(() => {
+                if (success) {
+                    window.location.href = 'admin-dashboard.html';
+                } else {
+                    error.style.display = 'block';
+                    btn.innerText = originalText;
+                    btn.disabled = false;
+                    document.querySelector('.login-card').style.animation = 'shake 0.4s';
+                    setTimeout(() => {
+                        error.style.display = 'none';
+                        document.querySelector('.login-card').style.animation = '';
+                    }, 3000);
+                }
+            }, 800);
         });
-
-        // Add shake animation
-        const style = document.createElement('style');
-        style.innerHTML = `
-            @keyframes shake {
-                0%, 100% { transform: translateX(0); }
-                25% { transform: translateX(-8px); }
-                75% { transform: translateX(8px); }
-            }
-        `;
-        document.head.appendChild(style);
     </script>
 </body>
 </html>

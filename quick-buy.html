@@ -284,6 +284,11 @@
                     localStorage.setItem('mlh_orders', JSON.stringify(orders));
                 }
 
+                // Deduct Stock
+                if (typeof ProductDB !== 'undefined') {
+                    await ProductDB.decrementStock(orderData.items[0].id, 1);
+                }
+
                 // Show success
                 window.location.href = `order-success.html?id=${orderData.id}`;
             } catch (err) {

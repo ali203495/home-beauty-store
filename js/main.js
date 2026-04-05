@@ -32,25 +32,71 @@ const App = {
     },
 
     initSearch() {
-        const searchInput = document.querySelector('.search-bar input');
+        const searchInput = document.getElementById('global-search');
         const searchBtn = document.querySelector('.search-btn');
+        const suggestionsBox = document.getElementById('search-suggestions');
+
+        if (!searchInput || !suggestionsBox) return;
 
         const performSearch = () => {
             const query = searchInput.value.trim();
             if (query) {
-                window.location.href = `/products?search=${encodeURIComponent(query)}`;
+                window.location.href = `/products.html?search=${encodeURIComponent(query)}`;
             }
         };
 
-        if (searchInput) {
-            searchInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') performSearch();
-            });
-        }
+        searchInput.addEventListener('input', () => {
+            const query = searchInput.value.trim().toLowerCase();
+            if (!query || query.length < 2) {
+                suggestionsBox.style.display = 'none';
+                return;
+            }
+
+            const allProducts = window.PRODUCTS || [];
+            const matches = allProducts.filter(p => 
+                (p.visible !== false) && (
+                    p.name.toLowerCase().includes(query) || 
+                    p.category.toLowerCase().includes(query)
+                )
+            ).slice(0, 8); // Top 8 matches
+
+            if (matches.length > 0) {
+                this.renderSearchSuggestions(matches, suggestionsBox);
+                suggestionsBox.style.display = 'block';
+            } else {
+                suggestionsBox.style.display = 'none';
+            }
+        });
+
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') performSearch();
+        });
 
         if (searchBtn) {
             searchBtn.addEventListener('click', performSearch);
         }
+
+        // Close suggestions on click outside
+        document.addEventListener('click', (e) => {
+            if (!searchInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
+                suggestionsBox.style.display = 'none';
+            }
+        });
+    },
+
+    renderSearchSuggestions(products, container) {
+        container.innerHTML = products.map(p => `
+            <div class="search-suggestion-item" onclick="window.location.href='/product-detail.html?id=${p.id}'">
+                <div class="search-suggestion-img">
+                    <img src="${p.image}" alt="${p.name}">
+                </div>
+                <div class="search-suggestion-info">
+                    <div class="search-suggestion-name">${p.name}</div>
+                    <div class="search-suggestion-cat">${p.category}</div>
+                    <div class="search-suggestion-price">${p.price} DH</div>
+                </div>
+            </div>
+        `).join('');
     },
 
     setupMegaMenu() {

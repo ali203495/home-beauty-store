@@ -44,8 +44,9 @@
 
             <div class="search-bar">
                 <i class="fas fa-search search-icon"></i>
-                <input type="text" placeholder="Rechercher un produit, une marque, une catégorie...">
+                <input type="text" id="global-search" placeholder="Rechercher un produit, une marque, une catégorie...">
                 <button class="search-btn">Rechercher</button>
+                <div class="search-suggestions" id="search-suggestions"></div>
             </div>
 
             <div class="nav-actions">
@@ -121,24 +122,40 @@
 
                 <!-- Sidebar Filter -->
                 <aside class="filter-sidebar">
+                    <!-- Category Filter -->
                     <div class="filter-card" style="background: white; border: 1px solid var(--border-subtle); padding: 1.5rem; border-radius: var(--radius-md); margin-bottom: 1.5rem;">
-                        <h4 style="font-size: 1rem; border-bottom: 2px solid var(--accent-red); padding-bottom: 0.5rem; margin-bottom: 1.2rem;">Catégories</h4>
-                        <div id="category-filters">
-                            <div class="filter-option" style="margin-bottom: 0.8rem;">
-                                <input type="radio" name="cat" id="cat-all" value="all" checked>
-                                <label for="cat-all" style="font-weight: 800; cursor: pointer; text-transform: uppercase; font-size: 0.75rem;">Tout voir</label>
-                            </div>
+                        <h4 style="font-weight: 900; font-size: 0.75rem; color: var(--accent-slate); text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 2px solid var(--accent-red); padding-bottom: 0.75rem; margin-bottom: 1.25rem;">Catégories</h4>
+                        <div id="category-filters" style="display: flex; flex-direction: column; gap: 0.5rem;">
+                            <!-- Categories injected by JS -->
                         </div>
                     </div>
 
+                    <!-- Brand Filter -->
                     <div class="filter-card" style="background: white; border: 1px solid var(--border-subtle); padding: 1.5rem; border-radius: var(--radius-md); margin-bottom: 1.5rem;">
-                        <h4 style="font-size: 1rem; padding-bottom: 0.5rem; margin-bottom: 1.2rem;">Budget (DH)</h4>
-                        <div class="price-range-inputs" style="display: flex; gap: 0.5rem;">
-                            <input type="number" id="min-price" class="form-input" placeholder="Min" style="width: 50%; padding: 0.5rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm);">
-                            <input type="number" id="max-price" class="form-input" placeholder="Max" style="width: 50%; padding: 0.5rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm);">
+                        <h4 style="font-weight: 900; font-size: 0.75rem; color: var(--accent-slate); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1.25rem;">Marques Populaires</h4>
+                        <div id="brand-filters" style="display: flex; flex-direction: column; gap: 0.6rem;">
+                            <!-- Brands injected by JS -->
                         </div>
-                        <button class="btn btn-primary btn-sm" style="width:100%; margin-top:1rem; border-radius: var(--radius-sm); background: var(--accent-red); border: none; font-weight: 800;"
-                            onclick="updateFilters()">Filtrer</button>
+                    </div>
+
+                    <!-- Price Filter -->
+                    <div class="filter-card" style="background: white; border: 1px solid var(--border-subtle); padding: 1.5rem; border-radius: var(--radius-md); margin-bottom: 1.5rem;">
+                        <h4 style="font-weight: 900; font-size: 0.75rem; color: var(--accent-slate); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1.25rem;">Budget (DH)</h4>
+                        <div style="display: flex; flex-direction: column; gap: 1rem;">
+                            <div class="price-range-inputs" style="display: flex; gap: 0.5rem;">
+                                <div style="flex: 1;">
+                                    <label style="font-size: 0.6rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin-bottom: 4px; display: block;">Min</label>
+                                    <input type="number" id="min-price" class="form-input" placeholder="0" style="width: 100%; padding: 0.6rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); font-size: 0.8rem; font-weight: 700;">
+                                </div>
+                                <div style="flex: 1;">
+                                    <label style="font-size: 0.6rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin-bottom: 4px; display: block;">Max</label>
+                                    <input type="number" id="max-price" class="form-input" placeholder="+" style="width: 100%; padding: 0.6rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); font-size: 0.8rem; font-weight: 700;">
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" style="width:100%; padding: 0.8rem; border-radius: var(--radius-sm); background: var(--accent-red); border: none; font-weight: 900; font-size: 0.75rem; letter-spacing: 0.05em;" onclick="updateFilters()">
+                                APPLIQUER LES FILTRES
+                            </button>
+                        </div>
                     </div>
 
                     <div class="filter-card" style="background: var(--bg-primary); padding: 1.5rem; border-radius: var(--radius-md); text-align: center; border: 1px dashed var(--accent-red);">
@@ -197,34 +214,26 @@
     <script src="js/i18n.js"></script>
     <script src="js/main.js"></script>
     <script>
-        // Local Product Page Logic
-        let currentProducts = [];
+        // Elite Catalog Logic
+        let allProducts = [];
+        let brands = [];
 
         async function initPage() {
             await ProductDB.fetchAll();
-            currentProducts = [...PRODUCTS];
+            allProducts = [...PRODUCTS];
 
-            // Get params from URL
+            // Extract Unique Brands (infer from first word if missing)
+            brands = [...new Set(PRODUCTS.map(p => {
+                if (p.brand) return p.brand;
+                return p.name.split(' ')[0]; // fallback
+            }))].sort();
+
+            renderCategoryFilters();
+            renderBrandFilters();
+
+            // Handle URL Search Params
             const params = new URLSearchParams(window.location.search);
-            const catParam = params.get('cat');
             const searchParam = params.get('search');
-
-            // Inject Category Radios
-            const catContainer = document.getElementById('category-filters');
-            const uniqueCats = [...new Set(PRODUCTS.map(p => p.category))];
-
-            uniqueCats.forEach(cat => {
-                const div = document.createElement('div');
-                div.className = 'filter-option';
-                div.innerHTML = `
-                  <input type="radio" name="cat" id="cat-${cat}" value="${cat}" ${catParam === cat ? 'checked' : ''}>
-                  <label for="cat-${cat}">${cat}</label>
-                `;
-                div.querySelector('input').addEventListener('change', updateFilters);
-                catContainer.appendChild(div);
-            });
-
-            // If searched, pre-fill search inputs if they exist or just filter
             if (searchParam) {
                 const searchInputs = document.querySelectorAll('.search-bar input');
                 searchInputs.forEach(input => input.value = searchParam);
@@ -233,32 +242,89 @@
             updateFilters();
         }
 
+        function renderCategoryFilters() {
+            const container = document.getElementById('category-filters');
+            const uniqueCats = [...new Set(PRODUCTS.map(p => p.category))];
+            const params = new URLSearchParams(window.location.search);
+            const catParam = params.get('cat') || 'all';
+
+            let html = `
+                <div class="filter-option" style="margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <input type="radio" name="cat" id="cat-all" value="all" ${catParam === 'all' ? 'checked' : ''} onchange="updateFilters()" style="margin:0; cursor:pointer;">
+                    <label for="cat-all" style="font-weight: 800; cursor: pointer; text-transform: uppercase; font-size: 0.7rem; color: var(--accent-slate);">TOUT VOIR</label>
+                </div>
+            `;
+
+            uniqueCats.forEach(cat => {
+                html += `
+                    <div class="filter-option" style="margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <input type="radio" name="cat" id="cat-${cat}" value="${cat}" ${catParam === cat ? 'checked' : ''} onchange="updateFilters()" style="margin:0; cursor:pointer;">
+                        <label for="cat-${cat}" style="font-weight: 700; cursor: pointer; text-transform: uppercase; font-size: 0.7rem; color: #475569;">${cat}</label>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function renderBrandFilters() {
+            const container = document.getElementById('brand-filters');
+            if (!container) return;
+
+            container.innerHTML = brands.map(brand => `
+                <div class="filter-option" style="display: flex; align-items: center; gap: 0.5rem;">
+                    <input type="checkbox" class="brand-check" id="brand-${brand}" value="${brand}" onchange="updateFilters()" style="cursor:pointer;">
+                    <label for="brand-${brand}" style="font-weight: 700; cursor: pointer; font-size: 0.75rem; color: #475569;">${brand}</label>
+                </div>
+            `).join('');
+        }
+
         function updateFilters() {
             const params = new URLSearchParams(window.location.search);
-            const searchParam = params.get('search') ? params.get('search').toLowerCase() : '';
+            
+            // Priority 1: Main Search Bar
+            const searchInput = document.getElementById('global-search');
+            const query = searchInput ? searchInput.value.trim().toLowerCase() : (params.get('search') || '').toLowerCase();
 
+            // Priority 2: Sidebar Filters
             const selectedCat = document.querySelector('input[name="cat"]:checked').value;
+            
+            const selectedBrands = Array.from(document.querySelectorAll('.brand-check:checked')).map(cb => cb.value);
+            
             const minPrice = parseInt(document.getElementById('min-price').value) || 0;
             const maxPrice = parseInt(document.getElementById('max-price').value) || Infinity;
             const sortBy = document.getElementById('sort-by').value;
 
-            // Filter
+            // Execution: Filter
             let filtered = PRODUCTS.filter(p => {
+                const isVisible = p.visible !== false;
                 const catMatch = selectedCat === 'all' || p.category === selectedCat;
                 const priceMatch = p.price >= minPrice && p.price <= maxPrice;
-                const searchMatch = !searchParam ||
-                    p.name.toLowerCase().includes(searchParam) ||
-                    p.category.toLowerCase().includes(searchParam);
-                return catMatch && priceMatch && searchMatch;
+                const searchMatch = !query || 
+                    p.name.toLowerCase().includes(query) || 
+                    p.category.toLowerCase().includes(query);
+                
+                const brandMatch = selectedBrands.length === 0 || 
+                    selectedBrands.includes(p.brand || p.name.split(' ')[0]);
+
+                return isVisible && catMatch && priceMatch && searchMatch && brandMatch;
             });
 
-            // Sort
+            // Execution: Sort
             if (sortBy === 'price-asc') filtered.sort((a, b) => a.price - b.price);
             else if (sortBy === 'price-desc') filtered.sort((a, b) => b.price - a.price);
             else if (sortBy === 'rating') filtered.sort((a, b) => b.rating - a.rating);
+            else if (sortBy === 'featured') filtered.sort((a, b) => (b.badge ? 1 : 0) - (a.badge ? 1 : 0));
 
-            // Style updates for the shop content are now handled by CSS classes
             renderProducts(filtered);
+            
+            // Sync URL (Silent)
+            if (history.pushState) {
+                const newUrl = new URL(window.location);
+                if (query) newUrl.searchParams.set('search', query); else newUrl.searchParams.delete('search');
+                if (selectedCat !== 'all') newUrl.searchParams.set('cat', selectedCat); else newUrl.searchParams.delete('cat');
+                window.history.replaceState({ path: newUrl.href }, '', newUrl.href);
+            }
         }
 
         function renderProducts(list) {
@@ -266,15 +332,17 @@
             const countEl = document.getElementById('results-count');
             const noResults = document.getElementById('no-results');
 
-            countEl.textContent = list.length;
+            if (countEl) countEl.textContent = list.length;
 
             if (list.length === 0) {
-                grid.style.display = 'none';
-                noResults.style.display = 'block';
+                if (grid) grid.style.display = 'none';
+                if (noResults) noResults.style.display = 'block';
             } else {
-                grid.style.display = 'grid';
-                noResults.style.display = 'none';
-                grid.innerHTML = list.map(p => App.generateProductCard(p)).join('');
+                if (grid) {
+                    grid.style.display = 'grid';
+                    grid.innerHTML = list.map(p => App.generateProductCard(p)).join('');
+                }
+                if (noResults) noResults.style.display = 'none';
             }
         }
 

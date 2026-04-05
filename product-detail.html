@@ -36,8 +36,9 @@
 
             <div class="search-bar">
                 <i class="fas fa-search search-icon"></i>
-                <input type="text" placeholder="Rechercher un produit, une marque, une catégorie...">
+                <input type="text" id="global-search" placeholder="Rechercher un produit, une marque, une catégorie...">
                 <button class="search-btn">Rechercher</button>
+                <div class="search-suggestions" id="search-suggestions"></div>
             </div>
 
             <div class="nav-actions">
@@ -112,8 +113,8 @@
       const id = params.get('id');
       const product = PRODUCTS.find(p => p.id === id);
 
-      if (!product) {
-        window.location.href = '/products';
+      if (!product || product.visible === false) {
+        window.location.href = '/products.html';
         return;
       }
 
@@ -190,8 +191,8 @@
         </div>
       `;
 
-      // Load related
-      const related = PRODUCTS.filter(p => p.category === product.category && p.id !== product.id).slice(0, 4);
+      // Load related (only visible ones)
+      const related = PRODUCTS.filter(p => p.category === product.category && p.id !== product.id && p.visible !== false).slice(0, 4);
       document.getElementById('related-grid').innerHTML = related.map(p => App.generateProductCard(p)).join('');
     }
 

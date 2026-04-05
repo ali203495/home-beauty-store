@@ -9,12 +9,14 @@ const INITIAL_PRODUCTS = [
     {
         id: 'app-01',
         name: 'Mélangeur Professionnel UltraPower',
+        brand: 'UltraPower',
         category: 'Electroménager',
         price: 1850,
         rating: 4.8,
         reviews: 124,
         image: 'assets/webp/appliances.webp',
         badge: 'Populaire',
+        visible: true,
         description: 'Mélangeur haute performance avec moteur de 1500W, idéal pour les smoothies et soupes.',
         specs: { 'Puissance': '1500W', 'Capacité': '2L', 'Garantie': '2 ans' }
     },
@@ -241,6 +243,12 @@ const INITIAL_PRODUCTS = [
     }
 ];
 
+// Add default stock to all initial products
+INITIAL_PRODUCTS.forEach(p => {
+    if (p.stock === undefined) p.stock = Math.floor(Math.random() * 50) + 10;
+    if (p.lastUpdated === undefined) p.lastUpdated = new Date().toISOString();
+});
+
 // Initialize dynamic products
 let PRODUCTS = [];
 
@@ -253,10 +261,24 @@ const ProductDB = {
         const localData = localStorage.getItem('elwali_products');
         if (localData) {
             PRODUCTS = JSON.parse(localData);
+            // Migration: Ensure all have visibility, stock, and timestamps
+            let migrated = false;
+            PRODUCTS = PRODUCTS.map(p => {
+                if (p.visible === undefined) { p.visible = true; migrated = true; }
+                if (p.stock === undefined) { p.stock = 25; migrated = true; }
+                if (!p.lastUpdated) { p.lastUpdated = new Date().toISOString(); migrated = true; }
+                return p;
+            });
+            if (migrated) localStorage.setItem('elwali_products', JSON.stringify(PRODUCTS));
         } else {
             // Seed if empty
             console.log('Seeding initial products to LocalStorage...');
-            PRODUCTS = INITIAL_PRODUCTS;
+            PRODUCTS = INITIAL_PRODUCTS.map(p => ({ 
+                ...p, 
+                visible: p.visible ?? true,
+                stock: p.stock ?? 25,
+                lastUpdated: p.lastUpdated ?? new Date().toISOString()
+            }));
             localStorage.setItem('elwali_products', JSON.stringify(PRODUCTS));
         }
         return PRODUCTS;
@@ -282,6 +304,17 @@ const ProductDB = {
         PRODUCTS = PRODUCTS.filter(p => p.id !== id);
         localStorage.setItem('elwali_products', JSON.stringify(PRODUCTS));
         return true;
+    },
+
+    async decrementStock(id, q) {
+        const index = PRODUCTS.findIndex(p => p.id === id);
+        if (index !== -1) {
+            PRODUCTS[index].stock = Math.max(0, (PRODUCTS[index].stock || 0) - q);
+            PRODUCTS[index].lastUpdated = new Date().toISOString();
+            localStorage.setItem('elwali_products', JSON.stringify(PRODUCTS));
+            return true;
+        }
+        return false;
     }
 };
 
@@ -313,7 +346,43 @@ const OrderDB = {
     }
 };
 
+/**
+ * Data Access Object for Customers
+ * Maintains unique profiles based on phone numbers
+ */
+const CustomerDB = {
+    async getCustomers() {
+        const orders = await OrderDB.getOrders();
+        const customersMap = {};
+
+        orders.forEach(o => {
+            const phone = o.customer.phone.trim();
+            if (!customersMap[phone]) {
+                customersMap[phone] = {
+                    name: o.customer.name,
+                    phone: phone,
+                    address: o.customer.address,
+                    neighborhood: o.customer.neighborhood,
+                    orderCount: 0,
+                    totalSpent: 0,
+                    lastOrderDate: o.date,
+                    orders: []
+                };
+            }
+
+            customersMap[phone].orderCount++;
+            customersMap[phone].totalSpent += o.total;
+            customersMap[phone].orders.push(o.id);
+            if (new Date(o.date) > new Date(customersMap[phone].lastOrderDate)) {
+                customersMap[phone].lastOrderDate = o.date;
+            }
+        });
+
+        return Object.values(customersMap).sort((a, b) => b.totalSpent - a.totalSpent);
+    }
+};
+
 // Export for use in other scripts
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { PRODUCTS, ProductDB, OrderDB };
+    module.exports = { PRODUCTS, ProductDB, OrderDB, CustomerDB };
 }
