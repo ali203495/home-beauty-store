@@ -411,6 +411,7 @@ const Admin = {
             target.classList.add('active');
             this.logActivity(`Navigation vers ${tabId}`, 'info');
             if (tabId === 'media') this.renderMediaTab();
+            if (tabId === 'automation') this.renderAutomationTab();
         }
     },
 
@@ -572,15 +573,16 @@ const Admin = {
 
     async handleProductSubmit(e) {
         e.preventDefault();
-        const data = new FormData(e.target);
-        const id = data.get('id');
+        const formData = new FormData(e.target);
+        const id = formData.get('id');
+        const postToFB = formData.get('postToFB') === 'on';
         
         const productData = {
-            name: data.get('name'),
-            category: data.get('category'),
-            price: parseFloat(data.get('price')),
-            stock: parseInt(data.get('stock')),
-            image: data.get('image'),
+            name: formData.get('name'),
+            category: formData.get('category'),
+            price: parseFloat(formData.get('price')),
+            stock: parseInt(formData.get('stock')),
+            image: formData.get('image'),
             lastUpdated: new Date().toISOString()
         };
 
@@ -593,6 +595,12 @@ const Admin = {
             productData.visible = true;
             await ProductDB.saveProduct(productData);
             this.showToast('Produit créé avec succès');
+            
+            // Automation Trigger
+            if (postToFB && CONFIG.facebookAutomation.enabled) {
+                this.triggerFacebookAutomation(productData);
+            }
+
             this.logActivity(`Nouveau produit créé : ${productData.name}`, 'success');
         }
 
@@ -730,6 +738,66 @@ const Admin = {
             document.getElementById('ai-results-container').style.display = 'none';
             this.showToast('Boutique optimisée avec succès !');
         }, 1000);
+    },
+
+    /** ── Automation Intelligence ─────────────────────────── */
+
+    renderAutomationTab() {
+        const form = document.getElementById('automation-config-form');
+        if (form) {
+            form.fbEnabled.checked = CONFIG.facebookAutomation.enabled;
+            form.fbWebhook.value = CONFIG.facebookAutomation.webhookUrl;
+        }
+    },
+
+    saveAutomationConfig(e) {
+        e.preventDefault();
+        const data = new FormData(e.target);
+        CONFIG.facebookAutomation = {
+            enabled: data.get('fbEnabled') === 'on',
+            webhookUrl: data.get('fbWebhook')
+        };
+        localStorage.setItem('elwali_site_settings', JSON.stringify(CONFIG));
+        this.showToast('Configuration automation enregistrée !');
+        this.logActivity('Mise à jour paramètres automation', 'success');
+    },
+
+    async triggerFacebookAutomation(product) {
+        const webhook = CONFIG.facebookAutomation.webhookUrl;
+        if (!webhook) return;
+
+        this.showToast('Envoi vers Facebook en cours...');
+        
+        try {
+            const response = await fetch(webhook, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    platform: 'Facebook',
+                    action: 'NEW_PRODUCT',
+                    store: CONFIG.storeName,
+                    product: {
+                        id: product.id,
+                        name: product.name,
+                        price: `${product.price} DH`,
+                        image: product.image,
+                        category: product.category,
+                        link: `https://el-wali-shop.work.gd/product-detail.html?id=${product.id}`
+                    }
+                })
+            });
+
+            if (response.ok) {
+                this.showToast('Publication Facebook réussie !');
+                this.logActivity(`Publication auto Facebook : ${product.name}`, 'success');
+            } else {
+                throw new Error('Webhook failed');
+            }
+        } catch (err) {
+            console.error('FB Automation Error:', err);
+            this.showToast('Échec de la publication Facebook', 'error');
+            this.logActivity(`Échec publication Facebook : ${product.name}`, 'error');
+        }
     },
 
     logout() {

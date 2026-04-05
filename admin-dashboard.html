@@ -273,6 +273,9 @@
             <a href="#" class="nav-link" onclick="Admin.switchTab('media', this)">
                 <i class="fas fa-photo-video"></i> Contenu & IA
             </a>
+            <a href="#" class="nav-link" onclick="Admin.switchTab('automation', this)">
+                <i class="fas fa-plug-circle-bolt"></i> Automatisations
+            </a>
             <a href="#" class="nav-link" onclick="Admin.switchTab('logs', this)">
                 <i class="fas fa-history"></i> Logs Système
             </a>
@@ -712,6 +715,12 @@
                 <div class="form-group mb-xl">
                     <label class="nav-label">Lien Image (WebP/URL)</label>
                     <input type="text" name="image" class="w-full glass p-md text-primary" required>
+                </div>
+                <!-- FB Automation Toggle -->
+                <div class="form-group mb-xl" id="fb-post-toggle-wrapper">
+                    <label class="flex align-center gap-md">
+                        <input type="checkbox" name="postToFB" checked> Partager instantanément sur Facebook Group
+                    </label>
                 </div>
                 <div class="flex gap-md">
                     <button type="submit" class="bg-red flex-1 p-md" style="border-radius: var(--radius-md); font-weight: 800;">ENREGISTRER</button>

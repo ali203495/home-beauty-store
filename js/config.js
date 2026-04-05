@@ -33,6 +33,11 @@ const DEFAULT_CONFIG = {
             img: "/home/xyz/.gemini/antigravity/brain/2018e71b-31ac-41a2-9d4f-0605c24361e1/electro_promo_beauty_1775254965058.png",
             title: "SOINS & BEAUTÉ LUXE"
         }
+    },
+    facebookAutomation: {
+        enabled: false,
+        webhookUrl: "",
+        pageIdentity: "EL-WALI-SHOP (Brand)"
     }
 };
 
