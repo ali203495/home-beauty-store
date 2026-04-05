@@ -76,47 +76,58 @@ const Admin = {
         const lowStock = PRODUCTS.filter(p => p.stock < 10).length;
         const totalRevenue = orders.reduce((sum, o) => sum + o.total, 0);
 
-        document.getElementById('stat-revenue').innerText = `${totalRevenue.toLocaleString()} DH`;
-        document.getElementById('stat-orders').innerText = orders.length;
-        document.getElementById('stat-low-stock').innerText = lowStock;
-        document.getElementById('stat-customers').innerText = customers.length;
+        const revEl = document.getElementById('stat-revenue');
+        const ordEl = document.getElementById('stat-orders');
+        const lowEl = document.getElementById('stat-low-stock');
+        const custEl = document.getElementById('stat-customers');
+
+        if (revEl) revEl.innerText = `${totalRevenue.toLocaleString()} DH`;
+        if (ordEl) ordEl.innerText = orders.length;
+        if (lowEl) lowEl.innerText = lowStock;
+        if (custEl) custEl.innerText = customers.length;
     },
 
     renderOverview() {
         const recentOrdersList = document.getElementById('recent-orders-list');
         const topProductsList = document.getElementById('top-products-list');
         
-        OrderDB.getOrders().then(orders => {
-            recentOrdersList.innerHTML = orders.slice(0, 5).map(o => `
-                <div class="flex-between py-md border-bottom" style="font-size: 0.85rem;">
-                    <div>
-                        <span class="text-bold">#${o.id}</span>
-                        <div class="text-muted">${o.customer.name}</div>
+        if (recentOrdersList) {
+            OrderDB.getOrders().then(orders => {
+                recentOrdersList.innerHTML = orders.slice(0, 5).map(o => `
+                    <div class="flex-between py-md border-bottom" style="font-size: 0.85rem;">
+                        <div>
+                            <span class="text-bold">#${o.id}</span>
+                            <div class="text-muted">${o.customer.name}</div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-bold text-red">${o.total} DH</div>
+                            <div class="text-muted" style="font-size: 0.7rem;">${o.status}</div>
+                        </div>
                     </div>
-                    <div class="text-right">
-                        <div class="text-bold text-red">${o.total} DH</div>
-                        <div class="text-muted" style="font-size: 0.7rem;">${o.status}</div>
-                    </div>
-                </div>
-            `).join('') || '<p class="text-muted">Aucune commande.</p>';
-        });
+                `).join('') || '<p class="text-muted">Aucune commande.</p>';
+            });
+        }
 
-        // Simple Top Products (Mock logic for now based on rating/reviews)
-        const topProds = [...PRODUCTS].sort((a, b) => b.reviews - a.reviews).slice(0, 5);
-        topProductsList.innerHTML = topProds.map(p => `
-            <div class="flex align-center gap-md py-md border-bottom">
-                <img src="${p.image}" style="width: 40px; height: 40px; border-radius: 4px; object-fit: cover;">
-                <div style="flex: 1;">
-                    <div class="text-bold" style="font-size: 0.85rem;">${p.name}</div>
-                    <div class="text-muted" style="font-size: 0.7rem;">${p.category}</div>
+        if (topProductsList) {
+            // Simple Top Products (Mock logic for now based on rating/reviews)
+            const topProds = [...PRODUCTS].sort((a, b) => b.reviews - a.reviews).slice(0, 5);
+            topProductsList.innerHTML = topProds.map(p => `
+                <div class="flex align-center gap-md py-md border-bottom">
+                    <img src="${p.image}" style="width: 40px; height: 40px; border-radius: 4px; object-fit: cover;">
+                    <div style="flex: 1;">
+                        <div class="text-bold" style="font-size: 0.85rem;">${p.name}</div>
+                        <div class="text-muted" style="font-size: 0.7rem;">${p.category}</div>
+                    </div>
+                    <div class="text-bold text-red">${p.price} DH</div>
                 </div>
-                <div class="text-bold text-red">${p.price} DH</div>
-            </div>
-        `).join('') || '<p class="text-muted">Aucun produit.</p>';
+            `).join('') || '<p class="text-muted">Aucun produit.</p>';
+        }
     },
 
     renderProducts(filtered = null) {
         const tbody = document.getElementById('admin-product-table-body');
+        if (!tbody) return;
+        
         const prods = filtered || PRODUCTS;
         
         tbody.innerHTML = prods.map(p => `
@@ -152,6 +163,8 @@ const Admin = {
 
     renderInventory() {
         const tbody = document.getElementById('admin-inventory-table-body');
+        if (!tbody) return;
+        
         tbody.innerHTML = PRODUCTS.map(p => `
             <tr>
                 <td class="text-bold">${p.name}</td>
@@ -174,6 +187,8 @@ const Admin = {
 
     async renderOrders(filtered = null) {
         const tbody = document.getElementById('admin-order-table-body');
+        if (!tbody) return;
+        
         const orders = filtered || await OrderDB.getOrders();
 
         tbody.innerHTML = orders.map(o => `
@@ -201,6 +216,8 @@ const Admin = {
 
     async renderCustomers() {
         const tbody = document.getElementById('admin-customer-table-body');
+        if (!tbody) return;
+        
         const customers = await CustomerDB.getCustomers();
 
         tbody.innerHTML = customers.map(c => `
@@ -233,6 +250,8 @@ const Admin = {
 
     renderLogs() {
         const container = document.getElementById('activity-log-container');
+        if (!container) return;
+        
         const logs = JSON.parse(localStorage.getItem('admin_activity_logs') || '[]');
         
         container.innerHTML = logs.reverse().slice(0, 20).map(log => `
