@@ -8,7 +8,8 @@ const DEFAULT_ADMIN = {
     // SHA-256 hash of '!@#$1234'
     passwordHash: '0fb2c3ee97570dcf77fb841e26b3678fb2bf7f25e6d5f949c926454825ffc764',
     recoveryEmail: 'abdelaali.markabi@gmail.com',
-    role: 'Super Admin'
+    role: 'Super Admin',
+    status: 'Active'
 };
 
 const AdminDB = {
@@ -20,7 +21,9 @@ const AdminDB = {
             localStorage.setItem('elwali_admins', JSON.stringify(initial));
             return initial;
         }
-        return JSON.parse(stored);
+        const admins = JSON.parse(stored);
+        // Migration support for status
+        return admins.map(a => ({ ...a, status: a.status || 'Active' }));
     },
 
     async saveAdmin(admin) {
@@ -50,6 +53,7 @@ const AdminDB = {
 
 const RecoveryStore = {
     codes: new Map(), // username -> {code, expires}
+    rateLimits: new Map(), // identifier -> {count, lastAttempt}
     
     generate(username) {
         const code = Math.floor(100000 + Math.random() * 900000).toString();
@@ -70,6 +74,25 @@ const RecoveryStore = {
         const isValid = record.code === code;
         if (isValid) this.codes.delete(username.toLowerCase());
         return isValid;
+    },
+
+    checkRateLimit(identifier) {
+        const now = Date.now();
+        const limit = 5; // 5 attempts
+        const windowTime = 15 * 60 * 1000; // 15 minutes
+        
+        const record = this.rateLimits.get(identifier) || { count: 0, lastAttempt: 0 };
+        
+        if (now - record.lastAttempt > windowTime) {
+            record.count = 0; // Reset window
+        }
+        
+        if (record.count >= limit) return false;
+        
+        record.count++;
+        record.lastAttempt = now;
+        this.rateLimits.set(identifier, record);
+        return true;
     }
 };
 
@@ -104,15 +127,20 @@ const Admin = {
         const matchedAdmin = await AdminDB.matchCredentials(username, hashedInput);
 
         if (matchedAdmin) {
+            if (matchedAdmin.status === 'Pending') {
+                this.logActivity(`Connexion bloquée : Compte ${username} non vérifié`, 'warning');
+                return { success: false, msg: 'Compte non activé. Veuillez vérifier votre email.', requireActivation: true, username: matchedAdmin.username };
+            }
+
             sessionStorage.setItem('mlh_admin_logged_in', 'true');
             sessionStorage.setItem('mlh_admin_user', matchedAdmin.username);
             sessionStorage.setItem('mlh_admin_login_time', Date.now().toString());
             this.logActivity(`Connexion réussie : ${username}`, 'success');
-            return true;
+            return { success: true };
         }
         
         this.logActivity(`Tentative de connexion échouée : ${username}`, 'error');
-        return false;
+        return { success: false, msg: 'Identifiants invalides' };
     },
 
     checkAuth() {
@@ -143,6 +171,12 @@ const Admin = {
     /** ── Password Recovery Logic ────────────────────────── */
 
     async initiateRecovery(emailInput) {
+        // Rate Limiting
+        if (!RecoveryStore.checkRateLimit(emailInput)) {
+            this.logActivity(`Limitation de débit activée pour : ${emailInput}`, 'warning');
+            return { success: false, msg: 'Trop de tentatives. Réessayez dans 15 minutes.' };
+        }
+
         const admins = await AdminDB.fetchAll();
         const user = admins.find(a => a.recoveryEmail.toLowerCase() === emailInput.toLowerCase());
         
@@ -152,8 +186,8 @@ const Admin = {
         const masked = user.recoveryEmail.replace(/(..)(.*)(@.*)/, '$1***$3');
 
         // Simulation toast (security display for demo/dev)
-        this.logActivity(`Récupération mdp initiée pour ${user.username}`, 'info');
-        console.log(`[RECOVERY] Code for ${user.username}: ${code}`);
+        this.logActivity(`Code de vérification généré pour ${user.username}`, 'info');
+        console.log(`[SECURITY] Code for ${user.username}: ${code}`);
         
         return { 
             success: true, 
@@ -163,8 +197,23 @@ const Admin = {
         };
     },
 
-    verifyRecoveryCode(username, code) {
+    async verifyCode(username, code) {
         return RecoveryStore.verify(username, code);
+    },
+
+    async verifyNewAccount(username, code) {
+        const isValid = RecoveryStore.verify(username, code);
+        if (!isValid) return false;
+
+        const admins = await AdminDB.fetchAll();
+        const user = admins.find(a => a.username.toLowerCase() === username.toLowerCase());
+        if (user) {
+            user.status = 'Active';
+            await AdminDB.saveAdmin(user);
+            this.logActivity(`Compte activé : ${username}`, 'success');
+            return true;
+        }
+        return false;
     },
 
     async resetPassword(username, newPassword) {
@@ -603,13 +652,32 @@ const Admin = {
                 <td class="text-bold">${a.username} ${a.username === currentUser ? '<span class="badge" style="background: rgba(59, 130, 246, 0.2); color: #3b82f6; margin-left: 0.5rem;">C\'EST VOUS</span>' : ''}</td>
                 <td class="text-muted">${a.recoveryEmail}</td>
                 <td><span class="badge glass">${a.role || 'Admin'}</span></td>
+                <td>
+                    <span class="badge" style="background: ${a.status === 'Active' ? 'rgba(34, 197, 94, 0.1)' : 'rgba(250, 204, 21, 0.1)'}; color: ${a.status === 'Active' ? '#22c55e' : '#facc15'};">
+                        ${a.status === 'Active' ? 'ACTIF' : 'EN ATTENTE'}
+                    </span>
+                </td>
                 <td class="text-right">
-                    <button class="glass p-xs" onclick="Admin.deleteAdmin('${a.username}')" ${a.username === currentUser ? 'disabled title="Vous ne pouvez pas vous supprimer"' : ''}>
-                        <i class="fas fa-trash-alt" style="color: ${a.username === currentUser ? 'var(--text-muted)' : '#ef4444'}"></i>
-                    </button>
+                    ${a.username !== currentUser ? `
+                        ${a.status === 'Pending' ? `<button class="glass p-xs mr-xs text-gold" onclick="Admin.resendActivation('${a.username}')" title="Renvoyer le code"><i class="fas fa-paper-plane"></i></button>` : ''}
+                        <button class="glass p-xs" onclick="Admin.deleteAdmin('${a.username}')">
+                            <i class="fas fa-trash-alt" style="color: #ef4444"></i>
+                        </button>
+                    ` : ''}
                 </td>
             </tr>
         `).join('');
+    },
+
+    async resendActivation(username) {
+        const admins = await AdminDB.fetchAll();
+        const user = admins.find(a => a.username === username);
+        if (user) {
+            const code = RecoveryStore.generate(username);
+            this.showToast(`Nouveau code envoyé pour ${username}`);
+            console.log(`[SECURITY] Nouveau code pour ${username}: ${code}`);
+            this.logActivity(`Code d'activation renvoyé pour ${username}`, 'info');
+        }
     },
 
     /** ── UI Shell ─────────────────────────────────────────── */
@@ -753,7 +821,9 @@ const Admin = {
             username: data.get('username').trim(),
             recoveryEmail: data.get('recoveryEmail').trim(),
             passwordHash: await this.hashPassword(data.get('password')),
-            role: 'Admin'
+            role: 'Admin',
+            status: 'Pending',
+            createdAt: new Date().toISOString()
         };
 
         // Check if username already exists
@@ -764,9 +834,13 @@ const Admin = {
         }
 
         await AdminDB.saveAdmin(adminData);
-        this.showToast(`Admin ${adminData.username} créé`);
-        this.logActivity(`Nouvel administrateur créé : ${adminData.username}`, 'success');
         
+        // Trigger Verification Code
+        const code = RecoveryStore.generate(adminData.username);
+        this.logActivity(`Nouvel admin créé (En attente) : ${adminData.username}`, 'info');
+        console.log(`[SECURITY] Code d'activation pour ${adminData.username}: ${code}`);
+        
+        this.showToast(`Compte créé ! Code envoyé à ${adminData.recoveryEmail}`);
         this.closeModal('admin-modal');
         this.renderAdmins();
     },

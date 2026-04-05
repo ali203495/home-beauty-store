@@ -193,13 +193,13 @@
         <div class="login-card glass" id="recovery-card" style="margin: 0; border: 1px solid var(--border-subtle); animation: none;">
             <!-- STEP 1: EMAIL IDENTIFICATION -->
             <div id="recovery-step-1">
-                <h3 class="mb-lg">Récupération de Compte</h3>
-                <p class="text-muted mb-xl" style="font-size: 0.85rem;">Saisissez votre email Gmail enregistré pour identifier votre compte.</p>
+                <h3 class="mb-lg" id="modal-main-title">Sécurité du Compte</h3>
+                <p class="text-muted mb-xl" style="font-size: 0.85rem;" id="modal-main-desc">Saisissez votre email Gmail enregistré pour identifier votre compte.</p>
                 <div class="input-group">
                     <label>Email de Récupération</label>
                     <input type="email" id="rec-identifier" class="login-input" placeholder="Ex: votre.email@gmail.com">
                 </div>
-                <button class="login-btn" onclick="handleRecoveryInit()">TROUVER MON COMPTE</button>
+                <button class="login-btn" onclick="handleRecoveryInit()" id="modal-action-btn">TROUVER MON COMPTE</button>
             </div>
 
             <!-- STEP 2: CODE -->
@@ -244,12 +244,20 @@
             const pass = document.getElementById('password').value;
             const error = document.getElementById('login-error');
 
-            const success = await Admin.login(user, pass);
+            const res = await Admin.login(user, pass);
             
             setTimeout(() => {
-                if (success) {
+                if (res.success) {
                     window.location.href = 'admin-dashboard.html';
                 } else {
+                    if (res.requireActivation) {
+                        btn.innerText = originalText;
+                        btn.disabled = false;
+                        showActivationModal(res.username);
+                        return;
+                    }
+                    
+                    error.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${res.msg || 'Identifiants invalides'}`;
                     error.style.display = 'block';
                     btn.innerText = originalText;
                     btn.disabled = false;
@@ -262,12 +270,24 @@
             }, 800);
         });
 
-        /* ── Recovery UI Logic ── */
+        /* ── Unified Verification/Recovery UI Logic ── */
         let recoveryUsername = '';
+        let modalMode = 'recovery'; // 'recovery' or 'activation'
 
         function showRecoveryModal() {
+            modalMode = 'recovery';
+            document.getElementById('modal-main-title').innerText = 'Récupération de Compte';
+            document.getElementById('modal-main-desc').innerText = 'Saisissez votre email Gmail enregistré pour identifier votre compte.';
             document.getElementById('recovery-modal').style.display = 'flex';
             switchStep(1);
+        }
+
+        function showActivationModal(username) {
+            modalMode = 'activation';
+            recoveryUsername = username;
+            document.getElementById('rec-email-msg').innerText = `Veuillez activer votre compte en entrant le code reçu par email.`;
+            document.getElementById('recovery-modal').style.display = 'flex';
+            switchStep(2);
         }
 
         function hideRecoveryModal() {
@@ -298,11 +318,22 @@
 
         async function handleRecoveryVerify() {
             const code = document.getElementById('rec-code').value;
-            const valid = Admin.verifyRecoveryCode(recoveryUsername, code);
-            if (valid) {
-                switchStep(3);
+            
+            if (modalMode === 'activation') {
+                const valid = await Admin.verifyNewAccount(recoveryUsername, code);
+                if (valid) {
+                    Admin.showToast('Compte activé avec succès ! Connexion...');
+                    setTimeout(() => window.location.href = 'admin-dashboard.html', 1000);
+                } else {
+                    alert('Code d\'activation invalide ou expiré');
+                }
             } else {
-                alert('Code invalide ou expiré');
+                const valid = await Admin.verifyCode(recoveryUsername, code);
+                if (valid) {
+                    switchStep(3);
+                } else {
+                    alert('Code invalide ou expiré');
+                }
             }
         }
 
