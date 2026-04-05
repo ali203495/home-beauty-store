@@ -3,11 +3,49 @@
  * Comprehensive management logic with deep analytics and active controls.
  */
 
-const ADMIN_CREDENTIALS = {
+const DEFAULT_ADMIN = {
     username: 'abdelaali',
     // SHA-256 hash of '!@#$1234'
     passwordHash: '0fb2c3ee97570dcf77fb841e26b3678fb2bf7f25e6d5f949c926454825ffc764',
-    recoveryEmail: 'abdelaali.markabi@gmail.com'
+    recoveryEmail: 'abdelaali.markabi@gmail.com',
+    role: 'Super Admin'
+};
+
+const AdminDB = {
+    async fetchAll() {
+        const stored = localStorage.getItem('elwali_admins');
+        if (!stored) {
+            // First run, migrate hardcoded admin
+            const initial = [DEFAULT_ADMIN];
+            localStorage.setItem('elwali_admins', JSON.stringify(initial));
+            return initial;
+        }
+        return JSON.parse(stored);
+    },
+
+    async saveAdmin(admin) {
+        const admins = await this.fetchAll();
+        const existingIdx = admins.findIndex(a => a.username === admin.username);
+        if (existingIdx !== -1) {
+            admins[existingIdx] = admin;
+        } else {
+            admins.push(admin);
+        }
+        localStorage.setItem('elwali_admins', JSON.stringify(admins));
+        return true;
+    },
+
+    async delete(username) {
+        const admins = await this.fetchAll();
+        const filtered = admins.filter(a => a.username !== username);
+        localStorage.setItem('elwali_admins', JSON.stringify(filtered));
+        return true;
+    },
+
+    async matchCredentials(username, passwordHash) {
+        const admins = await this.fetchAll();
+        return admins.find(a => a.username.toLowerCase() === username.toLowerCase() && a.passwordHash === passwordHash);
+    }
 };
 
 const Admin = {
@@ -15,6 +53,7 @@ const Admin = {
         this.checkAuth();
         this.loadTheme();
         await ProductDB.fetchAll(); // Ensure data is loaded
+        await AdminDB.fetchAll();   // Ensure admins are initialized
         
         // Initial Render
         if (document.getElementById('stat-revenue')) {
@@ -37,11 +76,11 @@ const Admin = {
 
     async login(username, password) {
         const hashedInput = await this.hashPassword(password);
-        const isUserMatch = (username.trim().toLowerCase() === ADMIN_CREDENTIALS.username.toLowerCase());
-        const isPassMatch = (hashedInput === ADMIN_CREDENTIALS.passwordHash);
+        const matchedAdmin = await AdminDB.matchCredentials(username, hashedInput);
 
-        if (isUserMatch && isPassMatch) {
+        if (matchedAdmin) {
             sessionStorage.setItem('mlh_admin_logged_in', 'true');
+            sessionStorage.setItem('mlh_admin_user', matchedAdmin.username);
             sessionStorage.setItem('mlh_admin_login_time', Date.now().toString());
             this.logActivity(`Connexion réussie : ${username}`, 'success');
             return true;
@@ -69,6 +108,7 @@ const Admin = {
         this.renderPromos();
         this.renderLogs();
         this.renderAnalytics();
+        this.renderAdmins();
     },
 
     async computeStats() {
@@ -449,6 +489,27 @@ const Admin = {
         this.renderLogs();
     },
 
+    async renderAdmins() {
+        const tbody = document.getElementById('admin-management-table-body');
+        if (!tbody) return;
+
+        const admins = await AdminDB.fetchAll();
+        const currentUser = sessionStorage.getItem('mlh_admin_user');
+
+        tbody.innerHTML = admins.map(a => `
+            <tr>
+                <td class="text-bold">${a.username} ${a.username === currentUser ? '<span class="badge" style="background: rgba(59, 130, 246, 0.2); color: #3b82f6; margin-left: 0.5rem;">C\'EST VOUS</span>' : ''}</td>
+                <td class="text-muted">${a.recoveryEmail}</td>
+                <td><span class="badge glass">${a.role || 'Admin'}</span></td>
+                <td class="text-right">
+                    <button class="glass p-xs" onclick="Admin.deleteAdmin('${a.username}')" ${a.username === currentUser ? 'disabled title="Vous ne pouvez pas vous supprimer"' : ''}>
+                        <i class="fas fa-trash-alt" style="color: ${a.username === currentUser ? 'var(--text-muted)' : '#ef4444'}"></i>
+                    </button>
+                </td>
+            </tr>
+        `).join('');
+    },
+
     /** ── UI Shell ─────────────────────────────────────────── */
 
     toggleTheme() {
@@ -536,6 +597,54 @@ const Admin = {
 
         this.closeModal('product-modal');
         this.renderAll();
+    },
+
+    openAdminModal() {
+        const modal = document.getElementById('admin-modal');
+        const form = document.getElementById('admin-form');
+        form.reset();
+        modal.style.display = 'flex';
+    },
+
+    async handleAdminSubmit(e) {
+        e.preventDefault();
+        const data = new FormData(e.target);
+        
+        const adminData = {
+            username: data.get('username').trim(),
+            recoveryEmail: data.get('recoveryEmail').trim(),
+            passwordHash: await this.hashPassword(data.get('password')),
+            role: 'Admin'
+        };
+
+        // Check if username already exists
+        const admins = await AdminDB.fetchAll();
+        if (admins.find(a => a.username.toLowerCase() === adminData.username.toLowerCase())) {
+            alert('Ce nom d\'utilisateur est déjà utilisé.');
+            return;
+        }
+
+        await AdminDB.saveAdmin(adminData);
+        this.showToast(`Admin ${adminData.username} créé`);
+        this.logActivity(`Nouvel administrateur créé : ${adminData.username}`, 'success');
+        
+        this.closeModal('admin-modal');
+        this.renderAdmins();
+    },
+
+    async deleteAdmin(username) {
+        const currentUser = sessionStorage.getItem('mlh_admin_user');
+        if (username === currentUser) {
+            alert('Sécurité : Vous ne pouvez pas supprimer votre propre compte.');
+            return;
+        }
+
+        if (!confirm(`Êtes-vous sûr de vouloir supprimer l'accès de ${username} ?`)) return;
+
+        await AdminDB.delete(username);
+        this.showToast(`Accès révoqué pour ${username}`);
+        this.logActivity(`Administrateur supprimé : ${username}`, 'warning');
+        this.renderAdmins();
     },
 
     logout() {
