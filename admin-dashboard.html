@@ -752,8 +752,29 @@
                     </div>
                 </div>
                 <div class="form-group mb-xl">
-                    <label class="nav-label">Lien Image (WebP/URL)</label>
-                    <input type="text" name="image" class="w-full glass p-md text-primary" required>
+                    <label class="nav-label">Source de la Photo</label>
+                    <div class="flex gap-md mb-md">
+                        <button type="button" class="glass flex-1 p-sm text-bold" id="btn-img-url" onclick="Admin.setImageSource('url')">LIEN WEB</button>
+                        <button type="button" class="glass flex-1 p-sm text-bold" id="btn-img-upload" onclick="Admin.setImageSource('upload')">APPAREIL / FICHIER</button>
+                    </div>
+
+                    <!-- URL Input -->
+                    <div id="input-img-url">
+                        <input type="text" name="image" class="w-full glass p-md text-primary" placeholder="https://..." oninput="Admin.previewImage(this.value)">
+                    </div>
+
+                    <!-- File Input -->
+                    <div id="input-img-upload" style="display: none;">
+                        <input type="file" id="product-file-input" accept="image/*" class="hidden" onchange="Admin.handleImageSelection(event)">
+                        <button type="button" class="w-full glass p-md text-bold border-dashed" onclick="document.getElementById('product-file-input').click()">
+                            <i class="fas fa-camera mr-sm"></i> PRENDRE UNE PHOTO / CHOISIR
+                        </button>
+                    </div>
+
+                    <!-- Preview Area -->
+                    <div id="img-preview-container" class="mt-md glass p-xs" style="display: none; height: 120px; border-radius: var(--radius-md); overflow: hidden; align-items: center; justify-content: center;">
+                        <img id="product-img-view" src="" style="height: 100%; object-fit: contain;">
+                    </div>
                 </div>
                 <!-- FB Automation Toggle -->
                 <div class="form-group mb-xl" id="fb-post-toggle-wrapper">

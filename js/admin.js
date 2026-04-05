@@ -91,10 +91,28 @@ const Admin = {
     },
 
     checkAuth() {
-        const isLoggedIn = sessionStorage.getItem('mlh_admin_logged_in') === 'true';
+        const isLoggedIn = sessionStorage.getItem('mlh_admin_user');
         if (!isLoggedIn && !window.location.pathname.includes('admin-login')) {
             window.location.href = 'admin-login.html';
         }
+    },
+
+    async getCurrentUser() {
+        const username = sessionStorage.getItem('mlh_admin_user');
+        if (!username) return null;
+        const admins = await AdminDB.fetchAll();
+        return admins.find(a => a.username === username);
+    },
+
+    async hasPermission(requiredRole = 'Admin') {
+        const user = await this.getCurrentUser();
+        if (!user) return false;
+        
+        // Super Admin has all permissions
+        if (user.role === 'Super Admin') return true;
+        
+        // Match specific role
+        return user.role === requiredRole;
     },
 
     /** ── Rendering Engine ─────────────────────────────────── */
@@ -544,12 +562,21 @@ const Admin = {
         }, 3000);
     },
 
-    openProductModal(id = null) {
+    async openProductModal(id = null) {
+        // Permission Check
+        if (!(await this.hasPermission('Admin'))) {
+            alert('Accès refusé : Seuls les administrateurs peuvent ajouter des produits.');
+            return;
+        }
+
         const modal = document.getElementById('product-modal');
         const form = document.getElementById('product-form');
         const title = document.getElementById('product-modal-title');
         
         form.reset();
+        this.setImageSource('url'); // Default to URL
+        this.previewImage(null);    // Clear preview
+
         if (id) {
             const p = PRODUCTS.find(prod => prod.id === id);
             title.innerText = 'Modifier Produit';
@@ -559,6 +586,7 @@ const Admin = {
             form.price.value = p.price;
             form.stock.value = p.stock || 0;
             form.image.value = p.image;
+            this.previewImage(p.image);
         } else {
             title.innerText = 'Nouveau Produit';
             form.id.value = '';
@@ -573,16 +601,36 @@ const Admin = {
 
     async handleProductSubmit(e) {
         e.preventDefault();
+        
+        // Permission Check
+        if (!(await this.hasPermission('Admin'))) {
+            alert('Accès refusé : Vous n\'avez pas les permissions pour modifier les produits.');
+            this.logActivity('Tentative de modification produit non autorisée', 'error');
+            return;
+        }
+
         const formData = new FormData(e.target);
         const id = formData.get('id');
         const postToFB = formData.get('postToFB') === 'on';
         
+        // Image source logic
+        let imageSource = formData.get('image');
+        const previewImg = document.getElementById('product-img-view');
+        if (previewImg && previewImg.src.startsWith('data:')) {
+            imageSource = previewImg.src; // Use Base64 from preview if available
+        }
+
+        if (!imageSource) {
+            alert('Veuillez fournir une photo pour le produit.');
+            return;
+        }
+
         const productData = {
             name: formData.get('name'),
             category: formData.get('category'),
             price: parseFloat(formData.get('price')),
             stock: parseInt(formData.get('stock')),
-            image: formData.get('image'),
+            image: imageSource,
             lastUpdated: new Date().toISOString()
         };
 
@@ -797,6 +845,57 @@ const Admin = {
             console.error('FB Automation Error:', err);
             this.showToast('Échec de la publication Facebook', 'error');
             this.logActivity(`Échec publication Facebook : ${product.name}`, 'error');
+        }
+    },
+
+    /** ── Media Intelligent Engine ─────────────────────────── */
+
+    setImageSource(type) {
+        const urlBtn = document.getElementById('btn-img-url');
+        const uploadBtn = document.getElementById('btn-img-upload');
+        const urlInput = document.getElementById('input-img-url');
+        const uploadInput = document.getElementById('input-img-upload');
+
+        if (type === 'url') {
+            urlBtn.classList.add('active');
+            uploadBtn.classList.remove('active');
+            urlInput.style.display = 'block';
+            uploadInput.style.display = 'none';
+        } else {
+            urlBtn.classList.remove('active');
+            uploadBtn.classList.add('active');
+            urlInput.style.display = 'none';
+            uploadInput.style.display = 'block';
+        }
+    },
+
+    handleImageSelection(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        // Optimization check (1MB)
+        if (file.size > 1024 * 1024) {
+            alert('Attention : Cette image est volumineuse (>1MB). Pour éviter de saturer la mémoire du site, préférez des images plus légères ou utilisez un lien URL.');
+        }
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            const base64 = event.target.result;
+            this.previewImage(base64);
+        };
+        reader.readAsDataURL(file);
+    },
+
+    previewImage(src) {
+        const container = document.getElementById('img-preview-container');
+        const img = document.getElementById('product-img-view');
+        
+        if (src) {
+            img.src = src;
+            container.style.display = 'flex';
+        } else {
+            img.src = '';
+            container.style.display = 'none';
         }
     },
 
