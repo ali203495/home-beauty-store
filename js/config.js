@@ -21,19 +21,23 @@ const DEFAULT_CONFIG = {
     promoBannerTitle: "Préparez l'été à Marrakech !",
     heroBanners: {
         main: {
-            img: "/home/xyz/.gemini/antigravity/brain/2018e71b-31ac-41a2-9d4f-0605c24361e1/electro_promo_main_1775254691404.png",
-            tag: "SÉLECTION PREMIUM",
-            title: "CUISINES ÉQUIPÉES<br>JUSQU'À -25%"
+            img: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=2000&auto=format&fit=crop",
+            tag: "LIVRAISON PARTOUT",
+            title: "Préparez l'été à <span class='text-red'>Marrakech !</span>"
         },
         side1: {
-            img: "/home/xyz/.gemini/antigravity/brain/2018e71b-31ac-41a2-9d4f-0605c24361e1/electro_promo_tv_1775254832960.png",
-            title: "UNIVERS TV 4K OLED"
+            img: "https://images.unsplash.com/photo-1572635196237-14b3f281503f?q=80&w=1000&auto=format&fit=crop",
+            title: "Lunettes Edition Limitée"
         },
         side2: {
-            img: "/home/xyz/.gemini/antigravity/brain/2018e71b-31ac-41a2-9d4f-0605c24361e1/electro_promo_beauty_1775254965058.png",
-            title: "SOINS & BEAUTÉ LUXE"
+            img: "https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?q=80&w=1000&auto=format&fit=crop",
+            title: "Sneakers Performance"
         }
     },
+    layoutOrder: ['hero', 'promos', 'featured', 'categories'],
+    activeCampaigns: [
+        { id: 'c1', name: 'Soldes Été', active: true, discount: '20%' }
+    ],
     facebookAutomation: {
         enabled: false,
         webhookUrl: "",

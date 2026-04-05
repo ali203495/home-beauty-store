@@ -14,8 +14,9 @@ const App = {
     init() {
         this.updateCurrentYear();
         this.initSearch();
-        this.renderFeaturedProducts();
         this.renderHeroBanners();
+        this.renderDynamicLayout();
+        this.renderFeaturedProducts();
         this.setupWhatsAppButton();
         this.setupMegaMenu();
         

@@ -11,6 +11,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/index.css">
     
+    <!-- SortableJS for Drag-and-Drop -->
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    
     <style>
         :root {
             --sidebar-width: 280px;
@@ -222,6 +225,32 @@
             .sidebar.active { transform: translateX(0); }
             .main-content { margin-left: 0; width: 100%; }
         }
+
+        /* ── New Advanced Controls ── */
+        .draggable-item, .draggable-product {
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 1px solid transparent;
+        }
+        .draggable-item:hover, .draggable-product:hover {
+            border-color: var(--accent-red);
+            transform: scale(1.02);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        .sortable-ghost {
+            opacity: 0.4;
+            background: var(--accent-red) !important;
+        }
+
+        .text-gold { color: #facc15; }
+        .animate-pulse { animation: pulse 2s infinite; }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        #promo-live-preview {
+            transition: all 0.5s var(--ease);
+        }
     </style>
 </head>
 
@@ -262,6 +291,9 @@
             </a>
             <a href="#" class="nav-link" onclick="Admin.switchTab('promos', this)">
                 <i class="fas fa-ad"></i> Promotions
+            </a>
+            <a href="#" class="nav-link" onclick="Admin.switchTab('layout', this)">
+                <i class="fas fa-layer-group"></i> Mise en Page
             </a>
         </nav>
 
@@ -421,7 +453,7 @@
                             <th>Catégorie</th>
                             <th>Prix</th>
                             <th>Stock</th>
-                            <th>Statut</th>
+                            <th>Visibilité</th>
                             <th class="text-right">Actions</th>
                         </tr>
                     </thead>
@@ -561,6 +593,38 @@
             </div>
         </section>
 
+        <!-- TAB: MEDIA & AI -->
+        <section id="tab-media" class="tab-content animate-fade">
+            <!-- ... content ... -->
+        </section>
+
+        <!-- TAB: LAYOUT MANAGER -->
+        <section id="tab-layout" class="tab-content animate-fade">
+            <div class="flex-between mb-xl">
+                <div>
+                    <h1>Architecture d'Accueil</h1>
+                    <p class="text-muted">Réorganisez visuellement les sections de votre boutique.</p>
+                </div>
+                <button class="bg-red p-md" onclick="Admin.saveLayoutOrder()">ENREGISTRER L'ORDRE</button>
+            </div>
+
+            <div class="grid-2 gap-2xl">
+                <div class="glass p-2xl">
+                    <h3 class="mb-xl"><i class="fas fa-sort-amount-down mr-md text-red"></i> Ordre des Sections</h3>
+                    <div id="layout-sortable-list" class="flex-column gap-md">
+                        <!-- Dynamic via SortableJS -->
+                    </div>
+                </div>
+                <div class="glass p-2xl">
+                    <h3 class="mb-xl"><i class="fas fa-star mr-md text-red"></i> Produits Phares</h3>
+                    <div id="featured-sortable-list" class="flex-column gap-md">
+                        <!-- Dynamic via SortableJS -->
+                    </div>
+                    <p class="text-muted mt-lg" style="font-size: 0.8rem;">Glissez pour définir les 5 produits prioritaires sur votre page d'accueil.</p>
+                </div>
+            </div>
+        </section>
+
         <!-- TAB: ADMINS -->
         <section id="tab-admins" class="tab-content animate-fade">
             <div class="flex-between mb-xl">
@@ -589,14 +653,6 @@
                 </table>
             </div>
         </section>
-        <!-- TAB: MEDIA & AI -->
-        <section id="tab-media" class="tab-content animate-fade">
-            <div class="flex-between mb-xl">
-                <div>
-                    <h1>Contenu Visuel & Intelligence Artificielle</h1>
-                    <p class="text-muted">Gérez vos bannières et optimisez vos catégories avec l'IA.</p>
-                </div>
-            </div>
 
             <!-- Image Management -->
             <div class="grid-3 gap-xl mb-2xl">

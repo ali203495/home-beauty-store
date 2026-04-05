@@ -190,6 +190,7 @@ const Admin = {
         this.renderLogs();
         this.renderAnalytics();
         this.renderAdmins();
+        this.renderLayoutTab();
     },
 
     async computeStats() {
@@ -256,26 +257,31 @@ const Admin = {
             <tr>
                 <td>
                     <div class="flex align-center gap-md">
-                        <img src="${p.image}" style="width: 32px; height: 32px; border-radius: 4px;">
-                        <span class="text-bold">${p.name}</span>
-                    </div>
-                </td>
-                <td><span class="badge glass">${p.category}</span></td>
-                <td class="text-bold">${p.price} DH</td>
-                <td>
-                    <div class="flex align-center gap-sm">
-                        <span class="text-bold ${p.stock < 10 ? 'text-red' : ''}">${p.stock}</span>
-                        <div style="width: 60px; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px;">
-                            <div style="width: ${Math.min(p.stock, 100)}%; height: 100%; background: ${p.stock < 10 ? 'var(--accent-red)' : '#22c55e'}; border-radius: 2px;"></div>
+                        <img src="${p.image}" style="width: 32px; height: 32px; border-radius: 4px; object-fit: cover;">
+                        <div>
+                            <div class="text-bold">${p.name}</div>
+                            <div class="text-muted" style="font-size: 0.7rem;">ID: ${p.id}</div>
                         </div>
                     </div>
                 </td>
+                <td><span class="badge glass">${p.category}</span></td>
+                <td class="text-bold text-red">${p.price} DH</td>
                 <td>
-                    <span class="badge" style="background: ${p.visible ? 'rgba(34, 197, 94, 0.2)' : 'rgba(239, 68, 68, 0.2)'}; color: ${p.visible ? '#22c55e' : '#ef4444'};">
+                    <div class="flex align-center gap-sm">
+                        <button class="glass p-xs" onclick="Admin.adjustStock('${p.id}', -1)"><i class="fas fa-minus"></i></button>
+                        <span class="text-bold mx-xs ${p.stock < 10 ? 'text-red' : ''}">${p.stock}</span>
+                        <button class="glass p-xs" onclick="Admin.adjustStock('${p.id}', 1)"><i class="fas fa-plus"></i></button>
+                    </div>
+                </td>
+                <td>
+                    <span class="badge" style="background: ${p.visible ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)'}; color: ${p.visible ? '#22c55e' : '#ef4444'};">
                         ${p.visible ? 'En ligne' : 'Masqué'}
                     </span>
                 </td>
                 <td class="text-right">
+                    <button class="glass p-xs mr-xs ${p.isPromoted ? 'text-gold' : 'text-muted'}" onclick="Admin.togglePromoted('${p.id}')" title="Mettre en avant">
+                        <i class="fas fa-star"></i>
+                    </button>
                     <button class="glass p-xs mr-xs" onclick="Admin.editProduct('${p.id}')"><i class="fas fa-edit"></i></button>
                     <button class="glass p-xs" onclick="Admin.toggleVisibility('${p.id}')"><i class="fas ${p.visible ? 'fa-eye-slash' : 'fa-eye'}"></i></button>
                 </td>
@@ -291,13 +297,26 @@ const Admin = {
             <tr>
                 <td class="text-bold">${p.name}</td>
                 <td>
-                    <span class="badge" style="font-size: 1rem; ${p.stock < 10 ? 'background: rgba(239, 68, 68, 0.2); color: #ef4444;' : ''}">${p.stock} unités</span>
+                    <div class="flex align-center gap-md">
+                        <button class="glass p-sm" onclick="Admin.adjustStock('${p.id}', -5)">-5</button>
+                        <button class="glass p-sm" onclick="Admin.adjustStock('${p.id}', -1)">-1</button>
+                        <span class="badge mx-md" style="font-size: 1.1rem; min-width: 60px; text-align: center; ${p.stock < 10 ? 'background: rgba(239, 68, 68, 0.1); color: #ef4444;' : ''}">
+                            ${p.stock}
+                        </span>
+                        <button class="glass p-sm" onclick="Admin.adjustStock('${p.id}', 1)">+1</button>
+                        <button class="glass p-sm" onclick="Admin.adjustStock('${p.id}', 5)">+5</button>
+                    </div>
                 </td>
                 <td class="text-muted" style="font-size: 0.8rem;">${new Date(p.lastUpdated || Date.now()).toLocaleString()}</td>
                 <td>
-                    ${p.stock < 10 ? '<span class="text-red text-bold"><i class="fas fa-exclamation-triangle"></i> STOCK FAIBLE</span>' : '<span class="text-muted">Normal</span>'}
+                    ${p.stock < 10 ? '<span class="text-red text-bold animate-pulse"><i class="fas fa-exclamation-triangle"></i> STOCK CRITIQUE</span>' : '<span class="text-muted">Niveau optimal</span>'}
                 </td>
                 <td class="text-right">
+                    <button class="glass p-sm text-bold" onclick="Admin.openProductModal('${p.id}')">MAJ COMPLÈTE</button>
+                </td>
+            </tr>
+        `).join('');
+    },
                     <div class="flex gap-xs justify-end">
                         <button class="glass px-md py-xs" onclick="Admin.adjustStock('${p.id}', 10)">+10</button>
                         <button class="glass px-md py-xs" onclick="Admin.adjustStock('${p.id}', 50)">+50</button>
@@ -960,6 +979,107 @@ const Admin = {
             img.src = '';
             container.style.display = 'none';
         }
+    },
+
+    /** ── Layout & Visual Control ─────────────────────────── */
+
+    renderLayoutTab() {
+        const layoutList = document.getElementById('layout-sortable-list');
+        const featuredList = document.getElementById('featured-sortable-list');
+        if (!layoutList || !featuredList) return;
+
+        const sections = CONFIG.layoutOrder || ['hero', 'promos', 'featured', 'categories'];
+        const sectionLabels = {
+            hero: { name: 'Bannière Principale (Hero)', icon: 'fa-star' },
+            promos: { name: 'Grille Promotionnelle', icon: 'fa-percentage' },
+            featured: { name: 'Produits Phares', icon: 'fa-crown' },
+            categories: { name: 'Exploration Catégories', icon: 'fa-th' }
+        };
+
+        layoutList.innerHTML = sections.map(s => `
+            <div class="glass p-md mb-xs flex align-center gap-md draggable-item" data-id="${s}" style="cursor: grab;">
+                <i class="fas fa-grip-vertical text-muted"></i>
+                <div class="flex-1">
+                    <div class="text-bold" style="font-size: 0.9rem;">${sectionLabels[s].name}</div>
+                    <div class="text-muted" style="font-size: 0.7rem;">Tag: ${s}</div>
+                </div>
+                <i class="fas ${sectionLabels[s].icon} text-red"></i>
+            </div>
+        `).join('');
+
+        // Sortable Products (top 5)
+        const promoted = PRODUCTS.filter(p => p.isPromoted).slice(0, 8);
+        featuredList.innerHTML = promoted.map(p => `
+            <div class="glass p-sm mb-xs flex align-center gap-md draggable-product" data-id="${p.id}" style="cursor: grab; border-radius: var(--radius-sm);">
+                <i class="fas fa-grip-vertical text-muted"></i>
+                <img src="${p.image}" style="width: 30px; height: 30px; object-fit: cover; border-radius: 4px;">
+                <div class="flex-1 text-bold" style="font-size: 0.8rem;">${p.name}</div>
+                <div class="text-red text-bold" style="font-size: 0.75rem;">${p.price} DH</div>
+            </div>
+        `).join('') || '<p class="text-muted p-md text-center">Aucun produit étoilé ⭐️</p>';
+
+        this.initSortable();
+    },
+
+    initSortable() {
+        if (typeof Sortable === 'undefined') return;
+
+        new Sortable(document.getElementById('layout-sortable-list'), {
+            animation: 150,
+            ghostClass: 'glass-light',
+            onEnd: () => this.showToast('Nouvel ordre prêt à enregistrer 💾')
+        });
+
+        new Sortable(document.getElementById('featured-sortable-list'), {
+            animation: 150,
+            ghostClass: 'glass-light'
+        });
+    },
+
+    async saveConfig() {
+        localStorage.setItem('elwali_site_settings', JSON.stringify(CONFIG));
+    },
+
+    async saveLayoutOrder() {
+        const layoutList = document.getElementById('layout-sortable-list');
+        if (!layoutList) return;
+        
+        const layoutItems = Array.from(layoutList.children);
+        const newOrder = layoutItems.map(item => item.dataset.id);
+
+        CONFIG.layoutOrder = newOrder;
+        await this.saveConfig();
+        this.showToast('Architecture sauvegardée avec succès !');
+        this.logActivity('Mise à jour de l\'architecture d\'accueil', 'info');
+    },
+
+    async togglePromoted(id) {
+        const p = PRODUCTS.find(prod => prod.id === id);
+        if (p) {
+            p.isPromoted = !p.isPromoted;
+            await ProductDB.save(p);
+            this.renderProducts();
+            this.renderLayoutTab();
+            this.showToast(p.isPromoted ? 'Mis en avant ! 🌟' : 'Retiré des favoris');
+        }
+    },
+
+    async adjustStock(id, amount) {
+        const p = PRODUCTS.find(prod => prod.id === id);
+        if (p) {
+            p.stock = Math.max(0, (p.stock || 0) + amount);
+            p.lastUpdated = new Date().toISOString();
+            await ProductDB.save(p);
+            this.renderProducts();
+            this.renderInventory();
+            this.computeStats();
+            this.showToast(`Stock mis à jour pour ${p.name}`);
+        }
+    },
+
+    updateLivePreview(input, target) {
+        const el = document.getElementById(`preview-${target}`);
+        if (el) el.innerHTML = input.value || (target === 'hero-title' ? 'Titre de la Bannière' : 'Description...');
     },
 
     logout() {
