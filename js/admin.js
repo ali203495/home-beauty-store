@@ -366,14 +366,6 @@ const Admin = {
             </tr>
         `).join('');
     },
-                    <div class="flex gap-xs justify-end">
-                        <button class="glass px-md py-xs" onclick="Admin.adjustStock('${p.id}', 10)">+10</button>
-                        <button class="glass px-md py-xs" onclick="Admin.adjustStock('${p.id}', 50)">+50</button>
-                    </div>
-                </td>
-            </tr>
-        `).join('');
-    },
 
     async renderOrders(filtered = null) {
         const tbody = document.getElementById('admin-order-table-body');
