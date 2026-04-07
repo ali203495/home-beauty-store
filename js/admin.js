@@ -138,6 +138,53 @@ const Admin = {
         }
     },
 
+    /** ── SHA-256 Helper (Pure JS Implementation for Mobile Reliability) ── */
+    async hashPassword(ascii) {
+        function rightRotate(value, amount) { return (value >>> amount) | (value << (32 - amount)); }
+        let mathPow = Math.pow, maxWord = mathPow(2, 32), result = '', words = [], asciiBitLength = ascii.length * 8;
+        let hash = [], k = [], i = 0, re = /[\u0080-\uffff]/g;
+        let isPrimes = [], n = 2;
+        while (isPrimes.length < 64) {
+            let found = false;
+            for (i = 2; i <= mathPow(n, 0.5); i++) { if (n % i === 0) { found = true; break; } }
+            if (!found) {
+                if (isPrimes.length < 8) hash.push((mathPow(n, 0.5) % 1 * maxWord) | 0);
+                k.push((mathPow(n, 1 / 3) % 1 * maxWord) | 0);
+                isPrimes.push(n);
+            }
+            n++;
+        }
+        ascii += '\x80';
+        while (ascii.length % 64 - 56) ascii += '\x00';
+        for (i = 0; i < ascii.length; i++) {
+            let charCode = ascii.charCodeAt(i);
+            if (charCode >> 8) return; 
+            words[i >> 2] |= charCode << ((3 - i) % 4 * 8);
+        }
+        words[words.length] = ((asciiBitLength / maxWord) | 0);
+        words[words.length] = (asciiBitLength | 0);
+        for (let j = 0; j < words.length; ) {
+            let w = words.slice(j, j += 16), oldHash = hash;
+            hash = hash.slice(0, 8);
+            for (i = 0; i < 64; i++) {
+                let w15 = w[i - 15], w2 = w[i - 2];
+                let a = hash[0], e = hash[4];
+                let temp1 = hash[7] + (rightRotate(e, 6) ^ rightRotate(e, 11) ^ rightRotate(e, 25)) + ((e & hash[5]) ^ (~e & hash[6])) + k[i] + (w[i] = (i < 16) ? w[i] : (w[i - 16] + (rightRotate(w15, 7) ^ rightRotate(w15, 18) ^ (w15 >>> 3)) + w[i - 7] + (rightRotate(w2, 17) ^ rightRotate(w2, 19) ^ (w2 >>> 10))) | 0);
+                let temp2 = (rightRotate(a, 2) ^ rightRotate(a, 13) ^ rightRotate(a, 22)) + ((a & hash[1]) ^ (a & hash[2]) ^ (hash[1] & hash[2]));
+                hash = [(temp1 + temp2) | 0].concat(hash);
+                hash[4] = (hash[4] + temp1) | 0;
+            }
+            for (i = 0; i < 8; i++) hash[i] = (hash[i] + oldHash[i]) | 0;
+        }
+        for (i = 0; i < 8; i++) {
+            for (let j = 3; j + 1; j--) {
+                let b = (hash[i] >> (j * 8)) & 255;
+                result += (b < 16 ? '0' : '') + b.toString(16);
+            }
+        }
+        return result;
+    },
+
     /** ── Email Dispatcher (EmailJS) ────────────────────────── */
 
     async sendEmailNotification(to_name, to_email, code, type = 'activation') {
@@ -174,12 +221,54 @@ const Admin = {
     /** ── Authentication ───────────────────────────────────── */
 
     async hashPassword(string) {
-        if (!window.crypto || !window.crypto.subtle) return string; 
-        const utf8 = new TextEncoder().encode(string);
-        const hashBuffer = await crypto.subtle.digest('SHA-256', utf8);
-        const hashArray = Array.from(new Uint8Array(hashBuffer));
-        const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-        return hashHex;
+        // Obsolete browser-dependent logic removed for mobile-consistency
+        // Pure JS SHA-256 implementation is now used instead.
+        return this._sha256(string);
+    },
+
+    async _sha256(ascii) {
+        function rightRotate(value, amount) { return (value >>> amount) | (value << (32 - amount)); }
+        let mathPow = Math.pow, maxWord = mathPow(2, 32), result = '', words = [], asciiBitLength = ascii.length * 8;
+        let hash = [], k = [], i = 0;
+        let isPrimes = [], n = 2;
+        while (isPrimes.length < 64) {
+            let found = false;
+            for (i = 2; i <= mathPow(n, 0.5); i++) { if (n % i === 0) { found = true; break; } }
+            if (!found) {
+                if (isPrimes.length < 8) hash.push((mathPow(n, 0.5) % 1 * maxWord) | 0);
+                k.push((mathPow(n, 1 / 3) % 1 * maxWord) | 0);
+                isPrimes.push(n);
+            }
+            n++;
+        }
+        ascii += '\x80';
+        while (ascii.length % 64 - 56) ascii += '\x00';
+        for (i = 0; i < ascii.length; i++) {
+            let charCode = ascii.charCodeAt(i);
+            words[i >> 2] |= charCode << ((3 - i) % 4 * 8);
+        }
+        words[words.length] = ((asciiBitLength / maxWord) | 0);
+        words[words.length] = (asciiBitLength | 0);
+        for (let j = 0; j < words.length; ) {
+            let w = words.slice(j, j += 16), oldHash = hash;
+            hash = hash.slice(0, 8);
+            for (i = 0; i < 64; i++) {
+                let w15 = w[i - 15], w2 = w[i - 2];
+                let a = hash[0], e = hash[4];
+                let temp1 = hash[7] + (rightRotate(e, 6) ^ rightRotate(e, 11) ^ rightRotate(e, 25)) + ((e & hash[5]) ^ (~e & hash[6])) + k[i] + (w[i] = (i < 16) ? w[i] : (w[i - 16] + (rightRotate(w15, 7) ^ rightRotate(w15, 18) ^ (w15 >>> 3)) + w[i - 7] + (rightRotate(w2, 17) ^ rightRotate(w2, 19) ^ (w2 >>> 10))) | 0);
+                let temp2 = (rightRotate(a, 2) ^ rightRotate(a, 13) ^ rightRotate(a, 22)) + ((a & hash[1]) ^ (a & hash[2]) ^ (hash[1] & hash[2]));
+                hash = [(temp1 + temp2) | 0].concat(hash);
+                hash[4] = (hash[4] + temp1) | 0;
+            }
+            for (i = 0; i < 8; i++) hash[i] = (hash[i] + oldHash[i]) | 0;
+        }
+        for (i = 0; i < 8; i++) {
+            for (let j = 3; j + 1; j--) {
+                let b = (hash[i] >> (j * 8)) & 255;
+                result += (b < 16 ? '0' : '') + b.toString(16);
+            }
+        }
+        return result;
     },
 
     async login(username, password) {
@@ -725,6 +814,9 @@ const Admin = {
                 </td>
                 <td class="text-right">
                     ${a.username !== currentUser ? `
+                        <button class="glass p-xs mr-xs" onclick="Admin.resetAdminPassword('${a.username}')" title="Réinitialiser Mot de passe">
+                            <i class="fas fa-key" style="color: var(--accent-blue)"></i>
+                        </button>
                         ${a.status === 'Pending' ? `
                             <button class="glass p-xs mr-xs" onclick="Admin.activateAdmin('${a.username}')" title="Activer Manuellement" style="color: #22c55e">
                                 <i class="fas fa-check-circle"></i>
@@ -764,10 +856,26 @@ const Admin = {
         const userIdx = admins.findIndex(a => a.username === username);
         if (userIdx !== -1) {
             admins[userIdx].status = 'Active';
-            await AdminDB.saveAll(admins); // Ensure we have a saveAll method or use saveAdmin
+            await AdminDB.saveAll(admins);
             this.showToast(`Compte ${username} activé avec succès !`);
             this.logActivity(`Activation manuelle de ${username}`, 'success');
             this.renderAdmins();
+        }
+    },
+
+    async resetAdminPassword(username) {
+        const newPass = prompt(`Entrez le nouveau mot de passe pour @${username} :`);
+        if (!newPass || newPass.trim().length < 4) return this.showToast('Mot de passe trop court ou annulé', 'error');
+
+        const hash = await this.hashPassword(newPass.trim());
+        const admins = await AdminDB.fetchAll();
+        const idx = admins.findIndex(a => a.username === username);
+        
+        if (idx !== -1) {
+            admins[idx].passwordHash = hash;
+            await AdminDB.saveAll(admins);
+            this.showToast(`Mot de passe réinitialisé pour @${username}`);
+            this.logActivity(`Réinitialisation manuelle du mot de passe pour ${username}`, 'warning');
         }
     },
 
