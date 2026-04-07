@@ -3,40 +3,50 @@
  * Comprehensive management logic with deep analytics and active controls.
  */
 
-const DEFAULT_ADMIN = {
-    username: 'abdelaali',
-    // SHA-256 hash of '!@#$1234'
-    passwordHash: '0fb2c3ee97570dcf77fb841e26b3678fb2bf7f25e6d5f949c926454825ffc764',
-    recoveryEmail: 'abdelaali.markabi@gmail.com',
-    role: 'Super Admin',
-    status: 'Active'
-};
+const BUILT_IN_ADMINS = [
+    {
+        username: 'abdelaali',
+        passwordHash: '0fb2c3ee97570dcf77fb841e26b3678fb2bf7f25e6d5f949c926454825ffc764', // !@#$1234
+        recoveryEmail: 'abdelaali.markabi@gmail.com',
+        role: 'Super Admin',
+        status: 'Active'
+    },
+    {
+        username: 'mari',
+        passwordHash: '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', // 123456
+        recoveryEmail: 'mari.markabi@gmail.com',
+        role: 'Admin',
+        status: 'Active'
+    },
+    {
+        username: 'brahim',
+        passwordHash: '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', // 123456
+        recoveryEmail: 'brahimelguerhae@gmail.com',
+        role: 'Admin',
+        status: 'Active'
+    }
+];
 
-const AdminDB = {
     async fetchAll() {
         const stored = localStorage.getItem('elwali_admins');
         let admins = [];
         try {
-            if (stored) {
-                admins = JSON.parse(stored);
-                if (!Array.isArray(admins)) admins = [DEFAULT_ADMIN];
-            } else {
-                admins = [DEFAULT_ADMIN];
-                localStorage.setItem('elwali_admins', JSON.stringify(admins));
-            }
+            admins = stored ? JSON.parse(stored) : [];
+            if (!Array.isArray(admins)) admins = [];
         } catch (e) {
-            console.warn('Failed to parse admins, resetting to default', e);
-            admins = [DEFAULT_ADMIN];
+            console.warn('Failed to parse admins, starting fresh', e);
+            admins = [];
         }
-        // Migration & Override support
-        return admins.map(a => {
-            let status = a.status || 'Active';
-            // Forced Activation for requested accounts
-            if (['mari', 'brahim'].includes(a.username.toLowerCase())) {
-                status = 'Active';
+
+        // Merge Built-in Admins (Ensures they exist on every device)
+        BUILT_IN_ADMINS.forEach(builtIn => {
+            if (!admins.find(a => a.username.toLowerCase() === builtIn.username.toLowerCase())) {
+                admins.push(builtIn);
             }
-            return { ...a, status };
         });
+
+        // Migration & Override support
+        return admins.map(a => ({ ...a, status: a.status || 'Active' }));
     },
 
     async saveAdmin(admin) {
