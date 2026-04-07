@@ -138,8 +138,11 @@ const Admin = {
     },
 
     async login(username, password) {
-        const hashedInput = await this.hashPassword(password);
-        const matchedAdmin = await AdminDB.matchCredentials(username, hashedInput);
+        const cleanUser = username.trim().toLowerCase();
+        const cleanPass = password.trim();
+
+        const hashedInput = await this.hashPassword(cleanPass);
+        const matchedAdmin = await AdminDB.matchCredentials(cleanUser, hashedInput);
 
         if (matchedAdmin) {
             if (matchedAdmin.status === 'Pending') {
@@ -854,7 +857,7 @@ const Admin = {
         const adminData = {
             username: data.get('username').trim(),
             recoveryEmail: data.get('recoveryEmail').trim(),
-            passwordHash: await this.hashPassword(data.get('password')),
+            passwordHash: await this.hashPassword(data.get('password').trim()),
             role: 'Admin',
             status: 'Pending',
             createdAt: new Date().toISOString()

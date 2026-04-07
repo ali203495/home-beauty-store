@@ -82,16 +82,34 @@
             padding-left: 0.5rem;
         }
 
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
         .login-input {
             width: 100%;
             background: rgba(0,0,0,0.2);
             border: 1px solid var(--border-subtle);
             padding: 1rem;
+            padding-right: 3rem;
             border-radius: var(--radius-md);
             color: var(--text-primary);
             font-size: 0.9rem;
             transition: all 0.3s var(--ease);
         }
+
+        .toggle-password {
+            position: absolute;
+            right: 1.25rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: color 0.2s;
+            z-index: 10;
+        }
+
+        .toggle-password:hover { color: var(--accent-red); }
 
         .login-input:focus {
             outline: none;
@@ -173,7 +191,10 @@
             
             <div class="input-group">
                 <label>Mot de passe</label>
-                <input type="password" id="password" class="login-input" placeholder="••••••••" required>
+                <div class="input-wrapper">
+                    <input type="password" id="password" class="login-input" placeholder="••••••••" required>
+                    <i class="fas fa-eye toggle-password" id="togglePassword"></i>
+                </div>
             </div>
             
             <button type="submit" class="login-btn">S'AUTHENTIFIER</button>
@@ -236,47 +257,58 @@
     <script src="js/products.js"></script>
     <script src="js/admin.js"></script>
     <script>
+        // Password Visibility Toggle
+        document.getElementById('togglePassword').addEventListener('click', function (e) {
+            const password = document.getElementById('password');
+            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+            password.setAttribute('type', type);
+            this.classList.toggle('fa-eye');
+            this.classList.toggle('fa-eye-slash');
+        });
+
         document.getElementById('login-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = e.target.querySelector('button');
             const originalText = btn.innerText;
             const error = document.getElementById('login-error');
             
+            error.style.display = 'none';
+
             try {
                 btn.innerText = 'ÉVALUATION...';
                 btn.disabled = true;
 
-                const user = document.getElementById('username').value;
-                const pass = document.getElementById('password').value;
+                const user = document.getElementById('username').value.trim();
+                const pass = document.getElementById('password').value.trim();
 
                 const res = await Admin.login(user, pass);
                 
-                setTimeout(() => {
-                    if (res.success) {
-                        window.location.href = 'admin-dashboard.html';
-                    } else {
-                        if (res.requireActivation) {
-                            btn.innerText = originalText;
-                            btn.disabled = false;
-                            showActivationModal(res.username);
-                            return;
-                        }
-                        
-                        error.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${res.msg || 'Identifiants invalides'}`;
-                        error.style.display = 'block';
+                if (res.success) {
+                    window.location.href = 'admin-dashboard.html';
+                } else {
+                    if (res.requireActivation) {
                         btn.innerText = originalText;
                         btn.disabled = false;
-                        document.querySelector('.login-card').style.animation = 'none';
-                        void document.querySelector('.login-card').offsetWidth; // Trigger reflow
-                        document.querySelector('.login-card').style.animation = 'shake 0.4s';
-                        setTimeout(() => {
-                            error.style.display = 'none';
-                        }, 3000);
+                        showActivationModal(res.username);
+                        return;
                     }
-                }, 800);
+                    
+                    error.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${res.msg || 'Identifiants invalides'}`;
+                    error.style.display = 'block';
+                    btn.innerText = originalText;
+                    btn.disabled = false;
+                    
+                    document.querySelector('.login-card').style.animation = 'none';
+                    void document.querySelector('.login-card').offsetWidth; // Trigger reflow
+                    document.querySelector('.login-card').style.animation = 'shake 0.4s';
+                    
+                    setTimeout(() => {
+                        error.style.display = 'none';
+                    }, 4000);
+                }
             } catch (err) {
                 console.error('Login error:', err);
-                error.innerHTML = `<i class="fas fa-bug"></i> Erreur technique : ${err.message}`;
+                error.innerHTML = `<i class="fas fa-bug"></i> Erreur système : ${err.message}`;
                 error.style.display = 'block';
                 btn.innerText = originalText;
                 btn.disabled = false;
