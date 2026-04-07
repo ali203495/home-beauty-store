@@ -40,6 +40,10 @@ const AdminDB = {
         } else {
             admins.push(admin);
         }
+        return this.saveAll(admins);
+    },
+
+    async saveAll(admins) {
         localStorage.setItem('elwali_admins', JSON.stringify(admins));
         return true;
     },
@@ -672,7 +676,12 @@ const Admin = {
                 </td>
                 <td class="text-right">
                     ${a.username !== currentUser ? `
-                        ${a.status === 'Pending' ? `<button class="glass p-xs mr-xs text-gold" onclick="Admin.resendActivation('${a.username}')" title="Renvoyer le code"><i class="fas fa-paper-plane"></i></button>` : ''}
+                        ${a.status === 'Pending' ? `
+                            <button class="glass p-xs mr-xs" onclick="Admin.activateAdmin('${a.username}')" title="Activer Manuellement" style="color: #22c55e">
+                                <i class="fas fa-check-circle"></i>
+                            </button>
+                            <button class="glass p-xs mr-xs text-gold" onclick="Admin.resendActivation('${a.username}')" title="Renvoyer le code"><i class="fas fa-paper-plane"></i></button>
+                        ` : ''}
                         <button class="glass p-xs" onclick="Admin.deleteAdmin('${a.username}')">
                             <i class="fas fa-trash-alt" style="color: #ef4444"></i>
                         </button>
@@ -690,6 +699,18 @@ const Admin = {
             this.showToast(`Nouveau code envoyé pour ${username}`);
             console.log(`[SECURITY] Nouveau code pour ${username}: ${code}`);
             this.logActivity(`Code d'activation renvoyé pour ${username}`, 'info');
+        }
+    },
+
+    async activateAdmin(username) {
+        const admins = await AdminDB.fetchAll();
+        const userIdx = admins.findIndex(a => a.username === username);
+        if (userIdx !== -1) {
+            admins[userIdx].status = 'Active';
+            await AdminDB.saveAll(admins); // Ensure we have a saveAll method or use saveAdmin
+            this.showToast(`Compte ${username} activé avec succès !`);
+            this.logActivity(`Activation manuelle de ${username}`, 'success');
+            this.renderAdmins();
         }
     },
 
