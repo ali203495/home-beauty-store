@@ -11,38 +11,159 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/index.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     
     <!-- SortableJS for Drag-and-Drop -->
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
     
     <style>
         :root {
-            --sidebar-width: 280px;
+            --sidebar-width: 260px;
             --sidebar-collapsed-width: 80px;
-            --top-nav-height: 80px;
-            --accent-red: #e11d48;
-            --accent-red-hover: #f43f5e;
-            --bg-glass: rgba(15, 23, 42, 0.8);
-            --border-glass: rgba(255, 255, 255, 0.08);
-            --font-main: 'Plus+Jakarta+Sans', sans-serif;
+            --top-nav-height: 70px;
+            
+            /* Premium Dark Palette */
+            --bg-body: #0a0a0b;
+            --bg-sidebar: #0f1014;
+            --bg-card: rgba(26, 27, 33, 0.7);
+            
+            --accent-primary: #e11d48;
+            --accent-hover: #f43f5e;
+            --accent-success: #10b981;
+            --accent-warning: #f59e0b;
+            --accent-blue: #3b82f6;
+            
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --border-card: rgba(255, 255, 255, 0.05);
+            
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --text-faint: #475569;
+            
+            --font-main: 'Inter', sans-serif;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+            
+            --shadow-card: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+            --shadow-glass: inset 0 1px 0 rgba(255,255,255,0.05);
+            --ease: cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* ── Reset & Typography ── */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
         body {
             display: flex;
             min-height: 100vh;
-            background: #020617;
-            color: #f8fafc;
+            background: var(--bg-body);
+            color: var(--text-main);
             font-family: var(--font-main);
             overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
         }
 
         body.rtl {
             font-family: 'Cairo', sans-serif;
         }
 
-        /* ── Sidebar Redesign ── */
+        a { text-decoration: none; color: inherit; }
+        button, input, select { font-family: inherit; }
+
+        /* ── Universal Classes ── */
+        .flex { display: flex; }
+        .flex-column { display: flex; flex-direction: column; }
+        .flex-between { display: flex; justify-content: space-between; align-items: center; }
+        .flex-center { display: flex; justify-content: center; align-items: center; }
+        .align-center { align-items: center; }
+        .justify-end { justify-content: flex-end; }
+        .gap-xs { gap: 0.25rem; }
+        .gap-sm { gap: 0.5rem; }
+        .gap-md { gap: 1rem; }
+        .gap-lg { gap: 1.5rem; }
+        .gap-xl { gap: 2rem; }
+        
+        .p-xs { padding: 0.25rem; }
+        .p-sm { padding: 0.5rem; }
+        .p-md { padding: 1rem; }
+        .p-lg { padding: 1.5rem; }
+        .py-sm { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+        .px-md { padding-left: 1rem; padding-right: 1rem; }
+        .py-md { padding-top: 1rem; padding-bottom: 1rem; }
+        
+        .mb-sm { margin-bottom: 0.5rem; }
+        .mb-md { margin-bottom: 1rem; }
+        .mb-lg { margin-bottom: 1.5rem; }
+        .mb-xl { margin-bottom: 2rem; }
+        .mt-xs { margin-top: 0.25rem; }
+        .mt-lg { margin-top: 1.5rem; }
+
+        .text-bold { font-weight: 700; }
+        .text-muted { color: var(--text-muted); }
+        .text-red { color: var(--accent-primary); }
+        .text-success { color: var(--accent-success); }
+        .text-center { text-align: center; }
+        .text-right { text-align: right; }
+
+        .border-bottom { border-bottom: 1px solid var(--border-subtle); }
+        
+        .badge {
+            padding: 0.25rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        h1 { font-size: 1.75rem; font-weight: 800; letter-spacing: -0.02em; }
+        h2 { font-size: 1.25rem; font-weight: 700; }
+        h3 { font-size: 1.1rem; font-weight: 600; }
+
+        /* ── Grid System ── */
+        .grid-1 { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+        .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }
+
+        /* ── Glass & Cards ── */
+        .glass-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: var(--shadow-card), var(--shadow-glass);
+            transition: transform 0.3s var(--ease), border-color 0.3s var(--ease);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .glass-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-main);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .glass-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* ── Sidebar ── */
         .sidebar {
             width: var(--sidebar-width);
             height: 100vh;
@@ -52,41 +173,42 @@
             z-index: 1000;
             display: flex;
             flex-direction: column;
-            padding: 1.5rem 1rem;
-            background: var(--bg-glass);
-            border-right: 1px solid var(--border-glass);
-            backdrop-filter: blur(20px);
-            transition: all 0.4s var(--ease);
+            padding: 2rem 1.5rem;
+            background: var(--bg-sidebar);
+            border-right: 1px solid var(--border-subtle);
+            transition: transform 0.4s var(--ease);
         }
 
         body.rtl .sidebar {
             left: auto;
             right: 0;
             border-right: none;
-            border-left: 1px solid var(--border-glass);
+            border-left: 1px solid var(--border-subtle);
         }
 
         .sidebar-logo {
-            font-size: 1.4rem;
+            font-size: 1.5rem;
             font-weight: 800;
-            color: var(--accent-red);
-            margin-bottom: 2.5rem;
+            color: var(--accent-primary);
+            margin-bottom: 3rem;
             display: flex;
             align-items: center;
             gap: 0.75rem;
-            padding: 0 1rem;
+            letter-spacing: -0.05em;
         }
+
+        .sidebar-logo span span { color: var(--text-main); }
 
         .nav-group { margin-bottom: 2rem; }
 
         .nav-label {
             font-size: 0.65rem;
             font-weight: 700;
-            color: rgba(255,255,255,0.4);
+            color: var(--text-faint);
             text-transform: uppercase;
-            letter-spacing: 0.1em;
+            letter-spacing: 0.08em;
             margin-bottom: 0.75rem;
-            padding: 0 1rem;
+            padding-left: 0.5rem;
         }
 
         .nav-link {
@@ -94,35 +216,42 @@
             align-items: center;
             gap: 1rem;
             padding: 0.75rem 1rem;
-            border-radius: 12px;
-            color: #94a3b8;
-            font-weight: 600;
+            border-radius: 10px;
+            color: var(--text-muted);
+            font-weight: 500;
             font-size: 0.9rem;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            margin-bottom: 0.4rem;
-            text-decoration: none;
+            transition: all 0.2s var(--ease);
+            margin-bottom: 0.2rem;
+            position: relative;
         }
 
         .nav-link i {
-            width: 24px;
+            width: 20px;
             font-size: 1.1rem;
+            text-align: center;
+            opacity: 0.7;
             transition: transform 0.2s;
         }
 
         .nav-link:hover {
             background: rgba(255, 255, 255, 0.03);
-            color: #f8fafc;
+            color: var(--text-main);
         }
 
-        .nav-link:hover i { transform: scale(1.1); }
+        .nav-link:hover i { transform: scale(1.1); opacity: 1; }
 
         .nav-link.active {
-            background: linear-gradient(135deg, var(--accent-red), #be123c);
-            color: white;
-            box-shadow: 0 8px 16px -4px rgba(225, 29, 72, 0.4);
+            background: rgba(225, 29, 72, 0.1);
+            color: var(--accent-primary);
+            font-weight: 600;
         }
 
-        /* ── Main Layout ── */
+        .nav-link.active i {
+            color: var(--accent-primary);
+            opacity: 1;
+        }
+
+        /* ── Main Canvas ── */
         .wrapper {
             flex: 1;
             margin-left: var(--sidebar-width);
@@ -137,104 +266,65 @@
             margin-right: var(--sidebar-width);
         }
 
+        /* ── Top Bar ── */
         .top-nav {
             height: var(--top-nav-height);
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 2.5rem;
-            background: rgba(2, 6, 23, 0.6);
-            backdrop-filter: blur(8px);
-            border-bottom: 1px solid var(--border-glass);
+            padding: 0 2rem;
+            background: rgba(10, 10, 11, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-subtle);
             position: sticky;
             top: 0;
             z-index: 900;
         }
 
-        .main-content {
-            padding: 2.5rem;
-            flex: 1;
-        }
-
-        /* ── Modern Components ── */
-        .glass-card {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid var(--border-glass);
-            border-radius: 20px;
-            padding: 2rem;
-            transition: transform 0.3s, border-color 0.3s;
-        }
-
-        .glass-card:hover {
-            border-color: rgba(225, 29, 72, 0.3);
-            transform: translateY(-4px);
-        }
-
-        .stat-card {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .stat-icon {
-            width: 40px;
-            height: 40px;
-            background: rgba(225, 29, 72, 0.1);
-            color: var(--accent-red);
-            border-radius: 12px;
+        .search-pill {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-subtle);
+            border-radius: 50px;
+            padding: 0.5rem 1.25rem;
             display: flex;
             align-items: center;
-            justify-content: center;
-            margin-bottom: 0.5rem;
+            gap: 0.75rem;
+            width: 300px;
+            transition: all 0.3s;
         }
 
-        .table-container {
+        .search-pill:focus-within {
+            border-color: var(--accent-primary);
+            background: rgba(255, 255, 255, 0.06);
+            box-shadow: 0 0 0 3px rgba(225, 29, 72, 0.15);
+        }
+
+        .search-pill input {
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            font-size: 0.85rem;
             width: 100%;
-            overflow-x: auto;
-            border-radius: 16px;
-            border: 1px solid var(--border-glass);
+            outline: none;
         }
 
-        .modern-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
+        .search-pill input::placeholder { color: var(--text-faint); }
 
-        .modern-table th {
-            text-align: left;
-            padding: 1.25rem 1.5rem;
-            background: rgba(255, 255, 255, 0.01);
-            color: #64748b;
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        body.rtl .modern-table th { text-align: right; }
-
-        .modern-table td {
-            padding: 1.25rem 1.5rem;
-            border-bottom: 1px solid var(--border-glass);
-            font-size: 0.9rem;
-        }
-
-        /* ── Controls ── */
         .lang-switcher {
             display: flex;
-            gap: 0.5rem;
-            padding: 0.4rem;
-            background: rgba(255,255,255,0.03);
-            border-radius: 12px;
-            border: 1px solid var(--border-glass);
+            gap: 0.25rem;
+            background: rgba(255, 255, 255, 0.02);
+            padding: 0.2rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-subtle);
         }
 
         .lang-btn {
-            padding: 0.4rem 0.8rem;
-            border-radius: 8px;
+            padding: 0.4rem 0.75rem;
+            border-radius: 6px;
             border: none;
             background: transparent;
-            color: #64748b;
+            color: var(--text-muted);
             font-size: 0.75rem;
             font-weight: 700;
             cursor: pointer;
@@ -242,64 +332,218 @@
         }
 
         .lang-btn.active {
-            background: rgba(255,255,255,0.06);
-            color: #f8fafc;
+            background: rgba(255,255,255,0.1);
+            color: var(--text-main);
         }
 
-        .search-pill {
-            background: rgba(15, 23, 42, 0.4);
-            border: 1px solid var(--border-glass);
-            border-radius: 50px;
-            padding: 0.6rem 1.2rem;
+        .user-pill {
             display: flex;
             align-items: center;
-            gap: 0.8rem;
-            width: 350px;
-            transition: all 0.3s;
+            gap: 0.75rem;
+            padding: 0.4rem 1rem 0.4rem 0.4rem;
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-subtle);
         }
 
-        .search-pill:focus-within {
-            border-color: var(--accent-red);
-            background: rgba(15, 23, 42, 0.6);
-            box-shadow: 0 0 0 4px rgba(225, 29, 72, 0.1);
+        .user-pill-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-hover));
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.8rem;
         }
 
-        .search-pill input {
-            background: transparent;
-            border: none;
-            color: #f8fafc;
+        .main-content {
+            padding: 2.5rem;
+            flex: 1;
+        }
+
+        /* ── Dashboard Cards ── */
+        .stat-card {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::after {
+            content: '';
+            position: absolute;
+            top: 0; right: 0; width: 100px; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.02));
+            transform: skewX(-15deg) translateX(50px);
+        }
+
+        .stat-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--text-muted);
             font-size: 0.85rem;
-            width: 100%;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
         }
 
-        .search-pill input:focus { outline: none; }
+        .stat-header i {
+            width: 36px;
+            height: 36px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-main);
+            font-size: 1.1rem;
+        }
 
-        .btn-action {
-            background: var(--accent-red);
+        .stat-card.primary .stat-header i { background: rgba(225, 29, 72, 0.1); color: var(--accent-primary); }
+        .stat-card.success .stat-header i { background: rgba(16, 185, 129, 0.1); color: var(--accent-success); }
+        .stat-card.warning .stat-header i { background: rgba(245, 158, 11, 0.1); color: var(--accent-warning); }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+        }
+
+        /* ── Tables ── */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-card);
+            background: var(--bg-card);
+        }
+
+        .modern-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px; /* Force scroll on small screens */
+        }
+
+        .modern-table th {
+            text-align: left;
+            padding: 1rem 1.5rem;
+            background: rgba(0, 0, 0, 0.2);
+            color: var(--text-faint);
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid var(--border-card);
+        }
+
+        body.rtl .modern-table th { text-align: right; }
+
+        .modern-table td {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border-card);
+            font-size: 0.9rem;
+            vertical-align: middle;
+        }
+        
+        .modern-table tbody tr { transition: background 0.2s; }
+        .modern-table tbody tr:hover { background: rgba(255, 255, 255, 0.02); }
+        .modern-table tbody tr:last-child td { border-bottom: none; }
+
+        /* ── Buttons & Forms ── */
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-hover));
             color: white;
             border: none;
             padding: 0.75rem 1.5rem;
-            border-radius: 12px;
-            font-weight: 700;
+            border-radius: 10px;
+            font-weight: 600;
             font-size: 0.85rem;
             cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
+            transition: all 0.2s var(--ease);
+            display: inline-flex;
             align-items: center;
             gap: 0.5rem;
+            box-shadow: 0 4px 12px rgba(225, 29, 72, 0.25);
         }
 
-        .btn-action:hover {
-            background: var(--accent-red-hover);
+        .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 20px -5px rgba(225, 29, 72, 0.4);
+            box-shadow: 0 8px 16px rgba(225, 29, 72, 0.35);
         }
 
-        /* ── Transitions ── */
-        .animate-fade-in {
-            animation: fadeIn 0.4s ease-out;
+        .form-label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
         }
 
+        .form-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: rgba(0,0,0,0.2);
+            border: 1px solid var(--border-card);
+            border-radius: 10px;
+            color: var(--text-main);
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus {
+            border-color: var(--accent-primary);
+        }
+
+        select.form-input { appearance: none; }
+
+        /* ── Modals & Toasts ── */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 1rem;
+        }
+
+        .modal-content {
+            width: 100%;
+            max-width: 600px;
+            background: var(--bg-body);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-xl);
+            padding: 2.5rem;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+        }
+
+        .toast-msg {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            background: rgba(16, 185, 129, 0.95);
+            color: white;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: none;
+            transform: translateY(100px);
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            z-index: 3000;
+            box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.4);
+            backdrop-filter: blur(8px);
+        }
+
+        /* ── Transitions & Utility ── */
+        .animate-fade-in { animation: fadeIn 0.4s var(--ease); }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
@@ -307,13 +551,30 @@
 
         .tab-content { display: none; }
         .tab-content.active { display: block; }
+        .mobile-toggle { display: none; }
 
+        /* ── Responsive Mobile ── */
         @media (max-width: 1024px) {
-            .sidebar { transform: translateX(-100%); }
+            .grid-4 { grid-template-columns: repeat(2, 1fr); }
+            
+            .sidebar {
+                transform: translateX(-100%);
+                box-shadow: 20px 0 50px rgba(0,0,0,0.5);
+            }
             body.rtl .sidebar { transform: translateX(100%); }
+            
             .sidebar.show { transform: translateX(0); }
+            
             .wrapper { margin-left: 0 !important; margin-right: 0 !important; }
-            .search-pill { width: auto; flex: 1; }
+            .mobile-toggle { display: block; font-size: 1.25rem; }
+        }
+
+        @media (max-width: 768px) {
+            .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+            .search-pill { display: none; } /* Hide search pill on small mobile, rely on filter in tables */
+            .main-content { padding: 1.5rem; }
+            .top-nav { padding: 0 1.5rem; }
+            h1 { font-size: 1.5rem; }
         }
     </style>
 </head>
@@ -328,23 +589,23 @@
 
         <nav class="nav-group">
             <p class="nav-label" data-i18n="admin_dashboard">Tableau de bord</p>
-            <a href="#" class="nav-link active" onclick="Admin.switchTab('overview', this)">
-                <i class="fas fa-grid-2"></i>
+            <a href="#" class="nav-link active" onclick="Admin.switchTab('overview', this); closeMobileSidebar();">
+                <i class="fas fa-chart-pie"></i>
                 <span data-i18n="nav_home">Aperçu</span>
             </a>
-            <a href="#" class="nav-link" onclick="Admin.switchTab('analytics', this)">
-                <i class="fas fa-chart-line-up"></i>
+            <a href="#" class="nav-link" onclick="Admin.switchTab('analytics', this); closeMobileSidebar();">
+                <i class="fas fa-chart-line"></i>
                 <span data-i18n="admin_stats">Statistiques</span>
             </a>
         </nav>
 
         <nav class="nav-group">
             <p class="nav-label" data-i18n="admin_inventory">Gestion Boutique</p>
-            <a href="#" class="nav-link" onclick="Admin.switchTab('products', this)">
+            <a href="#" class="nav-link" onclick="Admin.switchTab('products', this); closeMobileSidebar();">
                 <i class="fas fa-box-open"></i>
                 <span data-i18n="nav_products">Produits</span>
             </a>
-            <a href="#" class="nav-link" onclick="Admin.switchTab('orders', this)">
+            <a href="#" class="nav-link" onclick="Admin.switchTab('orders', this); closeMobileSidebar();">
                 <i class="fas fa-receipt"></i>
                 <span data-i18n="admin_orders">Commandes</span>
             </a>
@@ -352,18 +613,18 @@
 
         <nav class="nav-group">
             <p class="nav-label" data-i18n="admin_admins">Système</p>
-            <a href="#" class="nav-link" onclick="Admin.switchTab('admins', this)">
+            <a href="#" class="nav-link" onclick="Admin.switchTab('admins', this); closeMobileSidebar();">
                 <i class="fas fa-user-shield"></i>
                 <span data-i18n="admin_admins">Admins</span>
             </a>
-            <a href="#" class="nav-link" onclick="Admin.switchTab('logs', this)">
+            <a href="#" class="nav-link" onclick="Admin.switchTab('logs', this); closeMobileSidebar();">
                 <i class="fas fa-terminal"></i>
                 <span data-i18n="admin_logs">Logs</span>
             </a>
         </nav>
 
         <div style="margin-top: auto;">
-            <a href="#" class="nav-link" style="color: rgba(239, 68, 68, 0.7);" onclick="Admin.logout()">
+            <a href="#" class="nav-link" style="color: var(--accent-primary);" onclick="Admin.logout()">
                 <i class="fas fa-power-off"></i>
                 <span data-i18n="admin_logout">Déconnexion</span>
             </a>
@@ -374,16 +635,16 @@
         <!-- Top Navigation -->
         <header class="top-nav">
             <div class="flex align-center gap-xl">
-                <button class="glass p-sm lg-hidden" onclick="document.getElementById('sidebar').classList.toggle('show')">
+                <button class="glass-btn p-sm mobile-toggle" onclick="document.getElementById('sidebar').classList.toggle('show'); document.getElementById('sidebar-backdrop').style.display='block';">
                     <i class="fas fa-bars"></i>
                 </button>
                 <div class="search-pill">
-                    <i class="fas fa-search"></i>
+                    <i class="fas fa-search text-faint"></i>
                     <input type="text" data-i18n="nav_search" placeholder="Rechercher partout..." oninput="Admin.globalSearch(this.value)">
                 </div>
             </div>
 
-            <div class="flex align-center gap-xl">
+            <div class="flex align-center gap-md">
                 <!-- Language Switcher -->
                 <div class="lang-switcher">
                     <button class="lang-btn" onclick="I18n.setLang('ar')" id="lang-ar">AR</button>
@@ -391,74 +652,89 @@
                     <button class="lang-btn" onclick="I18n.setLang('en')" id="lang-en">EN</button>
                 </div>
 
-                <div class="user-pill flex align-center gap-md">
-                    <div class="stat-icon" style="margin: 0; width: 32px; height: 32px;">
-                        <i class="fas fa-user" style="font-size: 0.8rem;"></i>
+                <div class="user-pill">
+                    <div class="user-pill-icon">
+                        <i class="fas fa-user"></i>
                     </div>
-                    <span style="font-size: 0.85rem; font-weight: 700; color: #94a3b8;" id="current-admin-name">Administrateur</span>
+                    <span style="font-size: 0.85rem; font-weight: 600; padding-right: 0.5rem;" id="current-admin-name">Administrateur</span>
                 </div>
             </div>
         </header>
 
+        <!-- Backdrop for mobile sidebar -->
+        <div id="sidebar-backdrop" style="position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:999; display:none;" onclick="closeMobileSidebar()"></div>
+
         <main class="main-content">
             <!-- TAB: OVERVIEW -->
             <section id="tab-overview" class="tab-content active animate-fade-in">
-                <div class="flex-between align-end mb-2xl">
+                <div class="flex-between align-center mb-xl">
                     <div>
-                        <h1 data-i18n="admin_title_overview">Tableau de Bord Intelligence</h1>
-                        <p class="text-muted mt-xs">Contrôle global et monitoring temps réel.</p>
+                        <h1 data-i18n="admin_title_overview">Tableau de Bord</h1>
+                        <p class="text-muted mt-xs" style="font-size:0.9rem;">Contrôle global et monitoring temps réel.</p>
                     </div>
                 </div>
 
-                <div class="grid-4 gap-xl mb-3xl">
-                    <div class="glass-card stat-card">
-                        <div class="stat-icon"><i class="fas fa-wallet"></i></div>
-                        <span class="nav-label p-0" data-i18n="stat_revenue">Revenu Total</span>
-                        <h2 id="stat-revenue" class="text-bold">0 DH</h2>
+                <div class="grid-4 gap-xl mb-xl">
+                    <div class="glass-card stat-card primary">
+                        <div class="stat-header">
+                            <i class="fas fa-wallet"></i>
+                            <span data-i18n="stat_revenue">Revenu Total</span>
+                        </div>
+                        <h2 id="stat-revenue" class="stat-value">0 DH</h2>
                     </div>
-                    <div class="glass-card stat-card">
-                        <div class="stat-icon"><i class="fas fa-shopping-cart"></i></div>
-                        <span class="nav-label p-0" data-i18n="stat_orders">Commandes</span>
-                        <h2 id="stat-orders" class="text-bold">0</h2>
+                    <div class="glass-card stat-card success">
+                        <div class="stat-header">
+                            <i class="fas fa-shopping-bag"></i>
+                            <span data-i18n="stat_orders">Commandes</span>
+                        </div>
+                        <h2 id="stat-orders" class="stat-value">0</h2>
                     </div>
-                    <div class="glass-card stat-card">
-                        <div class="stat-icon"><i class="fas fa-exclamation-triangle"></i></div>
-                        <span class="nav-label p-0" data-i18n="stat_low_stock">Stock Critique</span>
-                        <h2 id="stat-low-stock" class="text-bold text-red">0</h2>
+                    <div class="glass-card stat-card warning">
+                        <div class="stat-header">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <span data-i18n="stat_low_stock">Stock Critique</span>
+                        </div>
+                        <h2 id="stat-low-stock" class="stat-value text-red">0</h2>
                     </div>
-                    <div class="glass-card stat-card">
-                        <div class="stat-icon"><i class="fas fa-users"></i></div>
-                        <span class="nav-label p-0" data-i18n="stat_customers">Clients</span>
-                        <h2 id="stat-customers" class="text-bold">0</h2>
+                    <div class="glass-card stat-card primary">
+                        <div class="stat-header">
+                            <i class="fas fa-users"></i>
+                            <span data-i18n="stat_customers">Clients</span>
+                        </div>
+                        <h2 id="stat-customers" class="stat-value">0</h2>
                     </div>
                 </div>
 
-                <div class="grid-2 gap-2xl">
-                    <div class="glass-card">
-                        <h3 class="mb-xl text-bold">Commandes Récentes</h3>
-                        <div id="recent-orders-list"></div>
+                <div class="grid-2 gap-xl">
+                    <div class="glass-card p-0" style="padding:0;">
+                        <div class="p-lg border-bottom">
+                            <h3 class="text-bold">Commandes Récentes</h3>
+                        </div>
+                        <div id="recent-orders-list" class="p-lg"></div>
                     </div>
-                    <div class="glass-card">
-                        <h3 class="mb-xl text-bold">Produits Top</h3>
-                        <div id="top-products-list"></div>
+                    <div class="glass-card p-0" style="padding:0;">
+                        <div class="p-lg border-bottom">
+                            <h3 class="text-bold">Produits Top</h3>
+                        </div>
+                        <div id="top-products-list" class="p-lg"></div>
                     </div>
                 </div>
             </section>
 
             <!-- TAB: PRODUCTS -->
             <section id="tab-products" class="tab-content animate-fade-in">
-                <div class="flex-between mb-2xl">
+                <div class="flex-between align-center mb-xl" style="flex-wrap: wrap; gap:1rem;">
                     <div>
                         <h1 data-i18n="admin_title_products">Catalogue Produits</h1>
-                        <p class="text-muted mt-xs">Gérez vos articles et contrôlez leur visibilité.</p>
+                        <p class="text-muted mt-xs" style="font-size:0.9rem;">Gérez vos articles et contrôlez leur visibilité.</p>
                     </div>
-                    <button class="btn-action" onclick="Admin.openProductModal()">
+                    <button class="btn-primary" onclick="Admin.openProductModal()">
                         <i class="fas fa-plus"></i>
-                        <span data-i18n="admin_btn_add_product">AJOUTER PRODUITS</span>
+                        <span data-i18n="admin_btn_add_product">NOUVEAU PRODUIT</span>
                     </button>
                 </div>
 
-                <div class="table-container glass-card p-0">
+                <div class="table-responsive">
                     <table class="modern-table">
                         <thead>
                             <tr>
@@ -466,7 +742,7 @@
                                 <th data-i18n="admin_promos">Catégorie</th>
                                 <th>Prix</th>
                                 <th>Stock</th>
-                                <th>Visibilité</th>
+                                <th>Statut</th>
                                 <th style="text-align: right;">Actions</th>
                             </tr>
                         </thead>
@@ -474,22 +750,20 @@
                     </table>
                 </div>
             </section>
-
-            <!-- Add other tabs as needed, simplifying where possible -->
             
             <!-- TAB: ANALYTICS -->
             <section id="tab-analytics" class="tab-content animate-fade-in">
-                <div class="mb-2xl">
-                    <h1 data-i18n="admin_title_analytics">Intelligence & Statistiques</h1>
-                    <p class="text-muted mt-xs">Analyses approfondies de performance.</p>
+                <div class="mb-xl">
+                    <h1 data-i18n="admin_title_analytics">Statistiques</h1>
+                    <p class="text-muted mt-xs" style="font-size:0.9rem;">Analyses approfondies de performance.</p>
                 </div>
                 <div class="grid-2 gap-xl">
                     <div class="glass-card">
-                        <h3 class="mb-lg">Ventes (7j)</h3>
-                        <div id="sales-velocity-chart" class="flex align-end gap-md" style="height: 150px;"></div>
+                        <h3 class="mb-lg">Ventes (7 derniers jours)</h3>
+                        <div id="sales-velocity-chart" class="flex align-end gap-md" style="height: 180px;"></div>
                     </div>
                     <div class="glass-card">
-                        <h3 class="mb-lg">Répartition</h3>
+                        <h3 class="mb-lg">Répartition par Catégorie</h3>
                         <div id="category-chart" class="flex-column gap-md"></div>
                     </div>
                 </div>
@@ -497,19 +771,22 @@
 
             <!-- TAB: ORDERS -->
             <section id="tab-orders" class="tab-content animate-fade-in">
-                <div class="flex-between mb-2xl">
+                <div class="flex-between align-center mb-xl" style="flex-wrap: wrap; gap:1rem;">
                     <div>
                         <h1 data-i18n="admin_orders">Suivi Commandes</h1>
-                        <p class="text-muted mt-xs">Gérez les flux et livraisons.</p>
+                        <p class="text-muted mt-xs" style="font-size:0.9rem;">Gérez les flux et livraisons de vos clients.</p>
                     </div>
-                    <button class="glass p-md text-bold" onclick="Admin.exportOrders()" data-i18n="admin_btn_export">EXPORTER CSV</button>
+                    <button class="glass-btn p-md text-bold" onclick="Admin.exportOrders()" data-i18n="admin_btn_export">
+                        <i class="fas fa-download"></i> EXPORTER CSV
+                    </button>
                 </div>
-                <div class="table-container glass-card p-0">
+                <div class="table-responsive">
                     <table class="modern-table">
                         <thead>
                             <tr>
                                 <th>ID</th>
                                 <th>Client</th>
+                                <th>Articles</th>
                                 <th>Total</th>
                                 <th>Statut</th>
                                 <th style="text-align: right;">Action</th>
@@ -522,20 +799,20 @@
 
             <!-- TAB: ADMINS -->
             <section id="tab-admins" class="tab-content animate-fade-in">
-                <div class="flex-between mb-2xl">
+                <div class="flex-between mb-xl">
                     <div>
                         <h1 data-i18n="admin_admins">Gestion des Administrateurs</h1>
-                        <p class="text-muted mt-xs">Accès et sécurité.</p>
+                        <p class="text-muted mt-xs" style="font-size:0.9rem;">Sécurité et accès.</p>
                     </div>
                 </div>
-                <div class="table-container glass-card p-0">
+                <div class="table-responsive">
                     <table class="modern-table">
                         <thead>
                             <tr>
-                                <th>Admin</th>
+                                <th>Administrateur</th>
                                 <th>Email</th>
-                                <th>Role</th>
-                                <th>Status</th>
+                                <th>Rôle</th>
+                                <th>Statut</th>
                                 <th style="text-align: right;">Actions</th>
                             </tr>
                         </thead>
@@ -546,9 +823,9 @@
 
             <!-- TAB: LOGS -->
             <section id="tab-logs" class="tab-content animate-fade-in">
-                <div class="mb-2xl">
+                <div class="mb-xl">
                     <h1 data-i18n="admin_logs">Journal d'Activités</h1>
-                    <p class="text-muted mt-xs">Historique complet du système.</p>
+                    <p class="text-muted mt-xs" style="font-size:0.9rem;">Historique complet du système.</p>
                 </div>
                 <div class="glass-card" id="activity-log-container"></div>
             </section>
@@ -556,36 +833,60 @@
     </div>
 
     <!-- MODALS -->
-    <div id="product-modal" class="glass" style="position: fixed; inset: 0; z-index: 2000; display: none; align-items: center; justify-content: center; background: rgba(0,0,0,0.9); backdrop-filter: blur(8px);">
-        <div class="glass-card" style="width: 100%; max-width: 600px; padding: 2.5rem;">
-            <h2 id="product-modal-title" class="mb-2xl">Édition Produit</h2>
+    <div id="product-modal" class="modal-overlay">
+        <div class="modal-content animate-fade-in">
+            <h2 id="product-modal-title" class="mb-xl">Édition Produit</h2>
             <form id="product-form" onsubmit="Admin.handleProductSubmit(event)">
                 <input type="hidden" name="id">
-                <div class="grid-2 gap-xl mb-xl">
-                    <div class="form-group">
-                        <label class="nav-label">Produit Name</label>
-                        <input type="text" name="name" class="login-input" style="background: rgba(255,255,255,0.02);" required>
+                
+                <div class="grid-2 gap-md mb-md">
+                    <div>
+                        <label class="form-label">Nom du produit</label>
+                        <input type="text" name="name" class="form-input" required>
                     </div>
-                    <div class="form-group">
-                        <label class="nav-label">Category</label>
-                        <select name="category" class="login-input" style="background: rgba(255,255,255,0.02);">
+                    <div>
+                        <label class="form-label">Catégorie</label>
+                        <select name="category" class="form-input">
                             <option value="Electroménager">Electroménager</option>
-                            <option value="Maquillage">Maquillage</option>
+                            <option value="TV">TV & Audio</option>
+                            <option value="Climatisation">Climatisation</option>
                             <option value="Cuisine">Cuisine</option>
-                            <option value="Plastique">Plastique</option>
+                            <option value="Beauté">Beauté & Soin</option>
+                            <option value="Smartphone">Smartphone</option>
                         </select>
                     </div>
                 </div>
-                <div class="flex gap-xl mt-3xl">
-                    <button type="submit" class="btn-action flex-1" data-i18n="admin_btn_save">ENREGISTRER</button>
-                    <button type="button" class="glass flex-1 p-md text-bold" onclick="Admin.closeModal('product-modal')" data-i18n="admin_btn_cancel">ANNULER</button>
+                
+                <div class="grid-2 gap-md mb-xl">
+                    <div>
+                        <label class="form-label">Prix (DH)</label>
+                        <input type="number" step="0.01" name="price" class="form-input" required>
+                    </div>
+                    <div>
+                        <label class="form-label">Stock Initial</label>
+                        <input type="number" name="stock" class="form-input" required>
+                    </div>
+                </div>
+
+                <div class="mb-xl">
+                    <label class="form-label">URL de l'image (temporaire)</label>
+                    <input type="text" name="image" class="form-input" placeholder="https://..." required>
+                </div>
+
+                <div class="flex gap-md mt-xl">
+                    <button type="submit" class="btn-primary" style="flex:1; justify-content:center;" data-i18n="admin_btn_save">ENREGISTRER</button>
+                    <button type="button" class="glass-btn p-md" style="flex:1;" onclick="Admin.closeModal('product-modal')" data-i18n="admin_btn_cancel">ANNULER</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <div id="toast" class="glass" style="position: fixed; bottom: 2rem; right: 2rem; padding: 1.25rem 2.5rem; border-radius: 16px; display: none; transform: translateY(100px); transition: transform 0.4s var(--ease); z-index: 3000;">
-        <span id="toast-msg">Action effectuée</span>
+    <!-- TOAST (SNACKBAR) -->
+    <div id="toast" class="toast-msg">
+        <div class="flex align-center gap-sm">
+            <i class="fas fa-check-circle"></i>
+            <span id="toast-msg">Action effectuée</span>
+        </div>
     </div>
 
     <!-- Scripts -->
@@ -604,6 +905,14 @@
 
         // Initialize switcher state
         document.getElementById(`lang-${I18n.lang}`).classList.add('active');
+
+        // Mobile Sidebar Function
+        function closeMobileSidebar() {
+            if(window.innerWidth <= 1024) {
+                document.getElementById('sidebar').classList.remove('show');
+                document.getElementById('sidebar-backdrop').style.display='none';
+            }
+        }
     </script>
 </body>
 </html>
