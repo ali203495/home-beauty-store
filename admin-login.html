@@ -191,6 +191,8 @@
     <!-- RECOVERY MODAL -->
     <div id="recovery-modal" class="glass" style="position: fixed; inset: 0; z-index: 2000; display: none; align-items: center; justify-content: center; background: rgba(0,0,0,0.85); backdrop-filter: blur(15px);">
         <div class="login-card glass" id="recovery-card" style="margin: 0; border: 1px solid var(--border-subtle); animation: none;">
+            <div id="modal-error" style="display:none; color: #ef4444; background: rgba(239, 68, 68, 0.1); padding: 0.5rem; border-radius: 4px; font-size: 0.8rem; font-weight: 700; margin-bottom: 1rem;"></div>
+            
             <!-- STEP 1: EMAIL IDENTIFICATION -->
             <div id="recovery-step-1">
                 <h3 class="mb-lg" id="modal-main-title">Sécurité du Compte</h3>
@@ -264,10 +266,11 @@
                         error.style.display = 'block';
                         btn.innerText = originalText;
                         btn.disabled = false;
+                        document.querySelector('.login-card').style.animation = 'none';
+                        void document.querySelector('.login-card').offsetWidth; // Trigger reflow
                         document.querySelector('.login-card').style.animation = 'shake 0.4s';
                         setTimeout(() => {
                             error.style.display = 'none';
-                            document.querySelector('.login-card').style.animation = '';
                         }, 3000);
                     }
                 }, 800);
@@ -304,59 +307,77 @@
             document.getElementById('recovery-modal').style.display = 'none';
         }
 
+        function showModalError(msg) {
+            const errEl = document.getElementById('modal-error');
+            errEl.innerText = msg;
+            errEl.style.display = 'block';
+            setTimeout(() => { errEl.style.display = 'none'; }, 4000);
+        }
+
         function switchStep(n) {
             [1, 2, 3].forEach(i => document.getElementById(`recovery-step-${i}`).style.display = i === n ? 'block' : 'none');
+            document.getElementById('modal-error').style.display = 'none';
         }
 
         async function handleRecoveryInit() {
             const identifier = document.getElementById('rec-identifier').value;
-            if (!identifier) return alert('Veuillez entrer votre email de récupération');
+            if (!identifier) return showModalError('Veuillez entrer votre email de récupération');
             
+            const btn = document.getElementById('modal-action-btn');
+            btn.innerText = 'RECHERCHE...';
+            btn.disabled = true;
+
             const res = await Admin.initiateRecovery(identifier);
+            
+            btn.innerText = 'TROUVER MON COMPTE';
+            btn.disabled = false;
+
             if (res.success) {
                 recoveryUsername = res.username;
-                document.getElementById('rec-email-msg').innerText = `Un code de sécurité a été simulé pour : ${res.maskedEmail}. (Identifiant : ${res.username})`;
+                document.getElementById('rec-email-msg').innerText = `Un code de sécurité a été envoyé à : ${res.maskedEmail}.`;
                 
                 // Demo facilitation toast
                 Admin.showToast(`DÉMO: Le code est ${res.code}`);
                 
                 switchStep(2);
             } else {
-                alert(res.msg);
+                showModalError(res.msg);
             }
         }
 
         async function handleRecoveryVerify() {
             const code = document.getElementById('rec-code').value;
+            if (code.length !== 6) return showModalError('Code invalide (6 chiffres requis)');
             
             if (modalMode === 'activation') {
                 const valid = await Admin.verifyNewAccount(recoveryUsername, code);
                 if (valid) {
                     Admin.showToast('Compte activé avec succès ! Connexion...');
+                    document.getElementById('recovery-modal').style.display = 'none';
                     setTimeout(() => window.location.href = 'admin-dashboard.html', 1000);
                 } else {
-                    alert('Code d\'activation invalide ou expiré');
+                    showModalError('Code d\'activation invalide ou expiré');
                 }
             } else {
                 const valid = await Admin.verifyCode(recoveryUsername, code);
                 if (valid) {
                     switchStep(3);
                 } else {
-                    alert('Code invalide ou expiré');
+                    showModalError('Code invalide ou expiré');
                 }
             }
         }
 
         async function handleRecoveryReset() {
             const pass = document.getElementById('rec-new-pass').value;
-            if (pass.length < 4) return alert('Le mot de passe est trop court');
+            if (pass.length < 4) return showModalError('Le mot de passe est trop court (min: 4)');
 
             const success = await Admin.resetPassword(recoveryUsername, pass);
             if (success) {
                 Admin.showToast('Mot de passe mis à jour ! Connectez-vous.');
-                setTimeout(hideRecoveryModal, 2000);
+                setTimeout(hideRecoveryModal, 1500);
             } else {
-                alert('Erreur lors de la réinitialisation');
+                showModalError('Erreur lors de la réinitialisation');
             }
         }
     </script>
