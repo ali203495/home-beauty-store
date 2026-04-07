@@ -230,44 +230,54 @@
         </div>
     </div>
 
+    <script src="js/config.js"></script>
+    <script src="js/products.js"></script>
     <script src="js/admin.js"></script>
     <script>
         document.getElementById('login-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = e.target.querySelector('button');
             const originalText = btn.innerText;
-            
-            btn.innerText = 'ÉVALUATION...';
-            btn.disabled = true;
-
-            const user = document.getElementById('username').value;
-            const pass = document.getElementById('password').value;
             const error = document.getElementById('login-error');
-
-            const res = await Admin.login(user, pass);
             
-            setTimeout(() => {
-                if (res.success) {
-                    window.location.href = 'admin-dashboard.html';
-                } else {
-                    if (res.requireActivation) {
+            try {
+                btn.innerText = 'ÉVALUATION...';
+                btn.disabled = true;
+
+                const user = document.getElementById('username').value;
+                const pass = document.getElementById('password').value;
+
+                const res = await Admin.login(user, pass);
+                
+                setTimeout(() => {
+                    if (res.success) {
+                        window.location.href = 'admin-dashboard.html';
+                    } else {
+                        if (res.requireActivation) {
+                            btn.innerText = originalText;
+                            btn.disabled = false;
+                            showActivationModal(res.username);
+                            return;
+                        }
+                        
+                        error.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${res.msg || 'Identifiants invalides'}`;
+                        error.style.display = 'block';
                         btn.innerText = originalText;
                         btn.disabled = false;
-                        showActivationModal(res.username);
-                        return;
+                        document.querySelector('.login-card').style.animation = 'shake 0.4s';
+                        setTimeout(() => {
+                            error.style.display = 'none';
+                            document.querySelector('.login-card').style.animation = '';
+                        }, 3000);
                     }
-                    
-                    error.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${res.msg || 'Identifiants invalides'}`;
-                    error.style.display = 'block';
-                    btn.innerText = originalText;
-                    btn.disabled = false;
-                    document.querySelector('.login-card').style.animation = 'shake 0.4s';
-                    setTimeout(() => {
-                        error.style.display = 'none';
-                        document.querySelector('.login-card').style.animation = '';
-                    }, 3000);
-                }
-            }, 800);
+                }, 800);
+            } catch (err) {
+                console.error('Login error:', err);
+                error.innerHTML = `<i class="fas fa-bug"></i> Erreur technique : ${err.message}`;
+                error.style.display = 'block';
+                btn.innerText = originalText;
+                btn.disabled = false;
+            }
         });
 
         /* ── Unified Verification/Recovery UI Logic ── */

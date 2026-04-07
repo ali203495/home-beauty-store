@@ -1,123 +1,151 @@
 /**
  * Localization Engine - EL-WALI-SHOP
+ * Supports: French (fr), Arabic (ar), English (en)
  */
 
 const I18N_KEY = 'mlh_lang';
 
 const translations = {
     fr: {
+        // Shared Navigation
         nav_home: "Accueil",
         nav_products: "Produits",
         nav_cart: "Panier",
         nav_contact: "Contact",
         nav_search: "Rechercher...",
+        
+        // Admin Sidebar & Tabs
+        admin_dashboard: "Tableau de Bord",
+        admin_stats: "Statistiques",
+        admin_inventory: "Inventaire",
+        admin_orders: "Commandes",
+        admin_customers: "Clients",
+        admin_promos: "Promotions",
+        admin_layout: "Mise en Page",
+        admin_admins: "Gestion Admins",
+        admin_media: "Contenu & IA",
+        admin_automation: "Automatisations",
+        admin_logs: "Logs Système",
+        admin_logout: "Déconnexion",
+        
+        // Admin Titles
+        admin_title_overview: "Aperçu Intelligence",
+        admin_title_products: "Catalogue Produits",
+        admin_title_inventory: "Gestion des Stocks",
+        admin_title_analytics: "Intelligence & Statistiques",
+        
+        // Admin Buttons/Actions
+        admin_btn_add_product: "AJOUTER PRODUIT",
+        admin_btn_save: "ENREGISTRER",
+        admin_btn_cancel: "ANNULER",
+        admin_btn_export: "EXPORTER CSV",
+        
+        // Admin Stats Labels
+        stat_revenue: "Chiffre d'Affaires",
+        stat_orders: "Commandes",
+        stat_low_stock: "Stock Critique",
+        stat_customers: "Clients Uniques",
+        
+        // Storefront
         hero_tag: "BOUTIQUE DE LUXE À MARRAKECH",
         hero_title: "L'élégance pour votre maison et votre beauté.",
         hero_subtitle: "Découvrez notre sélection exclusive d'électroménager premium, climatisation haute performance et cosmétiques de luxe.",
-        hero_btn_collection: "Découvrir la collection",
-        hero_btn_contact: "Nous contacter",
-        cat_title: "Parcourez nos Catégories",
-        cat_subtitle: "Tout ce dont vous avez besoin pour un foyer moderne.",
-        featured_title: "Les Favoris du Mois",
-        featured_tag: "Produits Phares",
-        footer_brand_desc: "Votre partenaire de confiance à Marrakech pour l'équipement de la maison et la beauté haut de gamme.",
-        footer_support: "Support",
-        footer_store: "Magasin",
-        footer_contact: "Contact",
-        cart_title: "Votre Panier",
-        cart_empty_title: "Votre panier est vide",
-        cart_empty_text: "Il est temps de commencer votre shopping !",
-        cart_empty_products_btn: "Voir les produits",
-        cart_summary_title: "Résumé de la commande",
-        cart_subtotal: "Sous-total",
-        cart_delivery_marrakech: "Livraison (Marrakech)",
-        cart_delivery_free: "Gratuite",
-        cart_total: "Total",
-        cart_checkout_btn: "Passer à la Caisse",
-        cart_need_help: "Besoin d'aide ?",
-        cart_whatsapp_direct: "WhatsApp Direct",
-        checkout_title: "Caisse",
-        checkout_form_header: "Coordonnées de Livraison",
-        checkout_summary: "Votre Commande",
-        checkout_confirm: "Confirmer ma commande",
-        checkout_subtotal: "Sous-total",
-        checkout_delivery: "Livraison",
-        checkout_total_label: "Total à payer",
-        form_fname: "Prénom",
-        form_lname: "Nom",
-        form_fname_ph: "Ex: Ahmed",
-        form_lname_ph: "Ex: Alami",
-        form_phone_label: "Téléphone (Mobile/WhatsApp)",
-        form_address_label: "Adresse de livraison",
-        form_address_ph: "N° de maison, Rue, Appartement...",
-        form_neighborhood_label: "Quartier (Marrakech)",
-        form_neighborhood_ph: "Sélectionner votre quartier",
-        pay_mode_cod: "Mode de paiement : Paiement à la livraison (Cash on Delivery)",
-        modal_order_confirmed_title: "Commande Confirmée !",
-        modal_order_confirmed_text: "Merci de votre confiance. Notre service client vous contactera par téléphone pour confirmer la livraison.",
-        modal_back_to_shop_btn: "Retour à la Boutique",
-        modal_order_received_title: "Commande Reçue !",
-        modal_order_received_text: "Merci pour votre commande chez EL-WALI-SHOP. Nous vous contacterons sous peu pour confirmer la livraison.",
-        modal_back_to_home_btn: "Retour à l'accueil",
         msg_added: "Produit ajouté au panier !",
         msg_removed: "Produit retiré du panier"
     },
+    en: {
+        // Shared Navigation
+        nav_home: "Home",
+        nav_products: "Products",
+        nav_cart: "Cart",
+        nav_contact: "Contact",
+        nav_search: "Search...",
+        
+        // Admin Sidebar & Tabs
+        admin_dashboard: "Dashboard",
+        admin_stats: "Analytics",
+        admin_inventory: "Inventory",
+        admin_orders: "Orders",
+        admin_customers: "Customers",
+        admin_promos: "Promotions",
+        admin_layout: "Layout",
+        admin_admins: "Staff Management",
+        admin_media: "Media & AI",
+        admin_automation: "Automations",
+        admin_logs: "System Logs",
+        admin_logout: "Logout",
+        
+        // Admin Titles
+        admin_title_overview: "Intelligence Overview",
+        admin_title_products: "Product Catalog",
+        admin_title_inventory: "Inventory Management",
+        admin_title_analytics: "Intelligence & Stats",
+        
+        // Admin Buttons/Actions
+        admin_btn_add_product: "ADD PRODUCT",
+        admin_btn_save: "SAVE CHANGES",
+        admin_btn_cancel: "CANCEL",
+        admin_btn_export: "EXPORT CSV",
+        
+        // Admin Stats Labels
+        stat_revenue: "Total Revenue",
+        stat_orders: "Total Orders",
+        stat_low_stock: "Critical Stock",
+        stat_customers: "Unique Customers",
+        
+        // Storefront
+        hero_tag: "LUXURY STORE IN MARRAKECH",
+        hero_title: "Elegance for your home and beauty.",
+        hero_subtitle: "Browse our premium selection of appliances, high-performance ACs, and luxury cosmetics.",
+        msg_added: "Added to cart!",
+        msg_removed: "Removed from cart"
+    },
     ar: {
+        // Shared Navigation
         nav_home: "الرئيسية",
         nav_products: "المنتجات",
         nav_cart: "السلة",
         nav_contact: "اتصل بنا",
         nav_search: "بحث...",
+        
+        // Admin Sidebar & Tabs
+        admin_dashboard: "لوحة القيادة",
+        admin_stats: "الإحصائيات",
+        admin_inventory: "المخزون",
+        admin_orders: "الطلبات",
+        admin_customers: "الزبناء",
+        admin_promos: "العروض",
+        admin_layout: "التصميم",
+        admin_admins: "إدارة المدراء",
+        admin_media: "الوسائط والذكاء",
+        admin_automation: "الأتمتة",
+        admin_logs: "سجلات النظام",
+        admin_logout: "تسجيل الخروج",
+        
+        // Admin Titles
+        admin_title_overview: "نظرة عامة ذكية",
+        admin_title_products: "كتالوج المنتجات",
+        admin_title_inventory: "إدارة المخازن",
+        admin_title_analytics: "الذكاء والإحصائيات",
+        
+        // Admin Buttons/Actions
+        admin_btn_add_product: "إضافة منتج",
+        admin_btn_save: "حفظ التغييرات",
+        admin_btn_cancel: "إلغاء",
+        admin_btn_export: "تصدير CSV",
+        
+        // Admin Stats Labels
+        stat_revenue: "إجمالي المبيعات",
+        stat_orders: "الطلبات",
+        stat_low_stock: "مخزون حرج",
+        stat_customers: "زبناء فريدون",
+        
+        // Storefront
         hero_tag: "متجر الفخامة في مراكش",
         hero_title: "الأناقة لمنزلك وجمالك.",
-        hero_subtitle: "اكتشف مجموعتنا الحصرية من الأجهزة المنزلية المتميزة، وأجهزة التكييف عالية الأداء، ومستحضرات التجميل الفاخرة.",
-        hero_btn_collection: "اكتشف المجموعة",
-        hero_btn_contact: "اتصل بنا",
-        cat_title: "تصفح فئاتنا",
-        cat_subtitle: "كل ما تحتاجه لمنزل عصري.",
-        featured_title: "المفضلات لهذا الشهر",
-        featured_tag: "منتجات مختارة",
-        footer_brand_desc: "شريكك الموثوق في مراكش لتجهيزات المنزل والجمال الراقي.",
-        footer_support: "سند",
-        footer_store: "المتجر",
-        footer_contact: "اتصل",
-        cart_title: "سلة التسوق",
-        cart_empty_title: "سلتك فارغة",
-        cart_empty_text: "حان الوقت لبدء التسوق!",
-        cart_empty_products_btn: "عرض المنتجات",
-        cart_summary_title: "ملخص الطلب",
-        cart_subtotal: "المجموع الفرعي",
-        cart_delivery_marrakech: "التوصيل (مراكش)",
-        cart_delivery_free: "مجاني",
-        cart_total: "المجموع الكلي",
-        cart_checkout_btn: "إتمام الطلب",
-        cart_need_help: "هل تحتاج مساعدة؟",
-        cart_whatsapp_direct: "واتساب مباشر",
-        checkout_title: "الدفع",
-        checkout_form_header: "تفاصيل التوصيل",
-        checkout_summary: "طلبيتك",
-        checkout_confirm: "تأكيد الطلب",
-        checkout_subtotal: "المجموع الفرعي",
-        checkout_delivery: "التوصيل",
-        checkout_total_label: "المبلغ الإجمالي",
-        form_fname: "الاسم الشخصي",
-        form_lname: "الاسم العائلي",
-        form_fname_ph: "مثال: أحمد",
-        form_lname_ph: "مثال: العلمي",
-        form_phone_label: "رقم الهاتف (موبايل/واتساب)",
-        form_address_label: "عنوان التوصيل",
-        form_address_ph: "رقم المنزل، الشارع، الشقة...",
-        form_neighborhood_label: "الحي (مراكش)",
-        form_neighborhood_ph: "اختر حيك",
-        pay_mode_cod: "طريقة الدفع: الدفع عند الاستلام",
-        modal_order_confirmed_title: "تم تأكيد الطلب!",
-        modal_order_confirmed_text: "شكراً لثقتكم. فريق خدمة العملاء سيتصل بكم لتأكيد موعد التوصيل.",
-        modal_back_to_shop_btn: "العودة للمتجر",
-        modal_order_received_title: "تم استلام الطلب!",
-        modal_order_received_text: "شكراً لثقتكم. سيتصل بكم فريقنا قريباً.",
-        modal_back_to_home_btn: "العودة للرئيسية",
-        msg_added: "تمت إضافة المنتج إلى السلة!",
-        msg_removed: "تمت إزالة المنتج من السلة"
+        hero_subtitle: "اكتشف مجموعتنا الحصرية من الأجهزة المنزلية المتميزة وأجهزة التكييف ومستحضرات التجميل الفاخرة.",
+        msg_added: "تمت الإضافة إلى السلة!",
+        msg_removed: "تمت الإزالة من السلة"
     }
 };
 
@@ -137,6 +165,8 @@ const I18n = {
 
     apply(lang) {
         const t = translations[lang];
+        if (!t) return;
+
         document.documentElement.lang = lang;
         document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
 
@@ -146,7 +176,7 @@ const I18n = {
             document.body.classList.remove('rtl');
         }
 
-        // Apply translations to elements with data-i18n attribute
+        // Apply translations to all elements with data-i18n attribute
         document.querySelectorAll('[data-i18n]').forEach(el => {
             const key = el.getAttribute('data-i18n');
             if (t[key]) {
@@ -157,10 +187,23 @@ const I18n = {
                 }
             }
         });
+        
+        // Additional localized style adjustments
+        this.applyLayoutAdjustments(lang);
+    },
+
+    applyLayoutAdjustments(lang) {
+        // You can add logic here for font changes or specific padding for certain languages
+        if (lang === 'ar') {
+            document.body.style.fontFamily = "'Cairo', sans-serif";
+        } else {
+            document.body.style.fontFamily = "inherit";
+        }
     },
 
     get(key) {
-        return translations[this.lang][key] || key;
+        const t = translations[this.lang];
+        return (t && t[key]) ? t[key] : key;
     }
 };
 

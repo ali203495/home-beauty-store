@@ -15,13 +15,19 @@ const DEFAULT_ADMIN = {
 const AdminDB = {
     async fetchAll() {
         const stored = localStorage.getItem('elwali_admins');
-        if (!stored) {
-            // First run, migrate hardcoded admin
-            const initial = [DEFAULT_ADMIN];
-            localStorage.setItem('elwali_admins', JSON.stringify(initial));
-            return initial;
+        let admins = [];
+        try {
+            if (stored) {
+                admins = JSON.parse(stored);
+                if (!Array.isArray(admins)) admins = [DEFAULT_ADMIN];
+            } else {
+                admins = [DEFAULT_ADMIN];
+                localStorage.setItem('elwali_admins', JSON.stringify(admins));
+            }
+        } catch (e) {
+            console.warn('Failed to parse admins, resetting to default', e);
+            admins = [DEFAULT_ADMIN];
         }
-        const admins = JSON.parse(stored);
         // Migration support for status
         return admins.map(a => ({ ...a, status: a.status || 'Active' }));
     },
@@ -100,8 +106,13 @@ const Admin = {
     async init() {
         this.checkAuth();
         this.loadTheme();
-        await ProductDB.fetchAll(); // Ensure data is loaded
-        await AdminDB.fetchAll();   // Ensure admins are initialized
+        
+        try {
+            if (typeof ProductDB !== 'undefined') await ProductDB.fetchAll();
+            await AdminDB.fetchAll();
+        } catch (e) {
+            console.error('System initialization failed:', e);
+        }
         
         // Initial Render
         if (document.getElementById('stat-revenue')) {
@@ -141,6 +152,14 @@ const Admin = {
         
         this.logActivity(`Tentative de connexion échouée : ${username}`, 'error');
         return { success: false, msg: 'Identifiants invalides' };
+    },
+
+    setLanguage(lang) {
+        if (typeof I18n !== 'undefined') {
+            I18n.setLang(lang);
+            this.renderAll(); // Re-render to update dynamic data tables
+            this.showToast(lang === 'ar' ? 'تم تغيير اللغة' : lang === 'en' ? 'Language Changed' : 'Langue changée');
+        }
     },
 
     checkAuth() {
@@ -232,19 +251,19 @@ const Admin = {
         await this.computeStats();
         this.renderOverview();
         this.renderProducts();
-        this.renderInventory();
         await this.renderOrders();
-        this.renderCustomers();
-        this.renderPromos();
         this.renderLogs();
         this.renderAnalytics();
         this.renderAdmins();
-        this.renderLayoutTab();
+    },
+
+    formatCurrency(val) {
+        const lang = (typeof I18n !== 'undefined') ? I18n.lang : 'fr';
+        return `${val.toLocaleString(lang)} DH`;
     },
 
     async computeStats() {
         const orders = await OrderDB.getOrders();
-        const customers = await CustomerDB.getCustomers();
         const lowStock = PRODUCTS.filter(p => p.stock < 10).length;
         const totalRevenue = orders.reduce((sum, o) => sum + o.total, 0);
 
@@ -253,10 +272,13 @@ const Admin = {
         const lowEl = document.getElementById('stat-low-stock');
         const custEl = document.getElementById('stat-customers');
 
-        if (revEl) revEl.innerText = `${totalRevenue.toLocaleString()} DH`;
+        if (revEl) revEl.innerText = this.formatCurrency(totalRevenue);
         if (ordEl) ordEl.innerText = orders.length;
         if (lowEl) lowEl.innerText = lowStock;
-        if (custEl) custEl.innerText = customers.length;
+        if (custEl) {
+            const customers = await CustomerDB.getCustomers();
+            custEl.innerText = customers.length;
+        }
     },
 
     renderOverview() {
@@ -306,36 +328,35 @@ const Admin = {
             <tr>
                 <td>
                     <div class="flex align-center gap-md">
-                        <img src="${p.image}" style="width: 32px; height: 32px; border-radius: 4px; object-fit: cover;">
+                        <img src="${p.image}" style="width: 32px; height: 32px; border-radius: 8px; object-fit: cover;">
                         <div>
                             <div class="text-bold">${p.name}</div>
                             <div class="text-muted" style="font-size: 0.7rem;">ID: ${p.id}</div>
                         </div>
                     </div>
                 </td>
-                <td><span class="badge glass">${p.category}</span></td>
-                <td class="text-bold text-red">${p.price} DH</td>
+                <td><span class="badge glass" style="background: rgba(255,255,255,0.03);">${p.category}</span></td>
+                <td class="text-bold text-red">${this.formatCurrency(p.price)}</td>
                 <td>
                     <div class="flex align-center gap-sm">
-                        <button class="glass p-xs" onclick="Admin.adjustStock('${p.id}', -1)"><i class="fas fa-minus"></i></button>
+                        <button class="glass p-xs" onclick="Admin.adjustStock('${p.id}', -1)" style="border-radius: 4px; border: 1px solid rgba(255,255,255,0.05);"><i class="fas fa-minus"></i></button>
                         <span class="text-bold mx-xs ${p.stock < 10 ? 'text-red' : ''}">${p.stock}</span>
-                        <button class="glass p-xs" onclick="Admin.adjustStock('${p.id}', 1)"><i class="fas fa-plus"></i></button>
+                        <button class="glass p-xs" onclick="Admin.adjustStock('${p.id}', 1)" style="border-radius: 4px; border: 1px solid rgba(255,255,255,0.05);"><i class="fas fa-plus"></i></button>
                     </div>
                 </td>
                 <td>
                     <span class="badge" style="background: ${p.visible ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)'}; color: ${p.visible ? '#22c55e' : '#ef4444'};">
-                        ${p.visible ? 'En ligne' : 'Masqué'}
+                        ${p.visible ? (I18n.lang === 'ar' ? 'نشط' : 'Actif') : (I18n.lang === 'ar' ? 'مخفي' : 'Masqué')}
                     </span>
                 </td>
-                <td class="text-right">
-                    <button class="glass p-xs mr-xs ${p.isPromoted ? 'text-gold' : 'text-muted'}" onclick="Admin.togglePromoted('${p.id}')" title="Mettre en avant">
-                        <i class="fas fa-star"></i>
-                    </button>
-                    <button class="glass p-xs mr-xs" onclick="Admin.editProduct('${p.id}')"><i class="fas fa-edit"></i></button>
-                    <button class="glass p-xs" onclick="Admin.toggleVisibility('${p.id}')"><i class="fas ${p.visible ? 'fa-eye-slash' : 'fa-eye'}"></i></button>
+                <td style="text-align: right;">
+                    <div class="flex gap-sm justify-end">
+                        <button class="glass p-xs" onclick="Admin.editProduct('${p.id}')"><i class="fas fa-edit"></i></button>
+                        <button class="glass p-xs" onclick="Admin.toggleVisibility('${p.id}')"><i class="fas ${p.visible ? 'fa-eye-slash' : 'fa-eye'}"></i></button>
+                    </div>
                 </td>
             </tr>
-        `).join('') || '<tr><td colspan="6" class="text-center py-xl text-muted">Aucun produit trouvé.</td></tr>';
+        `).join('') || `<tr><td colspan="6" class="text-center py-xl text-muted">${I18n.lang === 'ar' ? 'لا يوجد منتجات' : 'Aucun produit.'}</td></tr>`;
     },
 
     renderInventory() {
