@@ -40,6 +40,7 @@
     <!-- 2. MAIN HEADER -->
     <header class="main-header">
         <div class="container flex-between gap-xl">
+            <i class="fas fa-bars mobile-menu-btn" onclick="toggleMobileDrawer()"></i>
             <a href="/" class="nav-logo">EL-WALI<span>.SHOP</span></a>
 
             <div class="search-bar">
@@ -60,6 +61,11 @@
                     <span class="cart-badge">0</span>
                 </div>
             </div>
+            <i class="fas fa-search mobile-search-btn" onclick="toggleMobileSearch()"></i>
+        </div>
+        <div class="mobile-search-overlay" id="mobile-search-overlay">
+            <input type="text" placeholder="Rechercher..." id="mobile-search-input">
+            <div class="search-suggestions" id="mobile-suggestions"></div>
         </div>
     </header>
 

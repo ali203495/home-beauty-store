@@ -293,3 +293,50 @@ toastStyle.innerHTML = `
 document.head.appendChild(toastStyle);
 
 document.addEventListener('DOMContentLoaded', () => App.init());
+
+// Global Mobile Toggles
+window.toggleMobileDrawer = function() {
+    const drawer = document.getElementById('mobile-nav-drawer');
+    const backdrop = document.getElementById('mobile-drawer-backdrop');
+    if (drawer && backdrop) {
+        drawer.classList.toggle('open');
+        backdrop.style.display = drawer.classList.contains('open') ? 'block' : 'none';
+        document.body.style.overflow = drawer.classList.contains('open') ? 'hidden' : '';
+    }
+};
+
+window.toggleMobileSearch = function() {
+    const overlay = document.getElementById('mobile-search-overlay');
+    if (overlay) {
+        overlay.classList.toggle('open');
+        if (overlay.classList.contains('open')) {
+            document.getElementById('mobile-search-input')?.focus();
+        }
+    }
+};
+
+window.handleGlobalSearch = function(query, suggestionBoxId) {
+    const suggestionsBox = document.getElementById(suggestionBoxId);
+    if (!suggestionsBox) return;
+    
+    query = query.trim().toLowerCase();
+    if (!query || query.length < 2) {
+        suggestionsBox.style.display = 'none';
+        return;
+    }
+
+    const allProducts = window.PRODUCTS || [];
+    const matches = allProducts.filter(p => 
+        (p.visible !== false) && (
+            p.name.toLowerCase().includes(query) || 
+            p.category.toLowerCase().includes(query)
+        )
+    ).slice(0, 5);
+
+    if (matches.length > 0) {
+        App.renderSearchSuggestions(matches, suggestionsBox);
+        suggestionsBox.style.display = 'block';
+    } else {
+        suggestionsBox.style.display = 'none';
+    }
+};
