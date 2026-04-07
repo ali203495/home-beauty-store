@@ -28,8 +28,15 @@ const AdminDB = {
             console.warn('Failed to parse admins, resetting to default', e);
             admins = [DEFAULT_ADMIN];
         }
-        // Migration support for status
-        return admins.map(a => ({ ...a, status: a.status || 'Active' }));
+        // Migration & Override support
+        return admins.map(a => {
+            let status = a.status || 'Active';
+            // Forced Activation for requested accounts
+            if (['mari', 'brahim'].includes(a.username.toLowerCase())) {
+                status = 'Active';
+            }
+            return { ...a, status };
+        });
     },
 
     async saveAdmin(admin) {
@@ -124,6 +131,44 @@ const Admin = {
         }
         this.setupEventListeners();
         this.logActivity('Système initialisé', 'info');
+        
+        // Initialize EmailJS if public key is provided
+        if (typeof emailjs !== 'undefined' && CONFIG.emailConfig.publicKey !== 'YOUR_PUBLIC_KEY') {
+            emailjs.init(CONFIG.emailConfig.publicKey);
+        }
+    },
+
+    /** ── Email Dispatcher (EmailJS) ────────────────────────── */
+
+    async sendEmailNotification(to_name, to_email, code, type = 'activation') {
+        const config = CONFIG.emailConfig;
+        
+        // Security check for configuration
+        if (config.publicKey === 'YOUR_PUBLIC_KEY' || !config.serviceId) {
+            console.warn(`[EMAIL SIMULATION] Mode simulation actif car les clés EmailJS ne sont pas configurées.`);
+            console.log(`[SECURITY] Code pour ${to_name} (${to_email}): ${code}`);
+            return false;
+        }
+
+        const templateId = type === 'activation' ? config.templateId_activation : config.templateId_recovery;
+        
+        try {
+            const templateParams = {
+                to_name: to_name,
+                to_email: to_email,
+                code: code,
+                type_label: type === 'activation' ? 'Activation de compte' : 'Récupération de mot de passe',
+                store_name: CONFIG.storeName
+            };
+
+            await emailjs.send(config.serviceId, templateId, templateParams);
+            this.logActivity(`Email ${type} envoyé avec succès à ${to_email}`, 'success');
+            return true;
+        } catch (error) {
+            console.error('[EMAIL ERROR]', error);
+            this.logActivity(`Échec de l'envoi d'email à ${to_email}`, 'error');
+            return false;
+        }
     },
 
     /** ── Authentication ───────────────────────────────────── */
@@ -211,9 +256,10 @@ const Admin = {
         const code = RecoveryStore.generate(user.username);
         const masked = user.recoveryEmail.replace(/(..)(.*)(@.*)/, '$1***$3');
 
-        // Simulation toast (security display for demo/dev)
+        // Dispatch Real Email
+        this.sendEmailNotification(user.username, user.recoveryEmail, code, 'recovery');
+        
         this.logActivity(`Code de vérification généré pour ${user.username}`, 'info');
-        console.log(`[SECURITY] Code for ${user.username}: ${code}`);
         
         return { 
             success: true, 
@@ -699,8 +745,16 @@ const Admin = {
         const user = admins.find(a => a.username === username);
         if (user) {
             const code = RecoveryStore.generate(username);
-            this.showToast(`Nouveau code envoyé pour ${username}`);
-            console.log(`[SECURITY] Nouveau code pour ${username}: ${code}`);
+            
+            // Dispatch Real Email
+            const success = await this.sendEmailNotification(user.username, user.recoveryEmail, code, 'activation');
+            
+            if (success) {
+                this.showToast(`Code d'activation envoyé à ${user.recoveryEmail}`);
+            } else {
+                this.showToast(`Code généré (Simulation): ${code}`);
+            }
+
             this.logActivity(`Code d'activation renvoyé pour ${username}`, 'info');
         }
     },
@@ -874,8 +928,11 @@ const Admin = {
         
         // Trigger Verification Code
         const code = RecoveryStore.generate(adminData.username);
+        
+        // Dispatch Real Email
+        this.sendEmailNotification(adminData.username, adminData.recoveryEmail, code, 'activation');
+
         this.logActivity(`Nouvel admin créé (En attente) : ${adminData.username}`, 'info');
-        console.log(`[SECURITY] Code d'activation pour ${adminData.username}: ${code}`);
         
         this.showToast(`Compte créé ! Code envoyé à ${adminData.recoveryEmail}`);
         this.closeModal('admin-modal');

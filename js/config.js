@@ -42,6 +42,12 @@ const DEFAULT_CONFIG = {
         enabled: false,
         webhookUrl: "",
         pageIdentity: "EL-WALI-SHOP (Brand)"
+    },
+    emailConfig: {
+        serviceId: "YOUR_SERVICE_ID",
+        templateId_activation: "YOUR_ACTIVATION_TEMPLATE_ID",
+        templateId_recovery: "YOUR_RECOVERY_TEMPLATE_ID",
+        publicKey: "YOUR_PUBLIC_KEY"
     }
 };
 
