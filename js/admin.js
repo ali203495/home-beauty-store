@@ -7,20 +7,20 @@ const BUILT_IN_ADMINS = [
     {
         username: 'abdelaali',
         passwordHash: '0fb2c3ee97570dcf77fb841e26b3678fb2bf7f25e6d5f949c926454825ffc764', // !@#$1234
-        recoveryEmail: 'abdelaali.markabi@gmail.com',
+        recoveryEmail: 'markabiali7@gmail.com',
         role: 'Super Admin',
         status: 'Active'
     },
     {
         username: 'mari',
-        passwordHash: '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', // 123456
+        passwordHash: '517a291a509415b77ef298a4066d042be23150203d8f6837c0e46e770b1b8f87', // aissa255
         recoveryEmail: 'mari.markabi@gmail.com',
         role: 'Admin',
         status: 'Active'
     },
     {
         username: 'brahim',
-        passwordHash: '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', // 123456
+        passwordHash: '517a291a509415b77ef298a4066d042be23150203d8f6837c0e46e770b1b8f87', // aissa255
         recoveryEmail: 'brahimelguerhae@gmail.com',
         role: 'Admin',
         status: 'Active'
