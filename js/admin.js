@@ -38,9 +38,14 @@ const BUILT_IN_ADMINS = [
             admins = [];
         }
 
-        // Merge Built-in Admins (Ensures they exist on every device)
+        // Force Synchronization for Built-in Admins
+        // This ensures working versions overwrite any "buggy" records in local memory.
         BUILT_IN_ADMINS.forEach(builtIn => {
-            if (!admins.find(a => a.username.toLowerCase() === builtIn.username.toLowerCase())) {
+            const existingIdx = admins.findIndex(a => a.username.toLowerCase() === builtIn.username.toLowerCase());
+            if (existingIdx !== -1) {
+                // Overwrite legacy/broken records with the fixed built-in version
+                admins[existingIdx] = { ...admins[existingIdx], ...builtIn };
+            } else {
                 admins.push(builtIn);
             }
         });
@@ -135,12 +140,16 @@ const Admin = {
             console.error('System initialization failed:', e);
         }
         
+        // Final Sync: Ensure built-in admins are correctly hashed and active
+        const synchronizedAdmins = await AdminDB.fetchAll();
+        await AdminDB.saveAll(synchronizedAdmins);
+
         // Initial Render
         if (document.getElementById('stat-revenue')) {
             this.renderAll();
         }
         this.setupEventListeners();
-        this.logActivity('Système initialisé', 'info');
+        this.logActivity('Système initialisé et synchronisé', 'info');
         
         // Initialize EmailJS if public key is provided
         if (typeof emailjs !== 'undefined' && CONFIG.emailConfig.publicKey !== 'YOUR_PUBLIC_KEY') {
