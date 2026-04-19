@@ -611,7 +611,7 @@
             </a>
         </nav>
 
-        <nav class="nav-group">
+        <nav class="nav-group" data-role="Super Admin">
             <p class="nav-label" data-i18n="admin_admins">Système</p>
             <a href="#" class="nav-link" onclick="Admin.switchTab('admins', this); closeMobileSidebar();">
                 <i class="fas fa-user-shield"></i>
@@ -625,6 +625,8 @@
                 <i class="fas fa-cog"></i>
                 <span>Paramètres</span>
             </a>
+        </nav>
+        <nav class="nav-group">
             <a href="#" class="nav-link" onclick="Admin.switchTab('promotions', this); closeMobileSidebar();">
                 <i class="fas fa-tags"></i>
                 <span>Promotions</span>
@@ -812,6 +814,9 @@
                         <h1 data-i18n="admin_admins">Gestion des Administrateurs</h1>
                         <p class="text-muted mt-xs" style="font-size:0.9rem;">Sécurité et accès.</p>
                     </div>
+                    <button class="btn-primary" onclick="AdminUI.openAdminModal()">
+                        <i class="fas fa-user-plus"></i> NOUVEAU ADMIN
+                    </button>
                 </div>
                 <div class="table-responsive">
                     <table class="modern-table">
@@ -979,7 +984,41 @@
                 </div>
                 <div class="flex gap-md mt-xl">
                     <button type="submit" class="btn-primary" style="flex:1; justify-content:center;">CRÉER</button>
-                    <button type="button" class="glass-btn p-md" style="flex:1;" onclick="Admin.closeModal('coupon-modal')">ANNULER</button>
+                    <button type="button" class="glass-btn p-md" style="flex:1;" onclick="AdminUI.closeModal('coupon-modal')">ANNULER</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="admin-modal" class="modal-overlay">
+        <div class="modal-content animate-fade-in" style="max-width: 500px;">
+            <h2 class="mb-xl" id="admin-modal-title">Nouveau Administrateur</h2>
+            <form id="admin-form" onsubmit="AdminUI.handleAdminSubmit(event)">
+                <input type="hidden" name="mode" value="create">
+                <div class="flex-column gap-md mb-xl">
+                    <div>
+                        <label class="form-label">Nom d'utilisateur</label>
+                        <input type="text" name="username" class="form-input" placeholder="Ex: brahim_manager" required>
+                    </div>
+                    <div>
+                        <label class="form-label">Email de Récupération</label>
+                        <input type="email" name="recoveryEmail" class="form-input" placeholder="Ex: admin@gmail.com" required>
+                    </div>
+                    <div id="admin-password-group">
+                        <label class="form-label">Mot de passe temporaire</label>
+                        <input type="password" name="password" class="form-input" placeholder="Minimum 4 caractères">
+                    </div>
+                    <div>
+                        <label class="form-label">Rôle Système</label>
+                        <select name="role" class="form-input">
+                            <option value="Admin">Administrateur (Opérations)</option>
+                            <option value="Super Admin">Super Admin (Contrôle Total)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="flex gap-md mt-xl">
+                    <button type="submit" class="btn-primary" style="flex:2; justify-content:center;">ENREGISTRER</button>
+                    <button type="button" class="glass-btn p-md" style="flex:1;" onclick="AdminUI.closeModal('admin-modal')">ANNULER</button>
                 </div>
             </form>
         </div>
@@ -999,7 +1038,12 @@
     <script src="js/promotions.js"></script>
     <script src="js/products.js"></script>
     <script src="js/i18n.js"></script>
-    <script src="js/admin.js"></script>
+    <script src="js/admin/admin-db.js"></script>
+    <script src="js/admin/admin-logs.js"></script>
+    <script src="js/admin/admin-auth.js"></script>
+    <script src="js/admin/admin-session.js"></script>
+    <script src="js/admin/admin-ui.js"></script>
+    <script src="js/admin/admin-app.js"></script>
     <script>
         // Update language switcher UI when language changes
         window.addEventListener('langChanged', (e) => {
