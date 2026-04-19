@@ -2,6 +2,7 @@
  * Global Configuration for MARRAKECH LUXE
  * This supports dynamic overrides via Admin Dashboard overrides.
  */
+const VERSION = '2.1';
 const DEFAULT_CONFIG = {
     storeName: "MARRAKECH LUXE",
     whatsappNumber: "0615653798", 

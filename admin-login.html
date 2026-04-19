@@ -256,14 +256,14 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-    <script src="js/config.js"></script>
-    <script src="js/products.js"></script>
-    <script src="js/admin-db.js"></script>
-    <script src="js/admin-logs.js"></script>
-    <script src="js/admin-auth.js"></script>
-    <script src="js/admin-session.js"></script>
-    <script src="js/admin-ui.js"></script>
-    <script src="js/admin-app.js"></script>
+    <script src="js/config.js?v=2.1"></script>
+    <script src="js/products.js?v=2.1"></script>
+    <script src="js/admin-db.js?v=2.1"></script>
+    <script src="js/admin-logs.js?v=2.1"></script>
+    <script src="js/admin-auth.js?v=2.1"></script>
+    <script src="js/admin-session.js?v=2.1"></script>
+    <script src="js/admin-ui.js?v=2.1"></script>
+    <script src="js/admin-app.js?v=2.1"></script>
     <script>
         // Password Visibility Toggle
         document.getElementById('togglePassword').addEventListener('click', function (e) {
@@ -283,6 +283,9 @@
             error.style.display = 'none';
 
             try {
+                if (typeof Admin === 'undefined') {
+                    throw new Error('Le système est en cours de chargement... Veuillez patienter 2 secondes et réactualiser.');
+                }
                 btn.innerText = 'ÉVALUATION...';
                 btn.disabled = true;
 
