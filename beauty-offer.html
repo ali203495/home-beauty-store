@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solution Beauté Révolutionnaire — Marrakech Luxe</title>
+    <link rel="icon" type="image/png" href="assets/webp/logo.webp">
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/components.css">
+    <style>
+        .landing-header { padding: 4rem 2rem; text-align: center; background: var(--bg-surface); }
+        .landing-title { font-size: 2.5rem; line-height: 1.1; margin-bottom: 1.5rem; color: var(--accent-red); font-weight: 900; }
+        .landing-subtitle { font-size: 1.2rem; color: var(--text-secondary); margin-bottom: 2rem; max-width: 600px; margin-inline: auto; font-weight: 500; }
+        
+        .section-padding { padding: 5rem 1.5rem; }
+        .container-sm { max-width: 800px; margin: 0 auto; }
+        
+        .video-container { 
+            aspect-ratio: 16/9; 
+            background: #000; 
+            border-radius: var(--radius-lg); 
+            overflow: hidden; 
+            box-shadow: var(--shadow-xl);
+            margin-bottom: 2rem;
+            position: relative;
+        }
+        .video-placeholder {
+            width: 100%; height: 100%;
+            display: flex; align-items: center; justify-content: center;
+            background: linear-gradient(45deg, #1e293b, #334155);
+            color: white; font-weight: 700; flex-direction: column; gap: 1rem;
+        }
+
+        .comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 3rem; }
+        .comp-card { padding: 2rem; border-radius: var(--radius-md); background: var(--bg-card); box-shadow: var(--shadow-card); }
+        .comp-card.wrong { border-left: 5px solid #ef4444; }
+        .comp-card.right { border-left: 5px solid #22c55e; }
+        
+        .before-after-container { position: relative; border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-xl); }
+        .ba-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+        .ba-img { width: 100%; aspect-ratio: 1; object-fit: cover; }
+        .ba-label { position: absolute; bottom: 1rem; background: rgba(0,0,0,0.6); color: white; padding: 4px 12px; border-radius: 4px; font-size: 0.7rem; font-weight: 800; }
+
+        .review-card { padding: 1.5rem; background: var(--bg-card); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); margin-bottom: 1.5rem; }
+        .stars { color: #fbbf24; margin-bottom: 0.5rem; }
+        
+        .logistics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1.5rem; text-align: center; }
+        .log-item i { font-size: 2rem; color: var(--accent-red); margin-bottom: 1rem; }
+        .log-item h4 { font-size: 0.9rem; font-weight: 800; margin-bottom: 0.25rem; }
+        .log-item p { font-size: 0.75rem; color: var(--text-muted); }
+
+        .urgency-bar { background: #fee2e2; border: 1px dashed #ef4444; color: #991b1b; padding: 1rem; border-radius: var(--radius-md); text-align: center; margin: 2rem 0; font-weight: 800; }
+        
+        .sticky-footer-cta { position: fixed; bottom: 0; left: 0; width: 100%; padding: 1rem; background: var(--glass-bg); backdrop-filter: blur(10px); border-top: 1px solid var(--border-subtle); z-index: 1000; box-shadow: 0 -10px 20px rgba(0,0,0,0.05); }
+
+        @media (max-width: 768px) {
+            .landing-title { font-size: 2rem; }
+            .comparison-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="landing-header">
+        <div class="container-sm">
+            <h1 class="landing-title">✨ Découvrez la solution révolutionnaire pour une beauté parfaite !</h1>
+            <p class="landing-subtitle">Dites adieu aux problèmes de peau et obtenez des résultats visibles dès la première utilisation 😍</p>
+            <button onclick="Landing.buyNow()" class="btn btn-primary btn-lg" style="width: 100%; max-width: 400px; font-size: 1.1rem; padding: 1.25rem;">
+                🔥 ACHETER MAINTENANT – OFFRE LIMITÉE !
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <!-- 2. SECTION VIDEO -->
+        <section class="section-padding" style="background: var(--bg-surface);">
+            <div class="container-sm text-center">
+                <h2 class="mb-xl">😳 Pourquoi tout le monde parle de ce produit ?</h2>
+                <div class="video-container">
+                    <div class="video-placeholder">
+                        <i class="fab fa-tiktok" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                        <span>[VIDÉO VIRALE ICI]</span>
+                    </div>
+                </div>
+                <p class="text-secondary" style="max-width: 600px; margin: 0 auto; line-height: 1.6;">
+                    Ce produit innovant est devenu viral grâce à ses résultats incroyables. <br>
+                    <strong>Des milliers de personnes au Maroc l’utilisent déjà !</strong>
+                </p>
+            </div>
+        </section>
+
+        <!-- 3. PROBLÈME -> SOLUTION -->
+        <section class="section-padding">
+            <div class="container-sm">
+                <div class="comparison-grid">
+                    <div class="comp-card wrong animate-slide-left">
+                        <h3 class="mb-md" style="color: #ef4444;">❌ Vous avez ces problèmes ?</h3>
+                        <ul style="list-style: none; padding: 0; display: grid; gap: 1rem;">
+                            <li><i class="fas fa-times-circle"></i> Peau fatiguée 😩</li>
+                            <li><i class="fas fa-times-circle"></i> Imperfections visibles</li>
+                            <li><i class="fas fa-times-circle"></i> Manque de confiance 😔</li>
+                        </ul>
+                    </div>
+                    <div class="comp-card right animate-slide-right">
+                        <h3 class="mb-md" style="color: #22c55e;">✅ La solution est enfin là !</h3>
+                        <p style="font-size: 0.95rem; line-height: 1.6;">
+                            Grâce à notre technologie avancée, ce produit agit rapidement pour améliorer votre apparence et votre confiance.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. AVANT / APRÈS -->
+        <section class="section-padding" style="background: var(--bg-surface);">
+            <div class="container-sm text-center">
+                <h2 class="mb-lg">🔥 Résultats impressionnants en quelques jours !</h2>
+                <p class="text-muted mb-xl">Voyez la différence par vous-même 👇</p>
+                <div class="before-after-container">
+                    <div class="ba-grid">
+                        <div style="position: relative;">
+                            <img src="assets/webp/makeup.webp" class="ba-img" alt="Avant">
+                            <span class="ba-label" style="left: 1rem;">AVANT</span>
+                        </div>
+                        <div style="position: relative;">
+                            <img src="assets/webp/makeup.webp" class="ba-img" alt="Après" style="filter: brightness(1.1) contrast(1.1);">
+                            <span class="ba-label" style="right: 1rem; background: #22c55e;">APRÈS</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. REVIEWS -->
+        <section class="section-padding">
+            <div class="container-sm">
+                <h2 class="text-center mb-2xl">⭐ Avis de nos clients</h2>
+                
+                <div class="review-card animate-fade-in">
+                    <div class="stars">⭐⭐⭐⭐⭐</div>
+                    <p style="font-style: italic; margin-bottom: 0.5rem;">"Franchement incroyable ! Je vois déjà la différence 😍"</p>
+                    <div class="text-bold text-sm">— Sara, Casablanca</div>
+                </div>
+
+                <div class="review-card animate-fade-in">
+                    <div class="stars">⭐⭐⭐⭐⭐</div>
+                    <p style="font-style: italic; margin-bottom: 0.5rem;">"Produit top, livraison rapide. Je recommande !"</p>
+                    <div class="text-bold text-sm">— Youssef, Marrakech</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. LIVRAISON -->
+        <section class="section-padding" style="background: var(--accent-slate); color: white;">
+            <div class="container-sm">
+                <h2 class="text-center mb-2xl">🚚 Livraison rapide au Maroc</h2>
+                <div class="logistics-grid">
+                    <div class="log-item">
+                        <i class="fas fa-bolt"></i>
+                        <h4>RAPIDE</h4>
+                        <p style="color: #94a3b8;">Livraison en 24-48h</p>
+                    </div>
+                    <div class="log-item">
+                        <i class="fas fa-wallet"></i>
+                        <h4>PAIEMENT COD</h4>
+                        <p style="color: #94a3b8;">À la livraison 💵</p>
+                    </div>
+                    <div class="log-item">
+                        <i class="fas fa-headset"></i>
+                        <h4>SUPPORT</h4>
+                        <p style="color: #94a3b8;">Disponible 7j/7</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. URGENCE & FINAL CTA -->
+        <section class="section-padding container-sm text-center">
+            <div class="urgency-bar animate-pulse">
+                ⚠️ OFFRE SPÉCIALE AUJOURD'HUI SEULEMENT ! <br>
+                <small>Stock limité ! Ne ratez pas cette opportunité.</small>
+            </div>
+
+            <h2 class="mb-xl">🔥 Commandez maintenant avant qu'il ne soit trop tard !</h2>
+            
+            <button onclick="Landing.buyNow()" class="btn btn-primary btn-lg w-full" style="padding: 1.5rem; font-size: 1.25rem;">
+                👉 JE COMMANDE MAINTENANT
+            </button>
+
+            <div style="margin-top: 1.5rem; display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; font-size: 0.8rem; font-weight: 700;">
+                <span style="color: #22c55e;">✔️ Plus de 1200 clients satisfaits</span>
+                <span>✔️ Garantie 100% satisfaction</span>
+                <span>✔️ Paiement sécurisé</span>
+            </div>
+        </section>
+    </main>
+
+    <div class="sticky-footer-cta" id="sticky-cta" style="display: none;">
+        <button onclick="Landing.buyNow()" class="btn btn-primary w-full text-bold">
+            COMMANDER MAINTENANT - OFFRE LIMITÉE 🔥
+        </button>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script src="js/config.js"></script>
+    <script src="js/products.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/landing.js"></script>
+    <script>
+        // Internal toggle for sticky-cta
+        window.addEventListener('scroll', () => {
+            const sticky = document.getElementById('sticky-cta');
+            if (window.scrollY > 500) {
+                sticky.style.display = 'block';
+            } else {
+                sticky.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

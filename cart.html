@@ -5,14 +5,14 @@
     <!-- SEO <head> Social Open Graph -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://el-wali-shop.work.gd/cart">
-    <meta property="og:title" content="Mon Panier | EL-WALI-SHOP Marrakech">
+    <meta property="og:title" content="Mon Panier | MARRAKECH LUXE Marrakech">
     <meta property="og:description" content="Finalisez vos achats d’électroménager et produits de beauté en toute sécurité.">
     <meta property="og:image" content="https://el-wali-shop.work.gd/assets/webp/hero.webp">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mon Panier — EL-WALI-SHOP</title>
+    <title>Mon Panier — MARRAKECH LUXE</title>
     <meta name="description"
-        content="Gérez votre panier d'achats chez EL-WALI-SHOP. Electroménager, beauté et plus encore.">
+        content="Gérez votre panier d'achats chez MARRAKECH LUXE. Electroménager, beauté et plus encore.">
     <link rel="icon" type="image/png" href="assets/webp/logo.webp">
     <link rel="stylesheet" href="css/index.css">
     <link rel="stylesheet" href="css/components.css">
@@ -41,7 +41,7 @@
     <header class="main-header">
         <div class="container flex-between gap-xl">
             <i class="fas fa-bars mobile-menu-btn" onclick="toggleMobileDrawer()"></i>
-            <a href="/" class="nav-logo">EL-WALI<span>.SHOP</span></a>
+            <a href="/" class="nav-logo">MARRAKECH<span>.LUXE</span></a>
 
             <div class="search-bar">
                 <i class="fas fa-search search-icon"></i>
@@ -55,6 +55,7 @@
                     <i class="fas fa-user-circle"></i>
                     <span>Compte</span>
                 </div>
+                <div class="theme-toggle-container"></div>
                 <div class="nav-action-item cart-icon-wrapper" onclick="window.location.href='/cart'">
                     <i class="fas fa-shopping-basket"></i>
                     <span>Panier</span>
@@ -88,7 +89,13 @@
 
     <section class="section" style="padding-top: 2rem;">
         <div class="container">
-            <h1 class="page-title" data-i18n="cart_title" style="font-weight: 800; font-size: 2.2rem; margin-bottom: 2rem;">Votre Panier</h1>
+            <div class="breadcrumb" style="font-size: 0.82rem; margin-bottom: 2rem; color: var(--text-muted);">
+                <a href="/" style="text-decoration: underline;">Accueil</a>
+                <span class="breadcrumb-sep">/</span>
+                <span>Votre Panier</span>
+            </div>
+            
+            <h1 class="page-title" data-i18n="cart_title" style="font-weight: 900; font-size: 2.8rem; margin-bottom: 3rem; letter-spacing: -0.04em; color: var(--accent-slate);">VOTRE PANIER</h1>
 
             <div id="cart-container" class="cart-layout" style="display:none; grid-template-columns: 1fr 400px; gap: 2.5rem;">
                 <div id="cart-main-content">
@@ -97,24 +104,27 @@
                     </div>
                 </div>
 
-                <aside class="cart-summary" style="background: white; border: 1px solid var(--border-subtle); padding: 2.5rem; border-radius: var(--radius-md); height: fit-content; position: sticky; top: 120px; box-shadow: var(--shadow-xl);">
-                    <h3 data-i18n="cart_summary_title" style="font-weight: 900; margin-bottom: 1.5rem; border-bottom: 2px solid var(--bg-primary); padding-bottom: 1rem; color: var(--accent-slate); text-transform: uppercase;">MON PANIER</h3>
-                    <div class="summary-row" style="display: flex; justify-content: space-between; margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.9rem;">
-                        <span data-i18n="cart_subtotal" style="font-weight: 700;">Sous-total</span>
-                        <span id="subtotal" style="font-weight: 800; color: var(--accent-slate);">0 DH</span>
+                <aside class="cart-summary terminal-sidebar" style="height: fit-content; position: sticky; top: 120px; border-radius: var(--radius-lg); padding: 3rem;">
+                    <h3 data-i18n="cart_summary_title" style="font-weight: 900; margin-bottom: 2rem; color: var(--accent-slate); letter-spacing: 0.05em; font-size: 1.1rem;">RÉSUMÉ</h3>
+                    
+                    <div class="summary-row" style="display: flex; justify-content: space-between; margin-bottom: 1.25rem; color: var(--text-muted); font-size: 0.95rem; font-weight: 600;">
+                        <span data-i18n="cart_subtotal">Sous-total</span>
+                        <span id="subtotal" style="color: var(--accent-slate);">0 DH</span>
                     </div>
-                    <div class="summary-row" style="display: flex; justify-content: space-between; margin-bottom: 2rem; color: var(--text-secondary); font-size: 0.9rem;">
-                        <span data-i18n="cart_delivery_marrakech" style="font-weight: 700;">Livraison (Express)</span>
-                        <span style="color: #22c55e; font-weight: 900;" data-i18n="cart_delivery_free">GRATUITE</span>
+                    
+                    <div class="summary-row" style="display: flex; justify-content: space-between; margin-bottom: 2rem; color: var(--text-muted); font-size: 0.95rem; font-weight: 600;">
+                        <span data-i18n="cart_delivery_marrakech">Livraison</span>
+                        <span style="color: #22c55e;">Gratuite</span>
                     </div>
-                    <div class="summary-row total" style="display: flex; justify-content: space-between; border-top: 3px solid var(--bg-primary); padding-top: 1.5rem; margin-bottom: 2.5rem;">
-                        <span data-i18n="cart_total" style="font-weight: 900; font-size: 1.25rem;">TOTAL TTC</span>
-                        <span id="total" style="font-weight: 900; font-size: 1.8rem; color: var(--accent-red);">0 DH</span>
+                    
+                    <div class="summary-row total" style="display: flex; justify-content: space-between; border-top: 2px dashed var(--border-subtle); padding-top: 2rem; margin-bottom: 3rem; align-items: baseline;">
+                        <span data-i18n="cart_total" style="font-weight: 900; font-size: 1.1rem; color: var(--accent-slate);">TOTAL</span>
+                        <span id="total" style="font-weight: 900; font-size: 2.2rem; color: var(--accent-red);">0 DH</span>
                     </div>
 
-                    <button class="btn btn-primary btn-lg" style="width:100%; border-radius: var(--radius-sm); font-weight: 900; background: var(--accent-red); border: none; padding: 1.25rem; font-size: 1.1rem; box-shadow: 0 4px 15px rgba(225, 29, 72, 0.3);"
+                    <button class="btn-terminal-next w-full" style="height: 64px; font-size: 1.1rem; justify-content: center;"
                         onclick="window.location.href='/checkout.html'" data-i18n="cart_checkout_btn">
-                        COMMANDER MAINTENANT <i class="fas fa-arrow-right" style="margin-left: 10px;"></i>
+                        PASSER À LA CAISSE <i class="fas fa-arrow-right"></i>
                     </button>
 
                     <div style="margin-top: 2rem; border-top: 1px solid var(--border-subtle); padding-top: 1.5rem">
@@ -147,20 +157,96 @@
             <div class="modal-icon" style="font-size: 4rem; color: #22c55e; margin-bottom: 1.5rem;"><i class="fas fa-check-circle"></i></div>
             <h2 class="modal-title" data-i18n="modal_order_received_title" style="font-weight: 800; margin-bottom: 1rem;">Commande Reçue !</h2>
             <p class="modal-text" data-i18n="modal_order_received_text" style="color: var(--text-secondary); margin-bottom: 2rem; line-height: 1.6;">
-                Merci pour votre commande chez EL-WALI-SHOP. Nous vous contacterons sous peu pour confirmer la livraison.
+                Merci pour votre commande chez MARRAKECH LUXE. Nous vous contacterons sous peu pour confirmer la livraison.
             </p>
             <button class="btn btn-primary" style="width:100%; border-radius: var(--radius-sm);" onclick="window.location.href='/'"
                 data-i18n="modal_back_to_home_btn">Retour à l'accueil</button>
         </div>
     </div>
 
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="/" class="nav-logo" style="color:white">MARRAKECH<span>.LUXE</span></a>
+                    <p>Votre boutique de confiance à Marrakech pour l'électroménager, la technologie et la beauté. Service client disponible 7/7.</p>
+                </div>
+                <div class="footer-col">
+                    <h5>RAYONS</h5>
+                    <ul>
+                        <li><a href="/products.html?cat=Electroménager">Electroménager</a></li>
+                        <li><a href="/products.html?cat=TV">TV &amp; Audio</a></li>
+                        <li><a href="/products.html?cat=Cuisine">Cuisine</a></li>
+                        <li><a href="/products.html?cat=Beauté">Beauté</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h5>SUPPORT</h5>
+                    <ul>
+                        <li><a href="/contact.html">Contactez-nous</a></li>
+                        <li><a href="/about.html">Notre histoire</a></li>
+                        <li><a href="/products.html">Catalogue</a></li>
+                        <li><a href="/checkout.html">Commander</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h5>CONTACT</h5>
+                    <ul>
+                        <li><i class="fas fa-map-marker-alt"></i> Marrakech, Maroc</li>
+                        <li><i class="fas fa-phone"></i> +212 699-705617</li>
+                        <li><i class="fas fa-envelope"></i> contact@el-wali-shop.work.gd</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                &copy; <span id="current-year"></span> MARRAKECH LUXE. Tous droits réservés.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Mobile Drawer -->
+    <div id="mobile-drawer-backdrop" onclick="toggleMobileDrawer()"></div>
+    <div class="mobile-nav-drawer" id="mobile-nav-drawer">
+        <div class="mobile-drawer-header">
+            <a href="/" class="nav-logo" style="font-size: 1.2rem;">MARRAKECH<span>.LUXE</span></a>
+            <i class="fas fa-times mobile-drawer-close" onclick="toggleMobileDrawer()"></i>
+        </div>
+        <div class="mobile-drawer-links">
+            <a href="/products.html?cat=Electroménager"><i class="fas fa-refrigerator"></i> Electroménager</a>
+            <a href="/products.html?cat=TV"><i class="fas fa-tv"></i> TV &amp; Audio</a>
+            <a href="/products.html?cat=Climatisation"><i class="fas fa-wind"></i> Climatisation</a>
+            <a href="/products.html?cat=Cuisine"><i class="fas fa-blender"></i> Cuisine</a>
+            <a href="/products.html?cat=Beauté"><i class="fas fa-spa"></i> Beauté &amp; Soin</a>
+            <a href="/products.html" style="color: var(--accent-red);"><i class="fas fa-percentage"></i> Promotions</a>
+        </div>
+    </div>
+
+    <!-- Mobile Bottom Nav -->
+    <div class="mobile-bottom-nav">
+        <a href="/" class="mobile-bottom-nav-item">
+            <i class="fas fa-home"></i><span>Accueil</span>
+        </a>
+        <a href="/products.html" class="mobile-bottom-nav-item">
+            <i class="fas fa-th-large"></i><span>Produits</span>
+        </a>
+        <a href="/cart.html" class="mobile-bottom-nav-item active">
+            <i class="fas fa-shopping-basket"></i><span>Panier</span>
+        </a>
+        <a href="/contact.html" class="mobile-bottom-nav-item">
+            <i class="fas fa-headset"></i><span>Support</span>
+        </a>
+    </div>
+
     <div id="toast-container" class="toast-container"></div>
 
     <!-- Scripts -->
 
-            <script src="js/products.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/products.js"></script>
     <script src="js/cart.js"></script>
     <script src="js/i18n.js"></script>
+    <script src="js/ThemeToggle.js"></script>
     <script src="js/main.js"></script>
     <script>
         function renderCart() {
@@ -194,7 +280,7 @@
                     <div class="cart-item-info">
                         <span style="color: var(--text-muted); font-size: 0.7rem; font-weight: 700; text-transform: uppercase;">${item.category}</span>
                         <h4 style="font-size: 1.1rem; font-weight: 700; margin: 0.25rem 0; color: var(--black);">${item.name}</h4>
-                        <div class="cart-item-price" style="font-weight: 800; color: var(--accent-blue); font-size: 1.2rem;">${item.price} DH</div>
+                        <div class="cart-item-price" style="font-weight: 800; color: var(--accent-red); font-size: 1.2rem;">${item.price} DH</div>
                     </div>
                     <div style="display:flex; align-items:center; gap: 2rem">
                         <div class="qty-control" style="display: flex; align-items: center; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); overflow: hidden; background: white;">

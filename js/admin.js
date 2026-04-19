@@ -1,9 +1,16 @@
 /**
- * ADMIN INTELLIGENCE ENGINE — EL-WALI-SHOP
+ * ADMIN INTELLIGENCE ENGINE — MARRAKECH LUXE
  * Comprehensive management logic with deep analytics and active controls.
  */
 
 const BUILT_IN_ADMINS = [
+    {
+        username: 'admin',
+        passwordHash: '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918', // admin
+        recoveryEmail: 'markabiali7@gmail.com',
+        role: 'Super Admin',
+        status: 'Active'
+    },
     {
         username: 'abdelaali',
         passwordHash: '0fb2c3ee97570dcf77fb841e26b3678fb2bf7f25e6d5f949c926454825ffc764', // !@#$1234
@@ -151,6 +158,8 @@ const Admin = {
         this.setupEventListeners();
         this.logActivity('Système initialisé et synchronisé', 'info');
         
+        this.loadSettings();
+
         // Initialize EmailJS if public key is provided
         if (typeof emailjs !== 'undefined' && CONFIG.emailConfig.publicKey !== 'YOUR_PUBLIC_KEY') {
             emailjs.init(CONFIG.emailConfig.publicKey);
@@ -416,6 +425,82 @@ const Admin = {
         this.renderLogs();
         this.renderAnalytics();
         this.renderAdmins();
+        this.renderPromotions();
+    },
+
+    async renderPromotions() {
+        const tbody = document.getElementById('admin-coupon-table-body');
+        if (!tbody) return;
+
+        const coupons = await PromotionDB.fetchAll();
+        const orders = await (window.OrderDB ? OrderDB.getOrders() : JSON.parse(localStorage.getItem('mlh_orders') || '[]'));
+        
+        // Compute Stats
+        const activeCount = coupons.filter(c => c.active).length;
+        const totalUsage = coupons.reduce((sum, c) => sum + (c.usageCount || 0), 0);
+        const totalDiscounts = orders.reduce((sum, o) => sum + (o.discount || 0), 0);
+
+        // Update Stats UI
+        const activeEl = document.getElementById('stat-active-coupons');
+        const usageEl = document.getElementById('stat-total-usage');
+        const discountEl = document.getElementById('stat-total-discounts');
+
+        if (activeEl) activeEl.textContent = activeCount;
+        if (usageEl) usageEl.textContent = totalUsage;
+        if (discountEl) discountEl.textContent = this.formatCurrency(totalDiscounts);
+
+        tbody.innerHTML = coupons.map(c => `
+            <tr>
+                <td><code class="text-red text-bold" style="font-size: 1rem;">${c.code}</code></td>
+                <td><span class="badge glass">${c.type === 'percent' ? 'Pourcentage (%)' : 'Montant Fixe (DH)'}</span></td>
+                <td class="text-bold">${c.value}${c.type === 'percent' ? '%' : ' DH'}</td>
+                <td><span class="badge" style="background: rgba(59, 130, 246, 0.1); color: #3b82f6;">${c.usageCount || 0} utilisations</span></td>
+                <td>
+                    <span class="badge" style="background: ${c.active ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)'}; color: ${c.active ? '#22c55e' : '#ef4444'};">
+                        ${c.active ? 'ACTIF' : 'INACTIF'}
+                    </span>
+                </td>
+                <td style="text-align: right;">
+                    <button class="glass p-xs" onclick="Admin.deleteCoupon('${c.code}')">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                </td>
+            </tr>
+        `).join('') || '<tr><td colspan="6" class="text-center py-xl text-muted">Aucun coupon actif.</td></tr>';
+    },
+
+    openCouponModal() {
+        this.openModal('coupon-modal');
+    },
+
+    async handleCouponSubmit(e) {
+        e.preventDefault();
+        const data = new FormData(e.target);
+        const coupon = {
+            code: data.get('code').toUpperCase(),
+            type: data.get('type'),
+            value: parseFloat(data.get('value')),
+            active: true
+        };
+
+        try {
+            await PromotionDB.add(coupon);
+            this.closeModal('coupon-modal');
+            this.renderPromotions();
+            this.showToast('Coupon créé avec succès !');
+            this.logActivity(`Nouveau coupon créé : ${coupon.code}`, 'success');
+            e.target.reset();
+        } catch (err) {
+            alert(err.message);
+        }
+    },
+
+    async deleteCoupon(code) {
+        if (!confirm(`Supprimer le coupon ${code} ?`)) return;
+        await PromotionDB.delete(code);
+        this.renderPromotions();
+        this.showToast('Coupon supprimé');
+        this.logActivity(`Coupon supprimé : ${code}`, 'warning');
     },
 
     formatCurrency(val) {
@@ -598,17 +683,49 @@ const Admin = {
         `).join('');
     },
 
-    renderPromos() {
-        const heroForm = document.getElementById('hero-config-form');
-        const promoForm = document.getElementById('promo-config-form');
+    loadSettings() {
+        const form = document.getElementById('site-settings-form');
+        if (!form) return;
 
-        if (heroForm) {
-            heroForm.heroTitle.value = CONFIG.heroTitle || '';
-            heroForm.heroSubtitle.value = CONFIG.heroSubtitle || '';
-        }
-        if (promoForm) {
-            promoForm.promoEnabled.checked = CONFIG.promoBannerVisible !== false;
-            promoForm.promoText.value = CONFIG.promoBannerTitle || '';
+        form.storeName.value = CONFIG.storeName || '';
+        form.whatsappNumber.value = CONFIG.whatsappNumber || '';
+        form.supportEmail.value = CONFIG.supportEmail || '';
+        form.heroTitle.value = CONFIG.heroTitle || '';
+        form.heroSubtitle.value = CONFIG.heroSubtitle || '';
+        form.freeShippingThreshold.value = CONFIG.freeShippingThreshold || 700;
+
+        // Load Zone Fees
+        const rak = (CONFIG.shippingZones || []).find(z => z.id === 'rak');
+        const cas = (CONFIG.shippingZones || []).find(z => z.id === 'cas');
+        const nat = (CONFIG.shippingZones || []).find(z => z.id === 'nat');
+        
+        if (rak) form.fee_rak.value = rak.fee;
+        if (cas) form.fee_cas.value = cas.fee;
+        if (nat) form.fee_nat.value = nat.fee;
+    },
+
+    saveSettings(e) {
+        e.preventDefault();
+        const data = new FormData(e.target);
+        
+        const updates = {
+            storeName: data.get('storeName'),
+            whatsappNumber: data.get('whatsappNumber'),
+            supportEmail: data.get('supportEmail'),
+            heroTitle: data.get('heroTitle'),
+            heroSubtitle: data.get('heroSubtitle'),
+            freeShippingThreshold: parseInt(data.get('freeShippingThreshold')),
+            shippingZones: [
+                { id: 'rak', name: 'Marrakech (Local)', fee: parseInt(data.get('fee_rak')) },
+                { id: 'cas', name: 'Casablanca / Rabat', fee: parseInt(data.get('fee_cas')) },
+                { id: 'nat', name: 'National (Autre ville)', fee: parseInt(data.get('fee_nat')) }
+            ]
+        };
+
+        if (window.CONFIG && CONFIG.update) {
+            CONFIG.update(updates);
+            this.showToast('Paramètres enregistrés avec succès !');
+            this.logActivity('Mise à jour des paramètres du site', 'success');
         }
     },
 
@@ -735,6 +852,7 @@ const Admin = {
             this.logActivity(`Navigation vers ${tabId}`, 'info');
             if (tabId === 'media') this.renderMediaTab();
             if (tabId === 'automation') this.renderAutomationTab();
+            if (tabId === 'promotions') this.renderPromotions();
         }
     },
 

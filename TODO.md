@@ -16,6 +16,7 @@
 - [ ] Add unit tests for cart and product logic
 
 ## Technical Debt Tracker
-- [ ] Replace `sessionStorage` with a more persistent auth token
-- [ ] Centralize site configuration in a single file
-- [ ] Implement global error handling and logging
+- [x] Replace `sessionStorage` with a more persistent auth token
+- [x] Centralize site configuration in a single file
+- [x] Implement global error handling and logging
+- [ ] Transition to a Real-Time Backend (Firebase/Node.js)

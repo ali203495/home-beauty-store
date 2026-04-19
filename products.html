@@ -5,12 +5,12 @@
     <!-- SEO <head> Social Open Graph -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://el-wali-shop.work.gd/products">
-    <meta property="og:title" content="Catalogue | EL-WALI-SHOP Marrakech">
+    <meta property="og:title" content="Catalogue | MARRAKECH LUXE Marrakech">
     <meta property="og:description" content="Découvrez notre sélection premium d’électroménager et produits de beauté.">
     <meta property="og:image" content="https://el-wali-shop.work.gd/assets/webp/hero.webp">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catalogue — EL-WALI-SHOP</title>
+    <title>Catalogue — MARRAKECH LUXE</title>
     <meta name="description"
         content="Parcourez notre catalogue exclusif d'électroménager, climatisation et produits de beauté à Marrakech. Qualité premium et prix compétitifs.">
     <link rel="icon" type="image/png" href="assets/webp/logo.webp">
@@ -41,7 +41,7 @@
     <header class="main-header">
         <div class="container flex-between gap-xl">
             <i class="fas fa-bars mobile-menu-btn" onclick="toggleMobileDrawer()"></i>
-            <a href="/" class="nav-logo">EL-WALI<span>.SHOP</span></a>
+            <a href="/" class="nav-logo">MARRAKECH<span>.LUXE</span></a>
 
             <div class="search-bar">
                 <i class="fas fa-search search-icon"></i>
@@ -51,11 +51,17 @@
             </div>
 
             <div class="nav-actions">
+                <div class="theme-toggle-container"></div>
                 <div class="nav-action-item">
                     <i class="fas fa-user-circle"></i>
                     <span>Compte</span>
                 </div>
-                <div class="nav-action-item cart-icon-wrapper" onclick="window.location.href='/cart'">
+                <div class="nav-action-item" onclick="window.location.href='/products.html?wishlist=true'">
+                    <i class="fas fa-heart"></i>
+                    <span>Favoris</span>
+                    <span id="wishlist-badge" class="cart-badge" style="background: var(--accent-red); display: none;">0</span>
+                </div>
+                <div class="nav-action-item cart-icon-wrapper" onclick="toggleCartDrawer()">
                     <i class="fas fa-shopping-basket"></i>
                     <span>Panier</span>
                     <span class="cart-badge">0</span>
@@ -111,14 +117,14 @@
     </nav>
 
     <!-- Page Hero -->
-    <header class="page-hero" style="background: var(--bg-primary); padding: 2.5rem 0; text-align: left;">
+    <header class="page-hero">
         <div class="container">
-            <div class="breadcrumb" style="font-size: 0.8rem; margin-bottom: 0.5rem; color: var(--text-muted);">
-                <a href="/" style="text-decoration: underline;">Accueil</a>
+            <div class="breadcrumb">
+                <a href="/">Accueil</a>
                 <span class="breadcrumb-sep">/</span>
                 <span>Catalogue</span>
             </div>
-            <h1 class="page-title" data-i18n="nav_products" style="font-size: 2.2rem; font-weight: 800; color: var(--black);">Notre Catalogue</h1>
+            <h1 class="page-title" data-i18n="nav_products">Notre Catalogue</h1>
         </div>
     </header>
 
@@ -129,60 +135,59 @@
                 <!-- Sidebar Filter -->
                 <aside class="filter-sidebar">
                     <!-- Category Filter -->
-                    <div class="filter-card" style="background: white; border: 1px solid var(--border-subtle); padding: 1.5rem; border-radius: var(--radius-md); margin-bottom: 1.5rem;">
-                        <h4 style="font-weight: 900; font-size: 0.75rem; color: var(--accent-slate); text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 2px solid var(--accent-red); padding-bottom: 0.75rem; margin-bottom: 1.25rem;">Catégories</h4>
-                        <div id="category-filters" style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <div class="filter-card shadow-sm">
+                        <h4 class="filter-title">Catégories</h4>
+                        <div id="category-filters" class="filter-options">
                             <!-- Categories injected by JS -->
                         </div>
                     </div>
 
                     <!-- Brand Filter -->
-                    <div class="filter-card" style="background: white; border: 1px solid var(--border-subtle); padding: 1.5rem; border-radius: var(--radius-md); margin-bottom: 1.5rem;">
-                        <h4 style="font-weight: 900; font-size: 0.75rem; color: var(--accent-slate); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1.25rem;">Marques Populaires</h4>
-                        <div id="brand-filters" style="display: flex; flex-direction: column; gap: 0.6rem;">
+                    <div class="filter-card shadow-sm">
+                        <h4 class="filter-title">Marques Populaires</h4>
+                        <div id="brand-filters" class="filter-options">
                             <!-- Brands injected by JS -->
                         </div>
                     </div>
 
                     <!-- Price Filter -->
-                    <div class="filter-card" style="background: white; border: 1px solid var(--border-subtle); padding: 1.5rem; border-radius: var(--radius-md); margin-bottom: 1.5rem;">
-                        <h4 style="font-weight: 900; font-size: 0.75rem; color: var(--accent-slate); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1.25rem;">Budget (DH)</h4>
-                        <div style="display: flex; flex-direction: column; gap: 1rem;">
-                            <div class="price-range-inputs" style="display: flex; gap: 0.5rem;">
-                                <div style="flex: 1;">
-                                    <label style="font-size: 0.6rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin-bottom: 4px; display: block;">Min</label>
-                                    <input type="number" id="min-price" class="form-input" placeholder="0" style="width: 100%; padding: 0.6rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); font-size: 0.8rem; font-weight: 700;">
+                    <div class="filter-card shadow-sm">
+                        <h4 class="filter-title">Budget (DH)</h4>
+                        <div class="filter-options">
+                            <div class="price-range-inputs">
+                                <div class="price-input-group">
+                                    <label>Min</label>
+                                    <input type="number" id="min-price" class="form-input" placeholder="0">
                                 </div>
-                                <div style="flex: 1;">
-                                    <label style="font-size: 0.6rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin-bottom: 4px; display: block;">Max</label>
-                                    <input type="number" id="max-price" class="form-input" placeholder="+" style="width: 100%; padding: 0.6rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); font-size: 0.8rem; font-weight: 700;">
+                                <div class="price-input-group">
+                                    <label>Max</label>
+                                    <input type="number" id="max-price" class="form-input" placeholder="+">
                                 </div>
                             </div>
-                            <button class="btn btn-primary" style="width:100%; padding: 0.8rem; border-radius: var(--radius-sm); background: var(--accent-red); border: none; font-weight: 900; font-size: 0.75rem; letter-spacing: 0.05em;" onclick="updateFilters()">
-                                APPLIQUER LES FILTRES
+                            <button class="btn btn-primary w-full" style="margin-top: 1rem;" onclick="updateFilters()">
+                                APPLIQUER
                             </button>
                         </div>
                     </div>
 
-                    <div class="filter-card" style="background: var(--bg-primary); padding: 1.5rem; border-radius: var(--radius-md); text-align: center; border: 1px dashed var(--accent-red);">
-                        <i class="fab fa-whatsapp" style="font-size: 2rem; color: #25D366; margin-bottom: 0.5rem;"></i>
-                        <h4 style="font-size: 0.9rem; margin-bottom: 0.5rem; font-weight: 800;">Aide à l'achat ?</h4>
-                        <p class="text-xs text-muted">Contactez un conseiller expert directement sur WhatsApp.</p>
-                        <a href="https://wa.me/212699705617" target="_blank" class="btn btn-secondary btn-sm" style="width:100%; margin-top:1rem; font-size: 0.7rem; background: var(--accent-slate); border: none; color: white;">
-                            Démarrer la discussion
+                    <div class="filter-card trust-promo text-center">
+                        <i class="fab fa-whatsapp"></i>
+                        <h4>Aide à l'achat ?</h4>
+                        <p class="text-xs text-muted">Chattez avec un expert expert sur WhatsApp.</p>
+                        <a href="https://wa.me/212699705617" target="_blank" class="btn btn-secondary btn-sm w-full" style="margin-top: 1rem;">
+                            Discuter
                         </a>
                     </div>
                 </aside>
 
                 <!-- Main Content -->
-                <main class="shop-content">
-                    <div class="shop-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; background: white; padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
-                        <div class="shop-results" style="font-weight: 800; color: var(--text-secondary); font-size: 0.85rem; text-transform: uppercase;">
-                            <span id="results-count" style="color: var(--accent-red);">0</span> produits trouvés
+                    <div class="shop-header-bar">
+                        <div class="shop-results">
+                            <span id="results-count">0</span> produits trouvés
                         </div>
                         <div class="shop-actions">
                             <label style="font-size: 0.8rem; font-weight: 700; margin-right: 0.5rem;">Trier par :</label>
-                            <select class="sort-select" id="sort-by" onchange="updateFilters()" style="padding: 0.5rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+                            <select class="sort-select" id="sort-by" onchange="updateFilters()">
                                 <option value="featured">Sélection</option>
                                 <option value="price-asc">Prix croissant</option>
                                 <option value="price-desc">Prix décroissant</option>
@@ -191,11 +196,11 @@
                         </div>
                     </div>
 
-                    <div class="product-grid" id="catalog-grid" style="grid-template-columns: repeat(4, 1fr); gap: var(--gap-dense);">
+                    <div class="compact-grid" id="catalog-grid">
                         <!-- Products injected by JS -->
                     </div>
 
-                    <div id="no-results" class="text-center" style="display:none; padding: 5rem 0; background: white; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+                    <div id="no-results" class="no-results-box" style="display:none;">
                         <i class="fas fa-search-minus" style="font-size: 4rem; color: var(--text-muted); opacity: 0.3; margin-bottom: 1.5rem;"></i>
                         <h3 style="font-weight: 800;">Aucun résultat trouvé</h3>
                         <p class="text-muted">Désolé, nous n'avons trouvé aucun produit correspondant à vos critères.</p>
@@ -207,17 +212,119 @@
     </section>
 
     <!-- Footer -->
-    <footer class="footer" style="background: var(--bg-secondary); border-top: 1px solid var(--border-subtle); padding: 4rem 0 2rem;">
-        <div class="container footer-bottom" style="text-align: center; color: var(--text-muted); font-size: 0.85rem;">
-            <p>&copy; <span id="current-year"></span> EL-WALI-SHOP. Votre partenaire Electroménager & Beauté à Marrakech.</p>
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="/" class="nav-logo" style="color:white">MARRAKECH<span>.LUXE</span></a>
+                    <p>Votre boutique de confiance à Marrakech pour l'électroménager, la technologie et la beauté. Service client disponible 7/7.</p>
+                </div>
+                <div class="footer-col">
+                    <h5>RAYONS</h5>
+                    <ul>
+                        <li><a href="/products.html?cat=Electroménager">Electroménager</a></li>
+                        <li><a href="/products.html?cat=TV">TV &amp; Audio</a></li>
+                        <li><a href="/products.html?cat=Cuisine">Cuisine</a></li>
+                        <li><a href="/products.html?cat=Beauté">Beauté</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h5>SUPPORT</h5>
+                    <ul>
+                        <li><a href="/contact.html">Contactez-nous</a></li>
+                        <li><a href="/about.html">Notre histoire</a></li>
+                        <li><a href="/products.html">Catalogue</a></li>
+                        <li><a href="/cart.html">Mon panier</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h5>CONTACT</h5>
+                    <ul>
+                        <li><i class="fas fa-map-marker-alt"></i> Marrakech, Maroc</li>
+                        <li><i class="fas fa-phone"></i> +212 699-705617</li>
+                        <li><i class="fas fa-envelope"></i> contact@el-wali-shop.work.gd</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                &copy; <span id="current-year"></span> MARRAKECH LUXE. Tous droits réservés.
+            </div>
         </div>
     </footer>
 
+    <!-- Mobile Drawer -->
+    <div id="mobile-drawer-backdrop" onclick="toggleMobileDrawer()"></div>
+    <div class="mobile-nav-drawer" id="mobile-nav-drawer">
+        <div class="mobile-drawer-header">
+            <a href="/" class="nav-logo" style="font-size: 1.2rem;">MARRAKECH<span>.LUXE</span></a>
+            <i class="fas fa-times mobile-drawer-close" onclick="toggleMobileDrawer()"></i>
+        </div>
+        <div class="mobile-drawer-links">
+            <a href="/products.html?cat=Electroménager"><i class="fas fa-refrigerator"></i> Electroménager</a>
+            <a href="/products.html?cat=TV"><i class="fas fa-tv"></i> TV &amp; Audio</a>
+            <a href="/products.html?cat=Climatisation"><i class="fas fa-wind"></i> Climatisation</a>
+            <a href="/products.html?cat=Cuisine"><i class="fas fa-blender"></i> Cuisine</a>
+            <a href="/products.html?cat=Beauté"><i class="fas fa-spa"></i> Beauté &amp; Soin</a>
+            <a href="/products.html?cat=Promotions" style="color: var(--accent-red);"><i class="fas fa-percentage"></i> Promotions</a>
+        </div>
+    </div>
+
+    <!-- Mobile Bottom Nav -->
+    <div class="mobile-bottom-nav">
+        <a href="/" class="mobile-bottom-nav-item">
+            <i class="fas fa-home"></i><span>Accueil</span>
+        </a>
+        <a href="#" class="mobile-bottom-nav-item active" onclick="toggleMobileDrawer(); return false;">
+            <i class="fas fa-th-large"></i><span>Catégories</span>
+        </a>
+        <a href="/cart.html" class="mobile-bottom-nav-item">
+            <i class="fas fa-shopping-basket"></i><span>Panier</span>
+        </a>
+        <a href="/contact.html" class="mobile-bottom-nav-item">
+            <i class="fas fa-headset"></i><span>Support</span>
+        </a>
+    </div>
+
+    <!-- Quick View Modal -->
+    <div class="modal-overlay" id="quick-view-modal" onclick="if(event.target === this) QuickView.close()">
+        <div class="modal" id="quick-view-content">
+            <!-- Populated by QuickView.js -->
+        </div>
+    </div>
+
+    <!-- Side-Drawer Cart -->
+    <div id="cart-drawer-backdrop" onclick="toggleCartDrawer()"></div>
+    <div class="cart-drawer" id="cart-drawer">
+        <div class="cart-drawer-header">
+            <h3>VOTRE PANIER</h3>
+            <i class="fas fa-times" onclick="toggleCartDrawer()" style="cursor:pointer"></i>
+        </div>
+        <div class="cart-drawer-items" id="cart-drawer-items">
+            <!-- Populated by js/cart.js -->
+        </div>
+        <div class="cart-drawer-footer" id="cart-drawer-footer">
+            <div class="flex-between" style="margin-bottom:1.5rem">
+                <span class="text-bold">TOTAL</span>
+                <span id="cart-drawer-total" class="text-red text-bold" style="font-size:1.5rem">0 DH</span>
+            </div>
+            <button class="btn btn-primary w-full btn-lg" onclick="window.location.href='/checkout.html'">
+                COMMANDER MAINTENANT
+            </button>
+            <button class="btn btn-secondary w-full" style="margin-top:1rem" onclick="toggleCartDrawer()">
+                CONTINUER MES ACHATS
+            </button>
+        </div>
+    </div>
+
     <div id="toast-container" class="toast-container"></div>
 
-            <script src="js/products.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/events.js"></script>
+    <script src="js/products.js"></script>
     <script src="js/cart.js"></script>
-    <script src="js/i18n.js"></script>
+    <script src="js/wishlist.js"></script>
+    <script src="js/QuickView.js"></script>
+    <script src="js/ThemeToggle.js"></script>
     <script src="js/main.js"></script>
     <script>
         // Elite Catalog Logic
@@ -228,10 +335,10 @@
             await ProductDB.fetchAll();
             allProducts = [...PRODUCTS];
 
-            // Extract Unique Brands (infer from first word if missing)
+            // Extract Unique Brands
             brands = [...new Set(PRODUCTS.map(p => {
                 if (p.brand) return p.brand;
-                return p.name.split(' ')[0]; // fallback
+                return p.name.split(' ')[0];
             }))].sort();
 
             renderCategoryFilters();
@@ -240,9 +347,16 @@
             // Handle URL Search Params
             const params = new URLSearchParams(window.location.search);
             const searchParam = params.get('search');
+            const wishlistParam = params.get('wishlist');
+            
             if (searchParam) {
                 const searchInputs = document.querySelectorAll('.search-bar input');
                 searchInputs.forEach(input => input.value = searchParam);
+            }
+            
+            if (wishlistParam === 'true') {
+                const pageTitle = document.querySelector('.page-title');
+                if (pageTitle) pageTitle.textContent = 'Vos Coups de Cœur';
             }
 
             updateFilters();
@@ -313,7 +427,12 @@
                 const brandMatch = selectedBrands.length === 0 || 
                     selectedBrands.includes(p.brand || p.name.split(' ')[0]);
 
-                return isVisible && catMatch && priceMatch && searchMatch && brandMatch;
+                let wishlistMatch = true;
+                if (params.get('wishlist') === 'true') {
+                    wishlistMatch = window.Wishlist && Wishlist.items.includes(p.id);
+                }
+
+                return isVisible && catMatch && priceMatch && searchMatch && brandMatch && wishlistMatch;
             });
 
             // Execution: Sort

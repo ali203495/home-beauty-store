@@ -258,6 +258,10 @@ let PRODUCTS = [];
  */
 const ProductDB = {
     async fetchAll() {
+        // Simulated Network Latency for Premium Feel
+        const latency = (CONFIG.preferences && CONFIG.preferences.simulatedLatency) || 0;
+        if (latency > 0) await new Promise(r => setTimeout(r, latency));
+
         const localData = localStorage.getItem('elwali_products');
         if (localData) {
             PRODUCTS = JSON.parse(localData);
@@ -271,8 +275,6 @@ const ProductDB = {
             });
             if (migrated) localStorage.setItem('elwali_products', JSON.stringify(PRODUCTS));
         } else {
-            // Seed if empty
-            console.log('Seeding initial products to LocalStorage...');
             PRODUCTS = INITIAL_PRODUCTS.map(p => ({ 
                 ...p, 
                 visible: p.visible ?? true,
@@ -287,6 +289,7 @@ const ProductDB = {
     async saveProduct(product) {
         PRODUCTS.push(product);
         localStorage.setItem('elwali_products', JSON.stringify(PRODUCTS));
+        if (window.BUS) BUS.emit('products-updated', PRODUCTS);
         return true;
     },
 
@@ -295,6 +298,7 @@ const ProductDB = {
         if (index !== -1) {
             PRODUCTS[index] = { ...PRODUCTS[index], ...updatedData };
             localStorage.setItem('elwali_products', JSON.stringify(PRODUCTS));
+            if (window.BUS) BUS.emit('products-updated', PRODUCTS);
             return true;
         }
         return false;
@@ -303,6 +307,7 @@ const ProductDB = {
     async delete(id) {
         PRODUCTS = PRODUCTS.filter(p => p.id !== id);
         localStorage.setItem('elwali_products', JSON.stringify(PRODUCTS));
+        if (window.BUS) BUS.emit('products-updated', PRODUCTS);
         return true;
     },
 
@@ -312,9 +317,30 @@ const ProductDB = {
             PRODUCTS[index].stock = Math.max(0, (PRODUCTS[index].stock || 0) - q);
             PRODUCTS[index].lastUpdated = new Date().toISOString();
             localStorage.setItem('elwali_products', JSON.stringify(PRODUCTS));
+            
+            // Notify system of stock change
+            if (window.BUS) BUS.emit('stock-changed', { id, newStock: PRODUCTS[index].stock });
             return true;
         }
         return false;
+    },
+
+    /**
+     * Order Validation Logic
+     * @param {Array} items - [{id, quantity}, ...]
+     * @returns {Object} - {valid: boolean, errors: Array}
+     */
+    async validateOrder(items) {
+        const errors = [];
+        for (const item of items) {
+            const product = PRODUCTS.find(p => p.id === item.id);
+            if (!product) {
+                errors.push(`Produit ${item.id} introuvable.`);
+            } else if (product.stock < item.quantity) {
+                errors.push(`Stock insuffisant pour ${product.name} (Disponible: ${product.stock}).`);
+            }
+        }
+        return { valid: errors.length === 0, errors };
     }
 };
 

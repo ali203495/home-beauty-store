@@ -1,5 +1,5 @@
 /**
- * Localization Engine - EL-WALI-SHOP
+ * Localization Engine - MARRAKECH LUXE
  * Supports: French (fr), Arabic (ar), English (en)
  */
 
@@ -193,11 +193,20 @@ const I18n = {
     },
 
     applyLayoutAdjustments(lang) {
-        // You can add logic here for font changes or specific padding for certain languages
         if (lang === 'ar') {
-            document.body.style.fontFamily = "'Cairo', sans-serif";
+            // Ensure Tajawal is loaded
+            if (!document.getElementById('font-tajawal')) {
+                const link = document.createElement('link');
+                link.id = 'font-tajawal';
+                link.rel = 'stylesheet';
+                link.href = 'https://fonts.googleapis.com/css2?family=Tajawal:wght@200;300;400;500;700;800;900&display=swap';
+                document.head.appendChild(link);
+            }
+            document.body.style.fontFamily = "'Tajawal', sans-serif";
+            document.body.style.letterSpacing = "0"; // Arabic doesn't use tracking tight
         } else {
             document.body.style.fontFamily = "inherit";
+            document.body.style.letterSpacing = "";
         }
     },
 

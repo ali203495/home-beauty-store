@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Commande Confirmée — EL-WALI-SHOP</title>
+    <title>Commande Confirmée — MARRAKECH LUXE</title>
     <link rel="stylesheet" href="css/index.css">
     <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -43,9 +43,24 @@
     </style>
 </head>
 <body>
-    <header class="main-header" style="background: white; border-bottom: 2px solid var(--border-subtle); padding: 1rem 0;">
-        <div class="container" style="text-align: center;">
-            <a href="/" class="nav-logo">EL-WALI<span>.SHOP</span></a>
+    <header class="main-header">
+        <div class="container flex-between gap-xl">
+            <i class="fas fa-bars mobile-menu-btn" onclick="toggleMobileDrawer()"></i>
+            <a href="/" class="nav-logo">MARRAKECH<span>.LUXE</span></a>
+
+            <div class="search-bar">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" id="global-search" placeholder="Rechercher...">
+                <button class="search-btn">Rechercher</button>
+            </div>
+
+            <div class="nav-actions">
+                <div class="theme-toggle-container"></div>
+                <div class="nav-action-item cart-icon-wrapper" onclick="toggleCartDrawer()">
+                    <i class="fas fa-shopping-basket"></i>
+                    <span class="cart-badge">0</span>
+                </div>
+            </div>
         </div>
     </header>
 
@@ -100,11 +115,29 @@
         </section>
     </main>
 
+    <!-- Side-Drawer Cart -->
+    <div id="cart-drawer-backdrop" onclick="toggleCartDrawer()"></div>
+    <div class="cart-drawer" id="cart-drawer">
+        <div class="cart-drawer-header">
+            <h3>VOTRE PANIER</h3>
+            <i class="fas fa-times" onclick="toggleCartDrawer()" style="cursor:pointer"></i>
+        </div>
+        <div class="cart-drawer-items" id="cart-drawer-items">
+            <!-- Populated by js/cart.js -->
+        </div>
+    </div>
+
     <footer class="footer">
         <div class="container footer-bottom">
-            &copy; 2026 EL-WALI-SHOP. TOUS DROITS RÉSERVÉS.
+            &copy; 2026 MARRAKECH LUXE. TOUS DROITS RÉSERVÉS.
         </div>
     </footer>
+
+    <script src="js/config.js"></script>
+    <script src="js/products.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/ThemeToggle.js"></script>
+    <script src="js/main.js"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
