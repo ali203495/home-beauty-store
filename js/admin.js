@@ -33,7 +33,7 @@ const BUILT_IN_ADMINS = [
         status: 'Active'
     }
 ];
-
+window.AdminDB = {
     async fetchAll() {
         const stored = localStorage.getItem('elwali_admins');
         let admins = [];
@@ -90,7 +90,7 @@ const BUILT_IN_ADMINS = [
     }
 };
 
-const RecoveryStore = {
+window.RecoveryStore = {
     codes: new Map(), // username -> {code, expires}
     rateLimits: new Map(), // identifier -> {count, lastAttempt}
     
@@ -135,7 +135,7 @@ const RecoveryStore = {
     }
 };
 
-const Admin = {
+window.Admin = {
     async init() {
         this.checkAuth();
         this.loadTheme();
