@@ -264,34 +264,6 @@ const App = {
             <span>Besoin d'aide ? Chattez avec nous</span>
         `;
         document.body.appendChild(waBtn);
-
-        const style = document.createElement('style');
-        style.innerHTML = `
-            .floating-wa {
-                position: fixed;
-                bottom: 2rem;
-                left: 2rem;
-                background: #25d366;
-                color: white;
-                padding: 0.8rem 1.5rem;
-                border-radius: 50px;
-                display: flex;
-                align-items: center;
-                gap: 0.75rem;
-                font-weight: 800;
-                font-size: 0.85rem;
-                box-shadow: 0 10px 25px rgba(37, 211, 102, 0.3);
-                z-index: 999;
-                transition: all 0.3s ease;
-                text-transform: uppercase;
-            }
-            .floating-wa:hover { transform: scale(1.05) translateY(-5px); background: #128c7e; }
-            @media (max-width: 768px) {
-                .floating-wa span { display: none; }
-                .floating-wa { padding: 1rem; border-radius: 50%; bottom: 1.5rem; left: 1.5rem; }
-            }
-        `;
-        document.head.appendChild(style);
     },
 
     async renderFeaturedProducts() {
@@ -466,43 +438,12 @@ const App = {
         
         const toast = document.createElement('div');
         toast.className = 'toast animate-fade';
-        toast.style.cssText = `
-            background: var(--accent-slate);
-            color: white;
-            padding: 1rem 2rem;
-            border-radius: 4px;
-            margin-top: 1rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            font-size: 0.75rem;
-            box-shadow: var(--shadow-md);
-            border-left: 4px solid var(--accent-red);
-        `;
         toast.innerText = msg;
         container.appendChild(toast);
         
         setTimeout(() => toast.remove(), 3000);
     }
 };
-
-// Global container for toasts
-const toastStyle = document.createElement('style');
-toastStyle.innerHTML = `
-    #toast-container {
-        position: fixed;
-        bottom: 5rem;
-        right: 2rem;
-        z-index: 2000;
-        pointer-events: none;
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-    }
-    @media (max-width: 768px) {
-        #toast-container { bottom: 5.5rem; right: 1rem; left: 1rem; }
-    }
-`;
-document.head.appendChild(toastStyle);
 
 document.addEventListener('DOMContentLoaded', () => App.init());
 
