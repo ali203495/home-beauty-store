@@ -2,7 +2,7 @@
  * Global Configuration for MARRAKECH LUXE
  * This supports dynamic overrides via Admin Dashboard overrides.
  */
-const VERSION = '2.2';
+const VERSION = '3.6';
 
 const IS_PRODUCTION = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
 
