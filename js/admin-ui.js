@@ -188,7 +188,7 @@ window.AdminUI = {
     async computeStats() {
         const token = sessionStorage.getItem('mlh_admin_token');
         try {
-            const response = await fetch('/api/admin/stats', {
+            const response = await fetch(`${CONFIG.apiBaseUrl}/api/admin/stats`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (!response.ok) throw new Error('Stats API Failed');

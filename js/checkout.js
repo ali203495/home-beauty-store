@@ -122,13 +122,15 @@ const Checkout = {
         };
 
         try {
-            // Simulate processing
-            await new Promise(r => setTimeout(r, 1200));
-
-            // Save to localStorage
-            const orders = JSON.parse(localStorage.getItem('mlh_orders') || '[]');
-            orders.unshift(orderData);
-            localStorage.setItem('mlh_orders', JSON.stringify(orders));
+            // Save to Backend (Production Parity)
+            if (window.OrderDB) {
+                await OrderDB.saveOrder(orderData);
+            } else {
+                // Legacy LocalStorage Fallback
+                const orders = JSON.parse(localStorage.getItem('mlh_orders') || '[]');
+                orders.unshift(orderData);
+                localStorage.setItem('mlh_orders', JSON.stringify(orders));
+            }
 
             // Clear Cart and Redirect
             Cart.clear();

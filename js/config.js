@@ -2,8 +2,14 @@
  * Global Configuration for MARRAKECH LUXE
  * This supports dynamic overrides via Admin Dashboard overrides.
  */
-const VERSION = '2.1';
+const VERSION = '2.2';
+
+const IS_PRODUCTION = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
+
 const DEFAULT_CONFIG = {
+    // API & Deployment
+    apiBaseUrl: IS_PRODUCTION ? 'https://home-beauty-store-api.onrender.com' : 'http://localhost:3000',
+    
     storeName: "MARRAKECH LUXE",
     whatsappNumber: "0615653798", 
     secondaryPhone: "0699705617", 

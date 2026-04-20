@@ -260,7 +260,7 @@ window.PRODUCTS = PRODUCTS;
 const ProductDB = {
     async fetchAll() {
         try {
-            const response = await fetch('/api/products');
+            const response = await fetch(`${CONFIG.apiBaseUrl}/api/products`);
             if (!response.ok) throw new Error('API Error');
             const data = await response.json();
             
@@ -293,7 +293,7 @@ const ProductDB = {
     async saveProduct(product) {
         const token = sessionStorage.getItem('mlh_admin_token');
         try {
-            const response = await fetch('/api/admin/products', {
+            const response = await fetch(`${CONFIG.apiBaseUrl}/api/admin/products`, {
                 method: 'POST',
                 headers: { 
                     'Content-Type': 'application/json',
@@ -325,7 +325,7 @@ const ProductDB = {
     async delete(id) {
         const token = sessionStorage.getItem('mlh_admin_token');
         try {
-            const response = await fetch(`/api/admin/products/${id}`, {
+            const response = await fetch(`${CONFIG.apiBaseUrl}/api/admin/products/${id}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -380,7 +380,7 @@ const OrderDB = {
         if (!token) return [];
         
         try {
-            const response = await fetch('/api/admin/orders', {
+            const response = await fetch(`${CONFIG.apiBaseUrl}/api/admin/orders`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (!response.ok) return [];
@@ -393,7 +393,7 @@ const OrderDB = {
 
     async saveOrder(order) {
         try {
-            const response = await fetch('/api/orders', {
+            const response = await fetch(`${CONFIG.apiBaseUrl}/api/orders`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ order, items: order.items })
@@ -411,7 +411,7 @@ const OrderDB = {
     async updateStatus(orderId, status) {
         const token = sessionStorage.getItem('mlh_admin_token');
         try {
-            const response = await fetch(`/api/admin/orders/${orderId}`, {
+            const response = await fetch(`${CONFIG.apiBaseUrl}/api/admin/orders/${orderId}`, {
                 method: 'PATCH',
                 headers: { 
                     'Content-Type': 'application/json',
@@ -429,7 +429,7 @@ const OrderDB = {
     async deleteOrder(orderId) {
         const token = sessionStorage.getItem('mlh_admin_token');
         try {
-            const response = await fetch(`/api/admin/orders/${orderId}`, {
+            const response = await fetch(`${CONFIG.apiBaseUrl}/api/admin/orders/${orderId}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
