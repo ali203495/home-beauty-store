@@ -4,6 +4,7 @@
   "description": "Professional E-commerce platform for high-end home appliances and beauty products in Marrakech. Optimized for mobile discovery and local WhatsApp-based ordering.",
   "main": "gen_hash.js",
   "scripts": {
+    "build": "echo build_complete",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
