@@ -83,14 +83,15 @@ const App = {
     },
 
     initScrollEffects() {
-        const header = document.querySelector('.main-header');
+        const header = document.querySelector('.header-main');
+        if (!header) return;
         window.addEventListener('scroll', () => {
             if (window.scrollY > 30) {
                 header.classList.add('scrolled');
             } else {
                 header.classList.remove('scrolled');
             }
-        });
+        }, { passive: true });
     },
 
     initRevealOnScroll() {

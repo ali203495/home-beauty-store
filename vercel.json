@@ -1,19 +1,35 @@
 {
-  "cleanUrls": true,
-  "trailingSlash": false,
-  "routes": [
+  "version": 2,
+  "builds": [
     {
-      "src": "/(.*)",
-      "headers": {
-        "cache-control": "s-maxage=600",
-        "X-Frame-Options": "DENY",
-        "X-Content-Type-Options": "nosniff",
-        "Referrer-Policy": "strict-origin-when-cross-origin"
-      },
-      "continue": true
+      "src": "server.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "assets/**",
+      "use": "@vercel/static"
     }
   ],
-  "github": {
-    "silent": true
-  }
+  "rewrites": [
+    {
+      "src": "/api/(.*)",
+      "dest": "server.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" },
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "X-Content-Type-Options", "value": "nosniff" }
+      ]
+    }
+  ],
+  "cleanUrls": true,
+  "trailingSlash": false
 }

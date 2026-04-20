@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS products (
     reviews INTEGER DEFAULT 0,
     image TEXT,
     badge TEXT,
-    visible BOOLEAN DEFAULT 1,
+    visible BOOLEAN DEFAULT TRUE,
     description TEXT,
     specs TEXT, -- JSON string
     stock INTEGER DEFAULT 25,
@@ -23,24 +23,23 @@ CREATE TABLE IF NOT EXISTS orders (
     date TEXT NOT NULL,
     customer_name TEXT NOT NULL,
     customer_phone TEXT NOT NULL,
-    customer_city TEXT NOT NULL,
+    customer_city TEXT DEFAULT 'Marrakech',
     customer_neighborhood TEXT,
     customer_address TEXT,
-    subtotal REAL NOT NULL,
-    shipping REAL NOT NULL,
+    subtotal REAL DEFAULT 0,
+    shipping REAL DEFAULT 0,
     total REAL NOT NULL,
     status TEXT NOT NULL DEFAULT 'Nouveau'
 );
 
 -- Order Items Table
 CREATE TABLE IF NOT EXISTS order_items (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id SERIAL PRIMARY KEY,
     order_id TEXT NOT NULL,
     product_id TEXT NOT NULL,
     product_name TEXT NOT NULL,
     quantity INTEGER NOT NULL,
-    price REAL NOT NULL,
-    FOREIGN KEY(order_id) REFERENCES orders(id)
+    price REAL NOT NULL
 );
 
 -- Admins Table

@@ -35,10 +35,11 @@
   --max-width: 1240px; /* Standard marketplace container */
 }
 
-/* ── Dark Mode Variables ───────────────────────────────── */
-/* Removing Dark Mode Overrides for "Photocopy" Fidelity */
+/* ── Dark Mode Logic ───────────────────────────────────── */
+/* Ensure the page remains visible in dark mode, even if styling is primarily light. */
 [data-theme="dark"] {
-  display: none !important;
+  background-color: var(--ali-bg);
+  color: var(--ali-text);
 }
 
 /* ── Reset ─────────────────────────────────────────────── */

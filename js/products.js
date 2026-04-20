@@ -251,6 +251,7 @@ INITIAL_PRODUCTS.forEach(p => {
 
 // Initialize dynamic products
 let PRODUCTS = [];
+window.PRODUCTS = PRODUCTS;
 
 /**
  * Data Access Object for Products
@@ -261,7 +262,14 @@ const ProductDB = {
         try {
             const response = await fetch('/api/products');
             if (!response.ok) throw new Error('API Error');
-            PRODUCTS = await response.json();
+            const data = await response.json();
+            
+            // Map and parse specs JSON string back to object for UI compatibility
+            PRODUCTS = data.map(p => ({
+                ...p,
+                specs: typeof p.specs === 'string' ? JSON.parse(p.specs) : p.specs
+            }));
+            window.PRODUCTS = PRODUCTS;
             return PRODUCTS;
         } catch (err) {
             console.warn("Backend API unavailable, falling back to local simulation.", err);
@@ -277,6 +285,7 @@ const ProductDB = {
                     lastUpdated: p.lastUpdated ?? new Date().toISOString()
                 }));
             }
+            window.PRODUCTS = PRODUCTS;
             return PRODUCTS;
         }
     },
@@ -469,6 +478,10 @@ const CustomerDB = {
 };
 
 // Export for use in other scripts
+window.ProductDB = ProductDB;
+window.OrderDB = OrderDB;
+window.CustomerDB = CustomerDB;
+
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = { PRODUCTS, ProductDB, OrderDB, CustomerDB };
 }
