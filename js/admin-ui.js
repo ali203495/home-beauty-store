@@ -21,6 +21,24 @@ window.AdminUI = {
             const role = sessionStorage.getItem('mlh_admin_role') || 'Admin';
             nameEl.innerHTML = `${user.charAt(0).toUpperCase() + user.slice(1)} <span class="badge" style="font-size: 0.65rem; background: rgba(59, 130, 246, 0.1); color: #3b82f6;">${role}</span>`;
         }
+        this.checkBackendHealth();
+    },
+
+    async checkBackendHealth() {
+        const statusEl = document.getElementById('backend-status-indicator');
+        if (!statusEl) return;
+        try {
+            const res = await fetch(`${CONFIG.apiBaseUrl}/health`);
+            if (res.ok) {
+                statusEl.innerHTML = '<span class="status-dot online"></span> API EN LIGNE';
+                statusEl.style.color = '#22c55e';
+            } else {
+                throw new Error();
+            }
+        } catch (e) {
+            statusEl.innerHTML = '<span class="status-dot offline"></span> API HORS LIGNE';
+            statusEl.style.color = '#ef4444';
+        }
     },
 
     applyPermissions() {

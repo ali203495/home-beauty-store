@@ -11,11 +11,16 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const JWT_SECRET = process.env.JWT_SECRET || 'mlh_super_secret_2026';
 
+// Health Check for Deployment Services (Render/Vercel)
+app.get('/health', (req, res) => res.status(200).json({ status: 'healthy', timestamp: new Date().toISOString() }));
+
 // Middleware
 const allowedOrigins = [
     'http://localhost:3000',
-    'http://localhost:5500', // Common Live Server port
-    'https://home-beauty-store-19cf.vercel.app'
+    'http://localhost:3000/',
+    'http://localhost:5500',
+    'https://home-beauty-store-19cf.vercel.app',
+    'https://home-beauty-store-19cf.vercel.app/'
 ];
 
 app.use(cors({
