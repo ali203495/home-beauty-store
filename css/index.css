@@ -1,161 +1,44 @@
-/* =========================================================
-   MARRAKECH LUXE — Global Design System
-   ========================================================= */
-
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
-
-/* ── CSS Variables ─────────────────────────────────────── */
+/* Exact AliExpress High-Fidelity Design System */
 :root {
-  /* HSL Colors - Focused on Marrakech Luxe Palette */
-  --h: 347; /* Primary Hue (Rose/Red) */
-  --s: 77%; /* Saturation */
-  
-  --bg-primary: #fdfdfd;
-  --bg-surface: #f8fafc;
-  --bg-card: #ffffff;
-  --bg-glass: hsla(222, 47%, 11%, 0.03);
-  
-  --accent-red: hsl(var(--h), var(--s), 50%);
-  --accent-red-hover: hsl(var(--h), var(--s), 40%);
-  --accent-slate: hsl(222, 47%, 11%);
-  
-  --border-subtle: hsl(210, 40%, 96%);
-  --border-medium: hsl(214, 32%, 91%);
-  
-  --text-primary: hsl(222, 47%, 11%);
-  --text-secondary: hsl(215, 25%, 27%);
-  --text-muted: hsl(215, 16%, 47%);
-  
-  --white: #ffffff;
-  --black: hsl(222, 47%, 5%);
-  
-  --duration: 0.4s;
-  --ease: cubic-bezier(0.16, 1, 0.3, 1);
-}
+  /* Color Palette */
+  --ali-bg: #f2f2f2;
+  --ali-surface: #ffffff;
+  --ali-red: #ff4747;
+  --ali-red-hover: #e63939;
+  --ali-text: #222222;
+  --ali-text-muted: #666666;
+  --ali-border: #e8e8e8;
+  --ali-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
 
-/* ── Dark Theme Overrides ───────────────────────────────── */
-[data-theme="dark"] {
-  --bg-primary: #0f172a;
-  --bg-surface: #1e293b;
-  --bg-card: #1e293b;
-  --bg-glass: hsla(222, 47%, 11%, 0.82);
-  
-  --text-primary: #f8fafc;
-  --text-secondary: #cbd5e1;
-  --text-muted: #94a3b8;
-  
-  --border-subtle: hsla(222, 47%, 20%, 1);
-  --border-medium: hsla(222, 47%, 25%, 1);
-  
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
-  --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.4);
-  --shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.6);
-}
-
-  /* Typography - Elite Precision */
+  /* Typography */
   --font-body: 'Inter', system-ui, -apple-system, sans-serif;
-  --font-display: 'Inter', system-ui, -apple-system, sans-serif;
   
-  --tracking-tight: -0.02em;
-  --tracking-tighter: -0.05em;
+  /* Compact Spacing System */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 20px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
 
-  /* Spacing */
-  --space-xs: 0.25rem;
-  --space-sm: 0.5rem;
-  --space-md: 1rem;
-  --space-lg: 1.5rem;
-  --space-xl: 3rem;
-  --space-2xl: 6rem;
-
-  --gap-dense: 1rem;
-  --gap-standard: 2rem;
-
-  /* Radii */
-  --radius-xs: 6px;
-  --radius-sm: 10px;
-  --radius-md: 16px;
-  --radius-lg: 24px;
-  --radius-xl: 32px;
-  --radius-full: 9999px;
-
-  /* Shadows - Sophisticated multi-layered depth */
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
-  --shadow-xl: 0 25px 40px -12px rgba(0, 0, 0, 0.12);
-  --shadow-card: 0 0 0 1px rgba(0, 0, 0, 0.02), 0 2px 4px rgba(0, 0, 0, 0.04), 0 12px 32px rgba(0, 0, 0, 0.06);
-  --shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  --shadow-glass: 0 12px 40px 0 rgba(15, 23, 42, 0.15);
+  /* Marketplace Radii - Sharp & Professional */
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-full: 999px;
 
   /* Transitions */
-  --duration: 0.5s;
-  --ease: cubic-bezier(0.16, 1, 0.3, 1);
-
-  /* Glassmorphism - Premium Depth */
-  --glass-bg: rgba(255, 255, 255, 0.75);
-  --glass-border: rgba(255, 255, 255, 0.5);
-  --glass-blur: 40px;
-  --glass-inner-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+  --duration: 0.2s;
+  --ease: ease-out;
 
   /* Layout */
-  --max-width: 1440px;
-  --nav-height: 80px;
-
-  /* ── 8px Incremental Grid System ── */
-  --grid-4: 4px;
-  --grid-8: 8px;
-  --grid-12: 12px;
-  --grid-16: 16px;
-  --grid-24: 24px;
-  --grid-32: 32px;
-  --grid-48: 48px;
-  --grid-64: 64px;
-  --grid-80: 80px;
-  --grid-128: 128px;
-
-  /* ── Typography Scale ── */
-  --font-xs: 0.75rem;     /* 12px */
-  --font-sm: 0.875rem;    /* 14px */
-  --font-base: 1rem;      /* 16px */
-  --font-lg: 1.125rem;    /* 18px */
-  --font-xl: 1.25rem;     /* 20px */
-  --font-2xl: 1.5rem;     /* 24px */
-  --font-3xl: 2rem;       /* 32px */
-  --font-4xl: 2.5rem;     /* 40px */
-  --font-5xl: 3rem;       /* 48px */
-  --font-hero: 4rem;      /* 64px */
-
-  /* ── Hierarchy Tokens ── */
-  --line-height-tight: 1.2;
-  --line-height-base: 1.6;
-  --letter-spacing-tight: -0.02em;
-  --letter-spacing-wide: 0.05em;
+  --max-width: 1240px; /* Standard marketplace container */
 }
 
 /* ── Dark Mode Variables ───────────────────────────────── */
+/* Removing Dark Mode Overrides for "Photocopy" Fidelity */
 [data-theme="dark"] {
-  --bg-primary: #0f172a;
-  --bg-secondary: #1e293b;
-  --bg-card: #1e293b;
-  
-  --accent-red: hsl(var(--h), var(--s), 60%);
-  --accent-red-hover: hsl(var(--h), var(--s), 50%);
-  
-  --border-subtle: hsl(215, 25%, 15%);
-  --border-medium: hsl(215, 25%, 20%);
-  
-  --text-primary: hsl(210, 40%, 98%);
-  --text-secondary: hsl(215, 20%, 80%);
-  --text-muted: hsl(215, 16%, 60%);
-
-  --glass-bg: rgba(15, 23, 42, 0.7);
-  --glass-border: rgba(255, 255, 255, 0.1);
-
-  --shadow-sm: 0 1px 2px rgba(0,0,0,0.5);
-  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.6);
+  display: none !important;
 }
 
 /* ── Reset ─────────────────────────────────────────────── */
@@ -167,14 +50,14 @@
 
 html {
   scroll-behavior: smooth;
-  font-size: 16px;
-  background-color: var(--bg-primary);
+  font-size: 14px; /* Marketplace default size */
+  background-color: var(--ali-bg);
 }
 
 body {
   font-family: var(--font-body) !important;
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
+  background-color: var(--ali-bg);
+  color: var(--ali-text);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
 }
@@ -246,62 +129,675 @@ img {
 
 .transition-all { transition: all var(--duration) var(--ease); }
 
-.text-red { color: var(--accent-red); }
-.text-orange { color: var(--accent-orange); }
-.text-slate { color: var(--accent-slate); }
+.text-red { color: var(--ali-red); }
+.text-orange { color: #f59e0b; }
+.text-slate { color: var(--ali-text-muted); }
 .text-bold { font-weight: 700; }
 .text-black { font-weight: 900; }
 
-/* ── Interactive Elements ──────────────────────────────── */
+/* ── Top Utility Bar ──────────────────────────────────── */
+.top-utility-bar {
+    background: #fafafa;
+    border-bottom: 1px solid var(--ali-border);
+    padding: 10px 0;
+    font-size: 13px;
+    color: var(--ali-text-muted);
+}
+
+.top-utility-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.top-utility-links {
+    display: flex;
+    gap: 20px;
+}
+
+.top-utility-links a {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 500;
+}
+
+.top-utility-links a:hover {
+    color: var(--ali-red);
+}
+
+/* ── Main Header (Exact AliExpress) ────────────────── */
+.header-main {
+    background: #ffffff;
+    padding: 20px 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.header-inner {
+    display: flex;
+    align-items: center;
+    gap: 50px;
+}
+
+.header-logo {
+    font-size: 32px;
+    font-weight: 900;
+    color: #000;
+    text-decoration: none;
+    min-width: 180px;
+}
+
+.header-logo span {
+    color: var(--ali-red);
+}
+
+.header-search .search-wrap {
+    display: flex;
+    width: 100%;
+    border: 2px solid var(--ali-red);
+    border-radius: 20px; /* AliExpress search bars are often pill-shaped now */
+    overflow: hidden;
+    background: #f2f2f2; /* Gray search background */
+}
+
+.header-search input {
+    flex: 1;
+    padding: 10px 25px;
+    border: none;
+    font-size: 14px;
+    outline: none;
+    color: #333;
+    background: transparent;
+}
+
+.header-search .search-btn {
+    background: var(--ali-red);
+    color: #fff;
+    border: none;
+    padding: 0 35px;
+    border-radius: 0 4px 4px 0;
+    cursor: pointer;
+    font-weight: 700;
+}
+
+.header-search .search-btn:hover {
+    background: #e63939;
+}
+
+.header-actions {
+    display: flex;
+    gap: 30px;
+    align-items: center;
+}
+
+.header-action-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    color: #333;
+    cursor: pointer;
+    position: relative;
+    transition: color 0.2s;
+}
+
+.header-action-item i {
+    font-size: 24px;
+}
+
+.header-action-item span {
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.header-action-item:hover {
+    color: var(--ali-red);
+}
+
+/* ── Horizontal Navbar (Marketplace Clean) ────────── */
+.nav-bar {
+    background: #ffffff;
+    border-bottom: 1px solid var(--ali-border);
+}
+
+.nav-inner {
+    display: flex;
+    gap: 30px;
+    padding: 12px 0;
+}
+
+.nav-link {
+    font-size: 14px;
+    font-weight: 600;
+    color: #000;
+    transition: color 0.2s;
+    text-transform: none; /* AliExpress doesn't uppercase everything */
+}
+
+.nav-link:hover {
+    color: var(--ali-red);
+}
+
+.nav-link.promo {
+    color: var(--ali-red);
+}
+
+/* ── AliExpress Hero Section (Light Fidelity) ────────── */
+.ali-hero-section {
+    display: grid;
+    grid-template-columns: 240px 1fr 240px;
+    gap: 15px;
+    margin-top: 15px;
+    height: 440px;
+}
+
+/* Sidebar Categories */
+.side-categories {
+    background: #ffffff;
+    box-shadow: var(--ali-shadow);
+    padding: 10px 0;
+    border-radius: 4px;
+}
+
+.cat-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    font-size: 14px;
+    color: #333;
+    transition: all 0.2s;
+    cursor: pointer;
+    position: relative;
+}
+
+.cat-item:hover {
+    background: #fffafa;
+    color: var(--ali-red);
+    font-weight: 600;
+    padding-left: 25px;
+}
+
+.cat-item i {
+    width: 20px;
+    font-size: 16px;
+    margin-right: 15px;
+    color: #999;
+}
+
+.cat-item:hover i {
+    color: var(--ali-red);
+}
+
+/* Submenu/Image Preview Hover */
+.cat-item::after {
+    content: '\f054';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    margin-left: auto;
+    font-size: 10px;
+    opacity: 0.5;
+}
+
+/* Submenu/Flyout - EXACT Height/Width matching Banner */
+.cat-submenu {
+    position: absolute;
+    left: 240px; /* Width of sidebar */
+    top: -10px; /* Align with top of banner area */
+    width: 745px; /* Spans banner + promo area roughly, or just banner */
+    height: calc(100% + 20px);
+    background: #ffffff;
+    border: 1px solid var(--ali-border);
+    border-left: none;
+    box-shadow: 10px 0 20px rgba(0,0,0,0.05);
+    display: none;
+    z-index: 100;
+    padding: 25px;
+}
+
+.cat-item:hover .cat-submenu {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+/* User & Benefit Cards */
+.user-promo-card {
+    background: #fff;
+    padding: 20px;
+    border-radius: var(--radius-sm);
+    text-align: center;
+    box-shadow: var(--ali-shadow);
+}
+
+.avatar-circle {
+    font-size: 40px;
+    color: #ddd;
+    margin-bottom: 10px;
+}
+
+.user-header p {
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 15px;
+}
+
+.user-actions-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.benefit-card {
+    background: #fff;
+    padding: 15px;
+    border-radius: var(--radius-sm);
+    box-shadow: var(--ali-shadow);
+    position: relative;
+    overflow: hidden;
+    height: 140px;
+}
+
+.benefit-label {
+    font-size: 11px;
+    font-weight: 900;
+    color: var(--ali-red);
+    margin-bottom: 5px;
+}
+
+.benefit-title {
+    font-size: 14px;
+    font-weight: 800;
+    max-width: 120px;
+    line-height: 1.2;
+}
+
+.benefit-title span {
+    color: var(--ali-red);
+    font-size: 18px;
+}
+
+.benefit-card img {
+    position: absolute;
+    right: 0;
+    bottom: -10px;
+    height: 100px;
+    width: auto;
+}
+
+.choice-tag {
+    display: inline-block;
+    background: #fff0f0;
+    color: var(--ali-red);
+    padding: 2px 8px;
+    font-size: 11px;
+    font-weight: 700;
+    border-radius: 10px;
+    margin-top: 10px;
+}
+
+.promo-card img {
+    height: 120px;
+    object-fit: contain;
+    margin-bottom: 15px;
+}
+
+.promo-card h4 {
+    font-size: 14px;
+    color: var(--ali-white);
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.promo-card .price {
+    color: var(--ali-red);
+    font-weight: 900;
+    font-size: 18px;
+}
+
+/* ── Advantages Bar (Clean Classic) ────────────────── */
+.advantages {
+    background: #ffffff;
+    margin: 20px 0 40px;
+    padding: 20px;
+    border-radius: 4px;
+    box-shadow: var(--ali-shadow);
+}
+
+.advantages-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px;
+}
+
+.adv-item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.adv-icon {
+    width: 56px;
+    height: 56px;
+    background: rgba(225, 29, 72, 0.1);
+    color: var(--ali-red);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+}
+
+.adv-text h4 {
+    font-size: 15px;
+    font-weight: 800;
+    margin-bottom: 4px;
+    color: var(--ali-white);
+}
+
+.adv-text p {
+    font-size: 13px;
+    color: var(--ali-text-muted);
+    margin: 0;
+}
+
+/* ── Product Grid (AliExpress Style) ───────────────────── */
+.product-section-header {
+    margin: 40px 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.product-section-title {
+    font-size: 22px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #222;
+    margin: 0;
+}
+
+.product-section-title::before {
+    content: '';
+    width: 4px;
+    height: 24px;
+    background: var(--ali-red);
+    border-radius: 2px;
+}
+
+.ali-product-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 15px;
+}
+
+.ali-card {
+    background: #ffffff;
+    border-radius: 4px;
+    overflow: hidden;
+    transition: box-shadow 0.2s, transform 0.2s;
+    border: 1px solid transparent;
+}
+
+.ali-card:hover {
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    border-color: var(--ali-red);
+    transform: translateY(-4px);
+}
+
+.ali-card-img {
+    aspect-ratio: 1;
+    overflow: hidden;
+    position: relative;
+}
+
+.choice-tag-mini {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: var(--ali-red);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 2px 6px;
+    border-radius: 2px;
+}
+
+.ali-card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.ali-card:hover .ali-card-img img {
+    transform: scale(1.05);
+}
+
+.ali-card-info {
+    padding: 10px;
+}
+
+.ali-card-cat {
+    font-size: 11px;
+    color: var(--ali-text-muted);
+    margin-bottom: 4px;
+}
+
+.ali-card-title {
+    font-size: 13px;
+    color: #333;
+    height: 38px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-bottom: 8px;
+    line-height: 1.4;
+}
+
+.ali-card-stats {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    margin-bottom: 8px;
+}
+
+.ali-card-stats .stars {
+    color: #ffb800;
+    font-weight: 700;
+}
+
+.ali-card-stats .sold {
+    color: var(--ali-text-muted);
+}
+
+.ali-card-price {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    margin-bottom: 0;
+}
+
+.ali-price-now {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--ali-red);
+}
+
+.ali-price-now span {
+    font-size: 11px;
+    margin-left: 1px;
+}
+
+.ali-buy-btn {
+    position: absolute;
+    bottom: -50px;
+    left: 0;
+    width: 100%;
+    background: var(--ali-red);
+    color: #fff;
+    border: none;
+    padding: 10px;
+    font-size: 12px;
+    font-weight: 700;
+    transition: bottom 0.2s ease;
+}
+
+.ali-card {
+    position: relative; /* For buy btn positioning */
+}
+
+.ali-card:hover .ali-buy-btn {
+    bottom: 0;
+}
+
+/* ── Interactive Elements (AliExpress Style) ────────────── */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: var(--grid-12) var(--grid-24);
-  font-size: var(--font-sm);
-  font-weight: 800;
-  line-height: 1;
-  text-transform: uppercase;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 700;
   border: none;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-full);
   cursor: pointer;
   transition: all var(--duration) var(--ease);
-  letter-spacing: var(--letter-spacing-wide);
-  gap: var(--grid-12);
+  gap: 8px;
   white-space: nowrap;
 }
 
 .btn-primary {
-  background-color: var(--accent-red);
+  background-color: var(--ali-red);
   color: white;
-  box-shadow: 0 4px 12px hsla(var(--h), var(--s), 50%, 0.2);
 }
 
 .btn-primary:hover {
-  background-color: var(--accent-red-hover);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px hsla(var(--h), var(--s), 50%, 0.35);
+  background-color: var(--ali-red-hover);
+  transform: translateY(-1px);
 }
 
 .btn-secondary {
-  background-color: var(--accent-slate);
-  color: white;
+  background-color: #f5f5f5;
+  color: #222;
+  border: 1px solid #ddd;
 }
 
 .btn-secondary:hover {
-  background-color: var(--black);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+  background-color: #eee;
 }
 
-.btn-lg {
-  padding: var(--grid-16) var(--grid-32);
-  font-size: var(--font-base);
+.btn-sm { padding: 6px 12px; font-size: 12px; }
+.btn-lg { padding: 14px 28px; font-size: 16px; }
+
+/* ── Cart Drawer Components ────────────────────────────── */
+.cart-drawer-item {
+    display: flex;
+    gap: 15px;
+    padding: 15px;
+    border-bottom: 1px solid var(--ali-border);
 }
 
-.btn-sm {
-  padding: var(--grid-8) var(--grid-16);
-  font-size: var(--font-xs);
+.drawer-item-img {
+    width: 70px;
+    height: 70px;
+    background: #f9f9f9;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.drawer-item-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.drawer-item-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.drawer-item-info h4 {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ali-text);
+    margin: 0;
+    line-height: 1.3;
+}
+
+.item-remove-btn {
+    background: none;
+    border: none;
+    color: #ccc;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.item-remove-btn:hover { color: var(--ali-red); }
+
+.drawer-item-price {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--ali-red);
+}
+
+.quantity-controls {
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--ali-border);
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.quantity-controls button {
+    background: none;
+    border: none;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.quantity-controls button:hover { background: #f5f5f5; }
+
+.quantity-controls span {
+    width: 20px;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.cart-empty-state {
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.empty-icon-wrap {
+    font-size: 48px;
+    color: #eee;
+    margin-bottom: 15px;
+}
+
+.empty-title { font-size: 14px; font-weight: 800; margin-bottom: 5px; }
+.empty-text { font-size: 12px; color: var(--ali-text-muted); margin-bottom: 20px; }
+
+.shipping-progress-wrapper {
+    padding: 15px;
+    background: #fff;
+    border-top: 1px solid var(--ali-border);
 }
 
 .img-responsive {

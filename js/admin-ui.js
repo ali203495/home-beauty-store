@@ -186,21 +186,35 @@ window.AdminUI = {
     },
 
     async computeStats() {
-        const orders = await OrderDB.getOrders();
-        const lowStock = PRODUCTS.filter(p => p.stock < 10).length;
-        const totalRevenue = orders.reduce((sum, o) => sum + o.total, 0);
+        const token = sessionStorage.getItem('mlh_admin_token');
+        try {
+            const response = await fetch('/api/admin/stats', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (!response.ok) throw new Error('Stats API Failed');
+            const data = await response.json();
+            
+            const totalRevenue = data.orders.reduce((sum, o) => sum + (o.revenue || 0), 0);
+            const totalOrders = data.orders.reduce((sum, o) => sum + (o.count || 0), 0);
+            const productCount = data.products.productCount;
 
-        const revEl = document.getElementById('stat-revenue');
-        const ordEl = document.getElementById('stat-orders');
-        const lowEl = document.getElementById('stat-low-stock');
-        const custEl = document.getElementById('stat-customers');
+            const revEl = document.getElementById('stat-revenue');
+            const ordEl = document.getElementById('stat-orders');
+            const lowEl = document.getElementById('stat-low-stock');
+            const custEl = document.getElementById('stat-customers');
 
-        if (revEl) revEl.innerText = this.formatCurrency(totalRevenue);
-        if (ordEl) ordEl.innerText = orders.length;
-        if (lowEl) lowEl.innerText = lowStock;
-        if (custEl) {
-            const customers = await (window.CustomerDB ? CustomerDB.getCustomers() : []);
-            custEl.innerText = customers.length;
+            if (revEl) revEl.innerText = this.formatCurrency(totalRevenue);
+            if (ordEl) ordEl.innerText = totalOrders;
+            if (lowEl) {
+                // Keep product count or refine if we add a dedicated low stock SQL query
+                lowEl.innerText = PRODUCTS.filter(p => p.stock < 10).length;
+            }
+            if (custEl) {
+                const customers = await (window.CustomerDB ? CustomerDB.getCustomers() : []);
+                custEl.innerText = customers.length;
+            }
+        } catch (err) {
+            console.error("Failed to fetch dashboard stats.", err);
         }
     },
 

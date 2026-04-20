@@ -258,69 +258,86 @@ let PRODUCTS = [];
  */
 const ProductDB = {
     async fetchAll() {
-        // Simulated Network Latency for Premium Feel
-        const latency = (CONFIG.preferences && CONFIG.preferences.simulatedLatency) || 0;
-        if (latency > 0) await new Promise(r => setTimeout(r, latency));
-
-        const localData = localStorage.getItem('elwali_products');
-        if (localData) {
-            PRODUCTS = JSON.parse(localData);
-            // Migration: Ensure all have visibility, stock, and timestamps
-            let migrated = false;
-            PRODUCTS = PRODUCTS.map(p => {
-                if (p.visible === undefined) { p.visible = true; migrated = true; }
-                if (p.stock === undefined) { p.stock = 25; migrated = true; }
-                if (!p.lastUpdated) { p.lastUpdated = new Date().toISOString(); migrated = true; }
-                return p;
-            });
-            if (migrated) localStorage.setItem('elwali_products', JSON.stringify(PRODUCTS));
-        } else {
-            PRODUCTS = INITIAL_PRODUCTS.map(p => ({ 
-                ...p, 
-                visible: p.visible ?? true,
-                stock: p.stock ?? 25,
-                lastUpdated: p.lastUpdated ?? new Date().toISOString()
-            }));
-            localStorage.setItem('elwali_products', JSON.stringify(PRODUCTS));
+        try {
+            const response = await fetch('/api/products');
+            if (!response.ok) throw new Error('API Error');
+            PRODUCTS = await response.json();
+            return PRODUCTS;
+        } catch (err) {
+            console.warn("Backend API unavailable, falling back to local simulation.", err);
+            // Fallback logic for development/stability
+            const localData = localStorage.getItem('elwali_products');
+            if (localData) {
+                PRODUCTS = JSON.parse(localData);
+            } else {
+                PRODUCTS = INITIAL_PRODUCTS.map(p => ({ 
+                    ...p, 
+                    visible: p.visible ?? true,
+                    stock: p.stock ?? 25,
+                    lastUpdated: p.lastUpdated ?? new Date().toISOString()
+                }));
+            }
+            return PRODUCTS;
         }
-        return PRODUCTS;
     },
 
     async saveProduct(product) {
-        PRODUCTS.push(product);
-        localStorage.setItem('elwali_products', JSON.stringify(PRODUCTS));
-        if (window.BUS) BUS.emit('products-updated', PRODUCTS);
-        return true;
+        const token = sessionStorage.getItem('mlh_admin_token');
+        try {
+            const response = await fetch('/api/admin/products', {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(product)
+            });
+            const res = await response.json();
+            if (res.success) {
+                if (window.BUS) BUS.emit('products-updated');
+                return true;
+            }
+            return false;
+        } catch (err) {
+            console.error("Failed to save product to backend.", err);
+            return false;
+        }
     },
 
     async update(id, updatedData) {
-        const index = PRODUCTS.findIndex(p => p.id === id);
-        if (index !== -1) {
-            PRODUCTS[index] = { ...PRODUCTS[index], ...updatedData };
-            localStorage.setItem('elwali_products', JSON.stringify(PRODUCTS));
-            if (window.BUS) BUS.emit('products-updated', PRODUCTS);
-            return true;
+        // In our simple API, saveProduct handles INSERT OR REPLACE
+        const product = PRODUCTS.find(p => p.id === id);
+        if (product) {
+            return this.saveProduct({ ...product, ...updatedData });
         }
         return false;
     },
 
     async delete(id) {
-        PRODUCTS = PRODUCTS.filter(p => p.id !== id);
-        localStorage.setItem('elwali_products', JSON.stringify(PRODUCTS));
-        if (window.BUS) BUS.emit('products-updated', PRODUCTS);
-        return true;
+        const token = sessionStorage.getItem('mlh_admin_token');
+        try {
+            const response = await fetch(`/api/admin/products/${id}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const res = await response.json();
+            if (res.success) {
+                if (window.BUS) BUS.emit('products-updated');
+                return true;
+            }
+            return false;
+        } catch (err) {
+            console.error("Failed to delete product from backend.", err);
+            return false;
+        }
     },
 
     async decrementStock(id, q) {
-        const index = PRODUCTS.findIndex(p => p.id === id);
-        if (index !== -1) {
-            PRODUCTS[index].stock = Math.max(0, (PRODUCTS[index].stock || 0) - q);
-            PRODUCTS[index].lastUpdated = new Date().toISOString();
-            localStorage.setItem('elwali_products', JSON.stringify(PRODUCTS));
-            
-            // Notify system of stock change
-            if (window.BUS) BUS.emit('stock-changed', { id, newStock: PRODUCTS[index].stock });
-            return true;
+        // In this production version, we use the update endpoint to set new stock
+        const product = PRODUCTS.find(p => p.id === id);
+        if (product) {
+            const newStock = Math.max(0, (product.stock || 0) - q);
+            return this.update(id, { stock: newStock });
         }
         return false;
     },
@@ -350,25 +367,68 @@ const ProductDB = {
  */
 const OrderDB = {
     async getOrders() {
-        return JSON.parse(localStorage.getItem('mlh_orders')) || [];
+        const token = sessionStorage.getItem('mlh_admin_token');
+        if (!token) return [];
+        
+        try {
+            const response = await fetch('/api/admin/orders', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (!response.ok) return [];
+            return await response.json();
+        } catch (err) {
+            console.error("Failed to fetch orders from backend.", err);
+            return JSON.parse(localStorage.getItem('mlh_orders')) || [];
+        }
     },
 
     async saveOrder(order) {
-        const orders = await this.getOrders();
-        orders.unshift(order);
-        localStorage.setItem('mlh_orders', JSON.stringify(orders));
+        try {
+            const response = await fetch('/api/orders', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ order, items: order.items })
+            });
+            return await response.json();
+        } catch (err) {
+            console.error("Order submission to backend failed.", err);
+            // Emergency fallback to local storage
+            const orders = JSON.parse(localStorage.getItem('mlh_orders') || '[]');
+            orders.unshift(order);
+            localStorage.setItem('mlh_orders', JSON.stringify(orders));
+        }
     },
 
     async updateStatus(orderId, status) {
-        let orders = await this.getOrders();
-        orders = orders.map(o => o.id === orderId ? { ...o, status } : o);
-        localStorage.setItem('mlh_orders', JSON.stringify(orders));
+        const token = sessionStorage.getItem('mlh_admin_token');
+        try {
+            const response = await fetch(`/api/admin/orders/${orderId}`, {
+                method: 'PATCH',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ status })
+            });
+            return (await response.json()).success;
+        } catch (err) {
+            console.error("Failed to update order status on backend.", err);
+            return false;
+        }
     },
 
     async deleteOrder(orderId) {
-        let orders = await this.getOrders();
-        orders = orders.filter(o => o.id !== orderId);
-        localStorage.setItem('mlh_orders', JSON.stringify(orders));
+        const token = sessionStorage.getItem('mlh_admin_token');
+        try {
+            const response = await fetch(`/api/admin/orders/${orderId}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            return (await response.json()).success;
+        } catch (err) {
+            console.error("Failed to delete order on backend.", err);
+            return false;
+        }
     }
 };
 

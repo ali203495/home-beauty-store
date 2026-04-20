@@ -12,3 +12,5 @@ mlh_products.json
 node_modules/
 dist/
 .env
+db/*.db
+package-lock.json

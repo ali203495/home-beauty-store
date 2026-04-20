@@ -53,41 +53,33 @@ window.AdminAuth = {
     },
 
     async login(username, password) {
-        const cleanUser = username.trim().toLowerCase();
-        
-        // 1. Check Brute Force Status
-        const attempts = this.getLoginAttempts(cleanUser);
-        if (attempts.count >= this.LOCKOUT_LIMIT) {
-            const timeLeft = Math.ceil((attempts.lockedUntil - Date.now()) / (60 * 1000));
-            if (timeLeft > 0) {
-                AdminLogs.log(`Compte bloqué : ${cleanUser} (${timeLeft} min restantes)`, 'error');
-                return { success: false, msg: `Trop de tentatives. Compte bloqué pour encore ${timeLeft} minute(s).` };
-            } else {
-                this.resetLoginAttempts(cleanUser);
-                AdminLogs.log(`Compte débloqué : ${cleanUser}`, 'success');
-            }
-        }
+        try {
+            const response = await fetch('/api/admin/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
 
-        // 2. Hash and Match
-        const hashedInput = await this.hashPassword(password.trim());
-        const matchedAdmin = await AdminDB.findByUsername(cleanUser);
-
-        if (matchedAdmin && matchedAdmin.passwordHash === hashedInput) {
-            if (matchedAdmin.status === 'Pending') {
-                return { success: false, msg: 'Compte non activé.', requireActivation: true, username: matchedAdmin.username };
+            if (!response.ok) {
+                const err = await response.json();
+                return { success: false, msg: err.error || 'Identifiants invalides' };
             }
 
-            // 3. Success -> Clear attempts and set session
-            this.resetLoginAttempts(cleanUser);
-            this.setSession(matchedAdmin);
-            AdminLogs.log(`Connexion réussie : ${cleanUser} (${matchedAdmin.role})`, 'success');
+            const data = await response.json();
+            
+            // 3. Success -> set session
+            sessionStorage.setItem('mlh_admin_token', data.token);
+            sessionStorage.setItem('mlh_admin_logged_in', 'true');
+            sessionStorage.setItem('mlh_admin_user', data.user.username);
+            sessionStorage.setItem('mlh_admin_role', data.user.role);
+            sessionStorage.setItem('mlh_admin_login_time', Date.now().toString());
+
+            AdminLogs.log(`Connexion réussie : ${data.user.username} (${data.user.role})`, 'success');
             return { success: true };
+        } catch (err) {
+            console.error("Login API Error:", err);
+            return { success: false, msg: 'Erreur de connexion au serveur' };
         }
-        
-        // 4. Failure -> Increment attempts
-        this.incrementLoginAttempts(cleanUser);
-        AdminLogs.log(`Tentative de connexion échouée : ${cleanUser}`, 'error');
-        return { success: false, msg: 'Identifiants invalides' };
     },
 
     setSession(admin) {

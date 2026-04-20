@@ -14,14 +14,14 @@
     <meta name="description"
         content="Gérez votre panier d'achats chez MARRAKECH LUXE. Electroménager, beauté et plus encore.">
     <link rel="icon" type="image/png" href="assets/webp/logo.webp">
-    <link rel="stylesheet" href="css/index.css">
-    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/index.css?v=2.5">
+    <link rel="stylesheet" href="css/components.css?v=2.5">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body>
 
-    <!-- 1. TOP BAR (RED) -->
+    <!-- 1. TOP BAR (DARK) -->
     <div class="top-bar">
         <div class="container flex-between">
             <div class="flex gap-lg">
@@ -29,9 +29,9 @@
                 <span><i class="fas fa-phone"></i> +212 699-705617</span>
             </div>
             <div class="flex gap-lg">
-                <a href="#"><i class="fab fa-facebook-f"></i></a>
-                <a href="#"><i class="fab fa-instagram"></i></a>
-                <a href="#"><i class="fab fa-whatsapp"></i></a>
+                <a href="https://www.facebook.com/share/g/18L9fxx9pG/" target="_blank" rel="noopener"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://instagram.com" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
+                <a href="https://wa.me/212699705617" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i></a>
                 <a href="/admin-login.html" style="opacity: 0.5;">ADMIN</a>
             </div>
         </div>
@@ -45,18 +45,18 @@
 
             <div class="search-bar">
                 <i class="fas fa-search search-icon"></i>
-                <input type="text" id="global-search" placeholder="Rechercher un produit, une marque, une catégorie...">
+                <input type="text" id="global-search" placeholder="Rechercher un produit, une catégorie, une marque...">
                 <button class="search-btn">Rechercher</button>
                 <div class="search-suggestions" id="search-suggestions"></div>
             </div>
 
             <div class="nav-actions">
+                <div class="theme-toggle-container"></div>
                 <div class="nav-action-item">
                     <i class="fas fa-user-circle"></i>
                     <span>Compte</span>
                 </div>
-                <div class="theme-toggle-container"></div>
-                <div class="nav-action-item cart-icon-wrapper" onclick="window.location.href='/cart'">
+                <div class="nav-action-item cart-icon-wrapper" onclick="window.location.href='/cart.html'">
                     <i class="fas fa-shopping-basket"></i>
                     <span>Panier</span>
                     <span class="cart-badge">0</span>
@@ -73,19 +73,55 @@
     <!-- 3. SECONDARY NAVBAR -->
     <nav class="secondary-nav">
         <div class="container flex">
-            <button class="cat-toggle-btn" onclick="window.location.href='/'">
-                <i class="fas fa-bars"></i> NOS RAYONS
+            <button class="cat-toggle-btn" id="mega-menu-btn">
+                <i class="fas fa-bars"></i> NOS CATÉGORIES
             </button>
+            <div class="mega-menu" id="mega-menu">
+                <div class="mega-menu-grid">
+                    <a href="/products.html?cat=Electroménager" class="mega-item">
+                        <i class="fas fa-refrigerator"></i>
+                        <span>Electroménager</span>
+                    </a>
+                    <a href="/products.html?cat=TV" class="mega-item">
+                        <i class="fas fa-tv"></i>
+                        <span>TV & Audio</span>
+                    </a>
+                    <a href="/products.html?cat=Climatisation" class="mega-item">
+                        <i class="fas fa-wind"></i>
+                        <span>Climatisation</span>
+                    </a>
+                    <a href="/products.html?cat=Cuisine" class="mega-item">
+                        <i class="fas fa-blender"></i>
+                        <span>Cuisine</span>
+                    </a>
+                    <a href="/products.html?cat=Maquillage" class="mega-item">
+                        <i class="fas fa-spa"></i>
+                        <span>Beauté & Soin</span>
+                    </a>
+                </div>
+            </div>
             <div class="mega-nav-links">
-                <a href="/products?cat=Electroménager">Electroménager</a>
-                <a href="/products?cat=TV">TV & Audio</a>
-                <a href="/products?cat=Climatisation">Climatisation</a>
-                <a href="/products?cat=Cuisine">Cuisine</a>
-                <a href="/products?cat=Beauté">Beauté & Soin</a>
-                <a href="/products?cat=Promos" style="color: var(--accent-red); font-weight: 900;">PROMOTIONS %</a>
+                <a href="/products.html?cat=Electroménager">Electroménager</a>
+                <a href="/products.html?cat=TV">TV & Audio</a>
+                <a href="/products.html?cat=Climatisation">Climatisation</a>
+                <a href="/products.html?cat=Cuisine">Cuisine</a>
+                <a href="/products.html?cat=Maquillage">Beauté & Soin</a>
+                <a href="/products.html?cat=Plastique">Plastique</a>
+                <a href="/products.html" style="color: var(--accent-red); font-weight: 900;">PROMOTIONS %</a>
             </div>
         </div>
     </nav>
+    
+    <!-- 4. TRUST BAR -->
+    <div class="trust-bar">
+        <div class="container trust-bar-inner">
+            <div class="trust-item"><i class="fas fa-truck"></i> Livraison gratuite à Marrakech</div>
+            <div class="trust-item"><i class="fas fa-shield-check"></i> Garantie constructeur incluse</div>
+            <div class="trust-item"><i class="fas fa-tools"></i> Installation climatisation offerte</div>
+            <div class="trust-item"><i class="fab fa-whatsapp"></i> Support WhatsApp 7j/7</div>
+            <div class="trust-item"><i class="fas fa-hand-holding-usd"></i> Paiement à la livraison</div>
+        </div>
+    </div>
 
     <section class="section" style="padding-top: 2rem;">
         <div class="container">

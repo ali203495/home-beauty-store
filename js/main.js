@@ -8,10 +8,8 @@ const App = {
     init() {
         this.updateCurrentYear();
         this.initSearch();
-        this.renderHeroBanners();
         this.renderFeaturedProducts();
         this.setupWhatsAppButton();
-        this.setupMegaMenu();
         this.setupScrollProgress();
         this.setupBackToTop();
         this.initPageLoader();
@@ -141,30 +139,7 @@ const App = {
         if (el) el.textContent = new Date().getFullYear();
     },
 
-    renderHeroBanners() {
-        const banners = CONFIG.heroBanners;
-        if (!banners) return;
-
-        const mainImg = document.getElementById('hero-main-img');
-        const mainTag = document.getElementById('hero-main-tag');
-        const mainTitle = document.getElementById('hero-main-title');
-        
-        const side1Img = document.getElementById('hero-side1-img');
-        const side1Title = document.getElementById('hero-side1-title');
-        
-        const side2Img = document.getElementById('hero-side2-img');
-        const side2Title = document.getElementById('hero-side2-title');
-
-        if (mainImg) mainImg.src = banners.main.img;
-        if (mainTag) mainTag.innerHTML = banners.main.tag;
-        if (mainTitle) mainTitle.innerHTML = banners.main.title;
-
-        if (side1Img) side1Img.src = banners.side1.img;
-        if (side1Title) side1Title.innerHTML = banners.side1.title;
-
-        if (side2Img) side2Img.src = banners.side2.img;
-        if (side2Title) side2Title.innerHTML = banners.side2.title;
-    },
+    // Legacy banner rendering removed - layout is now static in index.html for stability
 
     initSearch() {
         const searchInput = document.getElementById('global-search');
@@ -234,25 +209,7 @@ const App = {
         `).join('');
     },
 
-    setupMegaMenu() {
-        const toggle = document.getElementById('mega-menu-btn');
-        const menu = document.getElementById('mega-menu');
-        if (toggle && menu) {
-            toggle.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                menu.classList.toggle('open');
-                toggle.classList.toggle('active');
-            });
-
-            document.addEventListener('click', (e) => {
-                if (!menu.contains(e.target) && !toggle.contains(e.target)) {
-                    menu.classList.remove('open');
-                    toggle.classList.remove('active');
-                }
-            });
-        }
-    },
+    // Legacy MegaMenu removed - Sidebar is now primary
 
     setupWhatsAppButton() {
         const waBtn = document.createElement('a');
@@ -267,14 +224,8 @@ const App = {
     },
 
     async renderFeaturedProducts() {
-        const topVentesGrid = document.getElementById('top-ventes-grid');
-        const promotionsGrid = document.getElementById('promotions-grid');
-        const nouveautesGrid = document.getElementById('nouveautes-grid');
-
-        if (!topVentesGrid && !promotionsGrid && !nouveautesGrid) return;
-
-        // Show skeletons initially
-        this.showSkeletons([topVentesGrid, promotionsGrid, nouveautesGrid]);
+        const productGrid = document.getElementById('ali-product-grid');
+        if (!productGrid) return;
 
         if (window.ProductDB) {
             await ProductDB.fetchAll();
@@ -282,35 +233,12 @@ const App = {
 
         const allProducts = (window.PRODUCTS || []).filter(p => p.visible !== false);
         
-        // Brief delay to ensure skeletons are seen (Premium Feel)
-        setTimeout(() => {
-            if (topVentesGrid) {
-                const topProducts = [...allProducts]
-                    .sort((a, b) => (b.rating || 0) - (a.rating || 0))
-                    .slice(0, 6);
-                topVentesGrid.innerHTML = topProducts.length
-                    ? topProducts.map(p => this.generateProductCard(p)).join('')
-                    : '<p style="color:var(--text-muted);padding:2rem">Aucun produit disponible.</p>';
-            }
-
-            if (promotionsGrid) {
-                const promoProducts = allProducts
-                    .filter(p => p.badge)
-                    .slice(0, 6);
-                promotionsGrid.innerHTML = promoProducts.length
-                    ? promoProducts.map(p => this.generateProductCard(p, true)).join('')
-                    : '<p style="color:var(--text-muted);padding:2rem">Aucune promotion disponible.</p>';
-            }
-
-            if (nouveautesGrid) {
-                const newProducts = [...allProducts].reverse().slice(0, 6);
-                nouveautesGrid.innerHTML = newProducts.length
-                    ? newProducts.map(p => this.generateProductCard(p)).join('')
-                    : '<p style="color:var(--text-muted);padding:2rem">Aucune nouveauté disponible.</p>';
-            }
-            
-            this.updateCartBadge();
-        }, 600);
+        // Show all products or a selection
+        productGrid.innerHTML = allProducts.length
+            ? allProducts.map(p => this.generateProductCard(p)).join('')
+            : '<p style="color:var(--text-muted);padding:2rem">Aucun produit disponible.</p>';
+        
+        this.updateCartBadge();
     },
 
     showSkeletons(grids) {
@@ -364,36 +292,27 @@ const App = {
         }, { passive: true });
     },
 
-    generateProductCard(p, isPromo = false) {
-        const badge = isPromo ? `<span class="card-badge">PROMO</span>` : (p.badge ? `<span class="card-badge">${p.badge}</span>` : '');
-        const oldPrice = isPromo ? `<span class="card-price-old">${Math.round(p.price * 1.2)} DH</span>` : '';
-        const isWishlisted = window.Wishlist ? Wishlist.isWishlisted(p.id) : false;
-        const stockBadge = this.generateStockBadge(p.stock);
-
+    generateProductCard(p) {
+        // High-Fidelity AliExpress Structure
+        const soldCount = Math.floor(Math.random() * 500) + 10;
         return `
-            <div class="compact-card animate-fade" onclick="window.location.href='/product-detail.html?id=${p.id}'">
-                ${badge}
-                <button class="wishlist-btn ${isWishlisted ? 'active' : ''}" 
-                        data-id="${p.id}" 
-                        onclick="event.stopPropagation(); Wishlist.toggle('${p.id}')">
-                    <i class="${isWishlisted ? 'fas' : 'far'} fa-heart"></i>
-                </button>
-                <div class="card-img-wrapper">
+            <div class="ali-card animate-fade" onclick="window.location.href='/product-detail.html?id=${p.id}'">
+                <div class="ali-card-img">
                     <img src="${p.image}" alt="${p.name}" loading="lazy">
-                    <div class="card-quick-view" onclick="event.stopPropagation(); QuickView.open('${p.id}')">
-                        <i class="fas fa-eye"></i> Aperçu
-                    </div>
+                    <div class="choice-tag-mini">Choice</div>
                 </div>
-                <div class="card-cat">${p.category}</div>
-                <h3 class="card-title">${p.name}</h3>
-                ${stockBadge}
-                <div class="card-bottom">
-                    <div class="card-price-row">
-                        <span class="card-price">${p.price} DH</span>
-                        ${oldPrice}
+                <div class="ali-card-info">
+                    <div class="ali-card-cat">${p.category}</div>
+                    <h3 class="ali-card-title">${p.name}</h3>
+                    <div class="ali-card-stats">
+                        <span class="stars"><i class="fas fa-star"></i> 4.8</span>
+                        <span class="sold">${soldCount}+ vendus</span>
                     </div>
-                    <button class="card-btn" onclick="event.stopPropagation(); App.addToCart('${p.id}', event)">
-                        <i class="fas fa-shopping-basket"></i> AJOUTER
+                    <div class="ali-card-price">
+                        <span class="ali-price-now">${p.price}<span>DH</span></span>
+                    </div>
+                    <button class="ali-buy-btn" onclick="event.stopPropagation(); App.addToCart('${p.id}', event)">
+                        <i class="fas fa-cart-plus"></i> AJOUTER
                     </button>
                 </div>
             </div>
@@ -417,18 +336,20 @@ const App = {
             if (event && event.currentTarget) {
                 const btn = event.currentTarget;
                 const originalContent = btn.innerHTML;
-                btn.innerHTML = '<i class="fas fa-check"></i> AJOUTÉ !';
-                btn.classList.add('bg-success'); // Assuming a success color
+                btn.innerHTML = '<i class="fas fa-check"></i>';
                 btn.style.background = '#22c55e';
                 
                 setTimeout(() => {
                     btn.innerHTML = originalContent;
-                    btn.classList.remove('bg-success');
                     btn.style.background = '';
-                }, 2000);
+                }, 1500);
             }
+        }
+    },
 
-            this.showToast('Produit ajouté au panier !');
+    updateCartBadge() {
+        if (window.Cart && typeof Cart.updateBadge === 'function') {
+            Cart.updateBadge();
         }
     },
 

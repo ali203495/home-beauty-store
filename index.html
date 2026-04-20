@@ -3,308 +3,230 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MARRAKECH LUXE — Electro, Cuisine & Beauté à Marrakech</title>
-    <meta name="description" content="Découvrez le meilleur de l'électroménager, TV, climatisation, cuisine et beauté à Marrakech. Prix compétitifs, livraison gratuite et installation incluse.">
+    <title>MARRAKECH LUXE — Boutique de Luxe à Marrakech</title>
+    <meta name="description" content="Découvrez le meilleur de l'électroménager, cuisine et beauté à Marrakech. Livraison gratuite et paiement à la livraison.">
     <link rel="icon" type="image/png" href="assets/webp/logo.webp">
 
-    <!-- Open Graph -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://el-wali-shop.work.gd/">
-    <meta property="og:title" content="MARRAKECH LUXE — Electro, Cuisine & Beauté à Marrakech">
-    <meta property="og:description" content="Électroménager, climatisation et beauté à prix compétitifs. Livraison gratuite à Marrakech.">
-    <meta property="og:image" content="https://el-wali-shop.work.gd/assets/webp/hero.webp">
-
-    <link rel="stylesheet" href="css/index.css?v=2.1">
-    <link rel="stylesheet" href="css/components.css?v=2.1">
+    <link rel="stylesheet" href="css/index.css?v=3.5">
+    <link rel="stylesheet" href="css/components.css?v=3.5">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
 </head>
 <body>
 
-    <!-- PROMO TOP BANNER -->
-    <div class="promo-top-banner" id="promo-top-banner">
-        <i class="fas fa-bolt"></i>
-        <span id="promo-banner-text">Préparez l'été à Marrakech !</span>
-        — Climatisation avec installation offerte
-        <a href="/products.html?cat=Climatisation">Voir les offres →</a>
-    </div>
-
-    <!-- 1. TOP BAR (RED) -->
-    <div class="top-bar">
-        <div class="container flex-between">
-            <div class="flex gap-lg">
-                <span><i class="fas fa-truck"></i> LIVRAISON GRATUITE SUR TOUT MARRAKECH</span>
-                <span><i class="fas fa-phone"></i> +212 699-705617</span>
+    <!-- 1️⃣ TOP BAR (AliExpress Utility) -->
+    <div class="top-utility-bar">
+        <div class="container top-utility-inner">
+            <div class="top-utility-info">
+                <a href="#"><i class="fas fa-mobile-screen-button"></i> Télécharger l'App</a>
+                <span style="margin-left: 20px;"><i class="fas fa-truck"></i> Livraison gratuite Marrakech</span>
             </div>
-            <div class="flex gap-lg">
-                <a href="https://www.facebook.com/share/g/18L9fxx9pG/" target="_blank" rel="noopener"><i class="fab fa-facebook-f"></i></a>
-                <a href="https://instagram.com" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
-                <a href="https://wa.me/212699705617" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i></a>
-                <a href="/admin-login.html" style="opacity: 0.5;">ADMIN</a>
+            <div class="top-utility-links">
+                <a href="#"><i class="fas fa-shield-halved"></i> Protection acheteur</a>
+                <a href="/admin-login.html">Aide</a>
+                <a href="/about.html">Aide</a>
+                <a href="#"><i class="fas fa-globe"></i> FR / MAD</a>
+                <a href="#"><i class="far fa-user"></i> Se connecter / S'inscrire</a>
             </div>
         </div>
     </div>
 
-    <!-- 2. MAIN HEADER -->
-    <header class="main-header">
-        <div class="container flex-between gap-xl">
-            <i class="fas fa-bars mobile-menu-btn" onclick="toggleMobileDrawer()"></i>
-            <a href="/" class="nav-logo">MARRAKECH<span>.LUXE</span></a>
+    <!-- 2️⃣ HEADER (AliExpress Logic) -->
+    <header class="header-main">
+        <div class="container header-inner">
+            <a href="/" class="header-logo">MARRAKECH<span>.LUXE</span></a>
 
-            <div class="search-bar">
-                <i class="fas fa-search search-icon"></i>
-                <input type="text" id="global-search" placeholder="Rechercher un produit, une catégorie, une marque...">
-                <button class="search-btn">Rechercher</button>
+            <div class="header-search">
+                <div class="search-wrap">
+                    <input type="text" id="global-search" placeholder="Je recherche...">
+                    <button class="search-btn"><i class="fas fa-search"></i></button>
+                </div>
                 <div class="search-suggestions" id="search-suggestions"></div>
             </div>
 
-            <div class="nav-actions">
-                <div class="theme-toggle-container"></div>
-                <div class="nav-action-item">
-                    <i class="fas fa-user-circle"></i>
+            <div class="header-actions">
+                <div class="header-action-item">
+                    <i class="far fa-user"></i>
                     <span>Compte</span>
                 </div>
-                <div class="nav-action-item" onclick="window.location.href='/products.html?wishlist=true'">
-                    <i class="fas fa-heart"></i>
+                <div class="header-action-item" onclick="window.location.href='/products.html?wishlist=true'">
+                    <i class="far fa-heart"></i>
                     <span>Favoris</span>
-                    <span id="wishlist-badge" class="cart-badge" style="background: var(--accent-red); display: none;">0</span>
                 </div>
-                <div class="nav-action-item cart-icon-wrapper" onclick="toggleCartDrawer()">
-                    <i class="fas fa-shopping-basket"></i>
+                <div class="header-action-item" onclick="toggleCartDrawer()">
+                    <div class="cart-icon-wrap">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-badge">0</span>
+                    </div>
                     <span>Panier</span>
-                    <span class="cart-badge">0</span>
                 </div>
             </div>
-            <i class="fas fa-search mobile-search-btn" onclick="toggleMobileSearch()"></i>
-        </div>
-        <div class="mobile-search-overlay" id="mobile-search-overlay">
-            <input type="text" placeholder="Rechercher..." id="mobile-search-input">
-            <div class="search-suggestions" id="mobile-suggestions"></div>
         </div>
     </header>
 
-    <!-- 3. SECONDARY NAVBAR -->
-    <nav class="secondary-nav">
-        <div class="container flex">
-            <button class="cat-toggle-btn" id="mega-menu-btn">
-                <i class="fas fa-bars"></i> NOS CATÉGORIES
-            </button>
-            <div class="mega-menu" id="mega-menu">
-                <div class="mega-menu-grid">
-                    <a href="/products.html?cat=Electroménager" class="mega-item">
-                        <i class="fas fa-refrigerator"></i>
-                        <span>Electroménager</span>
-                    </a>
-                    <a href="/products.html?cat=TV" class="mega-item">
-                        <i class="fas fa-tv"></i>
-                        <span>TV & Audio</span>
-                    </a>
-                    <a href="/products.html?cat=Climatisation" class="mega-item">
-                        <i class="fas fa-wind"></i>
-                        <span>Climatisation</span>
-                    </a>
-                    <a href="/products.html?cat=Cuisine" class="mega-item">
-                        <i class="fas fa-blender"></i>
-                        <span>Cuisine</span>
-                    </a>
-                    <a href="/products.html?cat=Maquillage" class="mega-item">
-                        <i class="fas fa-spa"></i>
-                        <span>Beauté & Soin</span>
-                    </a>
-                </div>
-            </div>
-            <div class="mega-nav-links">
-                <a href="/products.html?cat=Electroménager">Electroménager</a>
-                <a href="/products.html?cat=TV">TV & Audio</a>
-                <a href="/products.html?cat=Climatisation">Climatisation</a>
-                <a href="/products.html?cat=Cuisine">Cuisine</a>
-                <a href="/products.html?cat=Maquillage">Beauté & Soin</a>
-                <a href="/products.html?cat=Plastique">Plastique</a>
-                <a href="/products.html" style="color: var(--accent-red); font-weight: 900;">PROMOTIONS %</a>
-            </div>
+    <!-- 3️⃣ NAVBAR -->
+    <nav class="nav-bar">
+        <div class="container nav-inner">
+            <a href="/products.html?cat=Electroménager" class="nav-link">Electroménager</a>
+            <a href="/products.html?cat=TV" class="nav-link">TV & Audio</a>
+            <a href="/products.html?cat=Climatisation" class="nav-link">Climatisation</a>
+            <a href="/products.html?cat=Cuisine" class="nav-link">Cuisine</a>
+            <a href="/products.html?cat=Maquillage" class="nav-link">Beauté</a>
+            <a href="/products.html?cat=Plastique" class="nav-link">Plastique</a>
+            <a href="/products.html" class="nav-link promo">Promotions</a>
         </div>
     </nav>
 
-    <!-- 4. TRUST BAR -->
-    <div class="trust-bar">
-        <div class="container trust-bar-inner">
-            <div class="trust-item"><i class="fas fa-truck-fast"></i> Livraison gratuite à Marrakech</div>
-            <div class="trust-item"><i class="fas fa-shield-alt"></i> Garantie constructeur incluse</div>
-            <div class="trust-item"><i class="fas fa-tools"></i> Installation climatisation offerte</div>
-            <div class="trust-item"><i class="fab fa-whatsapp"></i> Support WhatsApp 7j/7</div>
-            <div class="trust-item"><i class="fas fa-hand-holding-usd"></i> Paiement à la livraison</div>
-        </div>
-    </div>
-
-    <div class="container" style="padding-top: 1.5rem;">
-        <div class="hero-grid animate-fade" id="hero-banner-container">
-            <div class="hero-main glass animate-slide-up" style="background: var(--accent-slate);">
-                <img src="" class="hero-banner-img img-responsive" id="hero-main-img" alt="MARRAKECH LUXE offre principale" loading="eager">
-                <div class="hero-overlay">
-                    <span class="hero-tag animate-slide-up stagger-1" id="hero-main-tag">SÉLECTION LUXE</span>
-                    <h1 class="hero-title-main animate-slide-up stagger-2" id="hero-main-title">L'ÉLÉGANCE À <span class='text-red'>MARRAKECH</span></h1>
-                    <div class="animate-slide-up stagger-3">
-                        <a href="/products.html" class="btn btn-primary btn-lg" style="width: auto;">
-                            DÉCOUVRIR LA COLLECTION <i class="fas fa-arrow-right" style="margin-left:8px;"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="hero-side">
-                <div class="hero-small glass animate-slide-right stagger-2" onclick="window.location.href='/products.html?cat=Electroménager'" style="cursor:pointer;">
-                    <img src="" class="hero-banner-img" id="hero-side1-img" alt="Electroménager">
-                    <div class="hero-overlay" style="padding: 1.5rem; cursor:pointer;">
-                        <h3 style="font-size: 1.1rem;" id="hero-side1-title">ÉLECTROMÉNAGER PREMIUM</h3>
-                        <a href="/products.html?cat=Electroménager" class="text-sm text-red text-bold" style="margin-top:0.3rem; display:block">DÉCOUVRIR →</a>
-                    </div>
-                </div>
-                <div class="hero-small glass animate-slide-right stagger-3" onclick="window.location.href='/products.html?cat=Maquillage'" style="cursor:pointer;">
-                    <img src="" class="hero-banner-img" id="hero-side2-img" alt="Beauté & Soin">
-                    <div class="hero-overlay" style="padding: 1.5rem; cursor:pointer;">
-                        <h3 style="font-size: 1.1rem;" id="hero-side2-title">SOINS & BEAUTÉ LUXE</h3>
-                        <a href="/products.html?cat=Maquillage" class="text-sm text-red text-bold" style="margin-top:0.3rem; display:block">DÉCOUVRIR →</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 6. CATEGORY ICON STRIP -->
     <div class="container">
-        <section class="cat-strip animate-slide">
-            <div class="cat-item" onclick="window.location.href='/products.html?cat=Electroménager'">
-                <div class="cat-icon-circle"><i class="fas fa-refrigerator"></i></div>
-                <span class="cat-label">Électroménager</span>
-            </div>
-            <div class="cat-item" onclick="window.location.href='/products.html?cat=Climatisation'">
-                <div class="cat-icon-circle"><i class="fas fa-wind"></i></div>
-                <span class="cat-label">Climatisation</span>
-            </div>
-            <div class="cat-item" onclick="window.location.href='/products.html?cat=Cuisine'">
-                <div class="cat-icon-circle"><i class="fas fa-blender"></i></div>
-                <span class="cat-label">Cuisine</span>
-            </div>
-            <div class="cat-item" onclick="window.location.href='/products.html?cat=Maquillage'">
-                <div class="cat-icon-circle"><i class="fas fa-spa"></i></div>
-                <span class="cat-label">Beauté</span>
-            </div>
-            <div class="cat-item" onclick="window.location.href='/products.html?cat=Plastique'">
-                <div class="cat-icon-circle"><i class="fas fa-box-open"></i></div>
-                <span class="cat-label">Plastique</span>
-            </div>
-            <div class="cat-item" onclick="window.location.href='/products.html?cat=Nettoyage'">
-                <div class="cat-icon-circle"><i class="fas fa-broom"></i></div>
-                <span class="cat-label">Nettoyage</span>
-            </div>
-            <div class="cat-item" onclick="window.location.href='/products.html'">
-                <div class="cat-icon-circle" style="background: var(--accent-red); color: white;"><i class="fas fa-percentage"></i></div>
-                <span class="cat-label" style="color: var(--accent-red);">Promos</span>
+        <!-- 4️⃣ MAIN HERO SECTION -->
+        <section class="ali-hero-section">
+            <!-- LEFT SIDEBAR -->
+            <aside class="side-categories">
+                <div class="cat-item" onclick="window.location.href='/products.html?cat=Electroménager'">
+                    <i class="fas fa-plug"></i> Electroménager
+                    <div class="cat-submenu">
+                        <div class="cat-submenu-title">Electroménager</div>
+                        <div class="grid grid-2 gap-md">
+                            <ul>
+                                <li style="font-weight:700;margin-bottom:10px;color:#000;">Gros Electro</li>
+                                <li><a href="/products.html?tag=réfrigérateur">Réfrigérateurs</a></li>
+                                <li><a href="/products.html?tag=lave-linge">Lave-linge</a></li>
+                                <li><a href="/products.html?tag=cuisinière">Cuisinières</a></li>
+                            </ul>
+                            <ul>
+                                <li style="font-weight:700;margin-bottom:10px;color:#000;">Petit Electro</li>
+                                <li><a href="/products.html?tag=micro-ondes">Micro-ondes</a></li>
+                                <li><a href="/products.html?tag=mixeur">Mixeurs & Blenders</a></li>
+                                <li><a href="/products.html?tag=cafetiere">Machines à café</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="cat-item" onclick="window.location.href='/products.html?cat=Climatisation'">
+                    <i class="fas fa-wind"></i> Climatisation
+                    <div class="cat-submenu">
+                        <div class="cat-submenu-title">Climatisation</div>
+                        <ul>
+                            <li><a href="/products.html?search=split">Splits Inverter</a></li>
+                            <li><a href="/products.html?search=mobile">Climatiseurs Mobiles</a></li>
+                            <li><a href="/products.html?search=evaporateur">Rafraîchisseurs</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="cat-item" onclick="window.location.href='/products.html?cat=Cuisine'">
+                    <i class="fas fa-utensils"></i> Cuisine
+                    <div class="cat-submenu">
+                        <div class="cat-submenu-title">Art de la Cuisine</div>
+                        <ul>
+                            <li><a href="/products.html?tag=poele">Poêles & Casseroles</a></li>
+                            <li><a href="/products.html?tag=autocuiseur">Autocuiseurs</a></li>
+                            <li><a href="/products.html?tag=service">Services de table</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="cat-item" onclick="window.location.href='/products.html?cat=Maquillage'">
+                    <i class="fas fa-spa"></i> Beauté
+                    <div class="cat-submenu">
+                        <div class="cat-submenu-title">Beauté & Soin</div>
+                        <ul>
+                            <li><a href="/products.html?cat=Maquillage">Maquillage</a></li>
+                            <li><a href="/products.html?search=parfum">Parfums</a></li>
+                            <li><a href="/products.html?search=cheveux">Soin des cheveux</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="cat-item" onclick="window.location.href='/products.html?cat=Plastique'">
+                    <i class="fas fa-box-open"></i> Plastique
+                    <div class="cat-submenu">
+                        <div class="cat-submenu-title">Rangement Plastique</div>
+                    </div>
+                </div>
+                <div class="cat-item" onclick="window.location.href='/products.html?cat=Nettoyage'">
+                    <i class="fas fa-broom"></i> Nettoyage
+                </div>
+            </aside>
+
+            <!-- CENTER BANNER -->
+            <main class="hero-main">
+                <img src="assets/webp/hero_aliexpress.png" alt="Marrakech Luxe Banner">
+                <div class="hero-content">
+                    <h1>MIEUX VIVRE<br>AU MEILLEUR PRIX</h1>
+                    <p style="margin-top: 15px; font-weight: 500;">Livraison express à Marrakech et dans tout le Maroc.</p>
+                    <a href="/products.html" class="btn btn-primary" style="margin-top: 25px;">VOIR LES OFFRES</a>
+                </div>
+            </main>
+
+            <!-- RIGHT SIDEBAR (AliExpress Personal Section) -->
+            <div class="hero-promos">
+                <!-- User Greeting Card -->
+                <div class="user-promo-card">
+                    <div class="user-header">
+                        <div class="avatar-circle"><i class="fas fa-user-circle"></i></div>
+                        <p>Bienvenue sur Marrakech Luxe</p>
+                    </div>
+                    <div class="user-actions-grid">
+                        <button class="btn btn-primary btn-sm">Se connecter</button>
+                        <button class="btn btn-secondary btn-sm" style="background:#fff; color:#000; border:1px solid #ddd;">S'inscrire</button>
+                    </div>
+                </div>
+
+                <!-- Benefit Promo -->
+                <div class="benefit-card welcome">
+                    <p class="benefit-label">OFFRE DE BIENVENUE</p>
+                    <p class="benefit-title">Votre premier article dès <span>0,99 DH</span></p>
+                    <img src="assets/webp/promo_beauty.png" alt="Welcome Offer">
+                </div>
+
+                <!-- Benefit Promo 2 -->
+                <div class="benefit-card shipping">
+                    <p class="benefit-label">CHOICE</p>
+                    <p class="benefit-title">Livraison gratuite dès 100 DH</p>
+                    <div class="choice-tag">Choix de qualité</div>
+                </div>
             </div>
         </section>
-    </div>
 
-    <!-- 7. TOP VENTES -->
-    <div class="container products-row">
-        <div class="section-header">
-            <h2>
-                <span class="sec-icon"><i class="fas fa-fire"></i></span>
-                Top Ventes
-            </h2>
-            <a href="/products.html" class="see-all">Voir tout <i class="fas fa-arrow-right"></i></a>
-        </div>
-        <div id="top-ventes-grid" class="grid-6 gap-dense">
-            <!-- Populated by main.js -->
-        </div>
-    </div>
-
-    <!-- 8. CLIMATISATION SERVICE BANNER -->
-    <div class="container">
-        <div class="ac-service-banner">
-            <div>
-                <div class="ac-badge"><i class="fas fa-snowflake"></i> Service Professional</div>
-                <h3>Climatisation avec<br>installation <span style="color: #60a5fa;">100% offerte</span></h3>
-                <p>Nos techniciens certifiés installent votre climatiseur à Marrakech, rapidement et sans frais supplémentaires.</p>
-                <div class="ac-features">
-                    <div class="ac-feature"><i class="fas fa-check-circle"></i> Installation gratuite</div>
-                    <div class="ac-feature"><i class="fas fa-check-circle"></i> Techniciens certifiés</div>
-                    <div class="ac-feature"><i class="fas fa-check-circle"></i> Garantie 2 ans</div>
+        <!-- 5️⃣ ADVANTAGES SECTION -->
+        <section class="advantages">
+            <div class="advantages-grid">
+                <div class="adv-item">
+                    <div class="adv-icon"><i class="fas fa-truck-fast"></i></div>
+                    <div class="adv-text">
+                        <h4>Livraison Gratuite</h4>
+                        <p>À Marrakech</p>
+                    </div>
+                </div>
+                <div class="adv-item">
+                    <div class="adv-icon"><i class="fas fa-shield-halved"></i></div>
+                    <div class="adv-text">
+                        <h4>Paiement Sécurisé</h4>
+                        <p>100% garanti</p>
+                    </div>
+                </div>
+                <div class="adv-item">
+                    <div class="adv-icon"><i class="fas fa-rotate-left"></i></div>
+                    <div class="adv-text">
+                        <h4>Retours Faciles</h4>
+                        <p>Sous 14 jours</p>
+                    </div>
+                </div>
+                <div class="adv-item">
+                    <div class="adv-icon"><i class="fas fa-headset"></i></div>
+                    <div class="adv-text">
+                        <h4>Support 24/7</h4>
+                        <p>Aide en ligne</p>
+                    </div>
                 </div>
             </div>
-            <div style="position: relative; z-index: 1;">
-                <a href="/products.html?cat=Climatisation" style="display: inline-flex; align-items: center; gap: 0.75rem; background: var(--accent-red); color: white; padding: 1rem 2rem; border-radius: var(--radius-sm); font-weight: 900; font-size: 0.85rem; text-transform: uppercase; text-decoration: none; box-shadow: 0 8px 25px rgba(225,29,72,0.4); transition: all 0.2s;" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform=''">
-                    <i class="fas fa-wind"></i> VOIR LES CLIMATISEURS
-                </a>
-            </div>
-        </div>
-    </div>
+        </section>
 
-    <!-- 9. GRANDES PROMOTIONS -->
-    <div class="container products-row">
-        <div class="section-header promo">
-            <h2>
-                <span class="sec-icon" style="background: rgba(225,29,72,0.1)"><i class="fas fa-tag"></i></span>
-                Grandes Promotions
-            </h2>
-            <a href="/products.html" class="see-all">Voir tout <i class="fas fa-arrow-right"></i></a>
+        <!-- 6️⃣ PRODUCTS SECTION -->
+        <div class="product-section-header">
+            <h2 class="product-section-title">Plus de produits à découvrir</h2>
         </div>
-        <div id="promotions-grid" class="grid-6 gap-dense">
-            <!-- Populated by main.js -->
+        <div id="ali-product-grid" class="ali-product-grid">
+            <!-- Populated by js/main.js -->
         </div>
-    </div>
 
-    <!-- 10. CATEGORY BANNERS PAIR -->
-    <div class="container">
-        <div class="cat-banner-pair">
-            <div class="cat-banner" onclick="window.location.href='/products.html?cat=Cuisine'">
-                <img src="assets/webp/kitchen_cleaning.webp" alt="Cuisine & Maison" class="cat-banner-img">
-                <div class="cat-banner-overlay">
-                    <h3>Cuisine & Maison</h3>
-                    <span>Ustensiles, Sets de table, Rangement</span>
-                    <div class="cat-banner-arrow"><i class="fas fa-arrow-right"></i> Découvrir</div>
-                </div>
-            </div>
-            <div class="cat-banner" onclick="window.location.href='/products.html?cat=Maquillage'">
-                <img src="assets/webp/makeup.webp" alt="Beauté & Soin" class="cat-banner-img">
-                <div class="cat-banner-overlay">
-                    <h3>Beauté & Soin</h3>
-                    <span>Maquillage, Palettes, Fond de teint</span>
-                    <div class="cat-banner-arrow"><i class="fas fa-arrow-right"></i> Découvrir</div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 11. NOUVEAUTÉS -->
-    <div class="container products-row">
-        <div class="section-header">
-            <h2>
-                <span class="sec-icon"><i class="fas fa-star"></i></span>
-                Nouveautés
-            </h2>
-            <a href="/products.html" class="see-all">Voir tout <i class="fas fa-arrow-right"></i></a>
-        </div>
-        <div id="nouveautes-grid" class="grid-6 gap-dense">
-            <!-- Populated by main.js -->
-        </div>
-    </div>
-
-    <!-- 12. BRANDS STRIP -->
-    <div class="container" style="padding-bottom: 3rem;">
-        <div class="section-header">
-            <h2>
-                <span class="sec-icon"><i class="fas fa-award"></i></span>
-                Nos Marques Partenaires
-            </h2>
-        </div>
-        <div class="brand-strip">
-            <div>SAMSUNG</div>
-            <div>LG</div>
-            <div>BOSCH</div>
-            <div>WHIRLPOOL</div>
-            <div>SONY</div>
-            <div>MOULINEX</div>
-            <div>PHILIPS</div>
-        </div>
     </div>
 
     <!-- FOOTER -->
@@ -312,137 +234,58 @@
         <div class="container">
             <div class="footer-grid">
                 <div class="footer-brand">
-                    <a href="/" class="nav-logo" style="color:white">MARRAKECH<span>.LUXE</span></a>
-                    <p>Votre boutique de confiance à Marrakech pour l'électroménager, la technologie et la beauté. Service client disponible 7/7.</p>
-                    <div style="display: flex; gap: 0.75rem; margin-top: 1.5rem;">
-                        <a href="https://www.facebook.com/share/g/18L9fxx9pG/" target="_blank" rel="noopener" style="width:36px;height:36px;background:rgba(255,255,255,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;transition:background 0.2s;" onmouseover="this.style.background='#1877F2'" onmouseout="this.style.background='rgba(255,255,255,0.1)'"><i class="fab fa-facebook-f"></i></a>
-                        <a href="https://instagram.com" target="_blank" rel="noopener" style="width:36px;height:36px;background:rgba(255,255,255,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;transition:background 0.2s;" onmouseover="this.style.background='#E1306C'" onmouseout="this.style.background='rgba(255,255,255,0.1)'"><i class="fab fa-instagram"></i></a>
-                        <a href="https://wa.me/212699705617" target="_blank" rel="noopener" style="width:36px;height:36px;background:rgba(255,255,255,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;transition:background 0.2s;" onmouseover="this.style.background='#25D366'" onmouseout="this.style.background='rgba(255,255,255,0.1)'"><i class="fab fa-whatsapp"></i></a>
-                    </div>
+                    <a href="/" class="header-logo">MARRAKECH<span>.LUXE</span></a>
+                    <p style="margin-top: 20px;">La marketplace de référence à Marrakech. Qualité, prix et service client irréprochable.</p>
                 </div>
                 <div class="footer-col">
-                    <h5>RAYONS</h5>
+                    <h5>SHOPPING</h5>
                     <ul>
-                        <li><a href="/products.html?cat=Electroménager">Electroménager</a></li>
-                        <li><a href="/products.html?cat=TV">TV & Audio</a></li>
-                        <li><a href="/products.html?cat=Climatisation">Climatisation</a></li>
-                        <li><a href="/products.html?cat=Cuisine">Cuisine</a></li>
-                        <li><a href="/products.html?cat=Maquillage">Beauté & Soin</a></li>
-                        <li><a href="/products.html?cat=Plastique">Plastique</a></li>
+                        <li><a href="/products.html">Tous les produits</a></li>
+                        <li><a href="/promotions.html">Promotions</a></li>
+                        <li><a href="/new-arrivals.html">Nouveautés</a></li>
                     </ul>
                 </div>
                 <div class="footer-col">
-                    <h5>SUPPORT</h5>
+                    <h5>AIDE</h5>
                     <ul>
                         <li><a href="/contact.html">Contactez-nous</a></li>
-                        <li><a href="/about.html">Notre histoire</a></li>
-                        <li><a href="/cart.html">Mon panier</a></li>
-                        <li><a href="/checkout.html">Commander</a></li>
-                        <li><a href="https://wa.me/212699705617" target="_blank">Chat WhatsApp</a></li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h5>CONTACT</h5>
-                    <ul>
-                        <li><i class="fas fa-map-marker-alt"></i> Guéliz, Marrakech, Maroc</li>
-                        <li><i class="fas fa-phone"></i> +212 699-705617</li>
-                        <li><i class="fas fa-envelope"></i> contact@el-wali-shop.work.gd</li>
-                        <li style="margin-top: 0.5rem;"><i class="fas fa-clock"></i> Lun–Sam : 09:30–19:30</li>
+                        <li><a href="/shipping.html">Livraison</a></li>
+                        <li><a href="/returns.html">Retours</a></li>
                     </ul>
                 </div>
             </div>
             <div class="footer-bottom">
-                &copy; <span id="current-year"></span> MARRAKECH LUXE. Tous droits réservés. &nbsp;·&nbsp;
-                <a href="/about.html" style="opacity:0.6; color:inherit;">À propos</a> &nbsp;·&nbsp;
-                <a href="/contact.html" style="opacity:0.6; color:inherit;">Contact</a>
+                &copy; <span id="current-year"></span> MARRAKECH LUXE. Tous droits réservés.
             </div>
         </div>
     </footer>
-
-    <!-- Mobile Drawer -->
-    <div id="mobile-drawer-backdrop" onclick="toggleMobileDrawer()"></div>
-    <div class="mobile-nav-drawer" id="mobile-nav-drawer">
-        <div class="mobile-drawer-header">
-            <a href="/" class="nav-logo" style="font-size: 1.2rem;">MARRAKECH<span>.LUXE</span></a>
-            <i class="fas fa-times mobile-drawer-close" onclick="toggleMobileDrawer()"></i>
-        </div>
-        <div class="mobile-drawer-links">
-            <a href="/products.html?cat=Electroménager"><i class="fas fa-refrigerator"></i> Electroménager</a>
-            <a href="/products.html?cat=TV"><i class="fas fa-tv"></i> TV & Audio</a>
-            <a href="/products.html?cat=Climatisation"><i class="fas fa-wind"></i> Climatisation</a>
-            <a href="/products.html?cat=Cuisine"><i class="fas fa-blender"></i> Cuisine</a>
-            <a href="/products.html?cat=Maquillage"><i class="fas fa-spa"></i> Beauté & Soin</a>
-            <a href="/products.html?cat=Plastique"><i class="fas fa-box-open"></i> Plastique</a>
-            <a href="/products.html" style="color: var(--accent-red);"><i class="fas fa-percentage"></i> Promotions</a>
-            <a href="/contact.html"><i class="fas fa-headset"></i> Contact</a>
-            <a href="/about.html"><i class="fas fa-info-circle"></i> À propos</a>
-        </div>
-    </div>
-
-    <!-- Mobile Bottom Nav -->
-    <div class="mobile-bottom-nav">
-        <a href="/" class="mobile-bottom-nav-item active">
-            <i class="fas fa-home"></i>
-            <span>Accueil</span>
-        </a>
-        <a href="#" class="mobile-bottom-nav-item" onclick="toggleMobileDrawer(); return false;">
-            <i class="fas fa-th-large"></i>
-            <span>Catégories</span>
-        </a>
-        <a href="/cart.html" class="mobile-bottom-nav-item">
-            <i class="fas fa-shopping-basket"></i>
-            <span>Panier</span>
-        </a>
-        <a href="/contact.html" class="mobile-bottom-nav-item">
-            <i class="fas fa-headset"></i>
-            <span>Support</span>
-        </a>
-    </div>
-
-    <!-- Quick View Modal -->
-    <div class="modal-overlay" id="quick-view-modal" onclick="if(event.target === this) QuickView.close()">
-        <div class="modal" id="quick-view-content">
-            <!-- Populated by QuickView.js -->
-        </div>
-    </div>
 
     <!-- Side-Drawer Cart -->
     <div id="cart-drawer-backdrop" onclick="toggleCartDrawer()"></div>
     <div class="cart-drawer" id="cart-drawer">
         <div class="cart-drawer-header">
-            <h3>VOTRE PANIER</h3>
+            <h3>PANIER</h3>
             <i class="fas fa-times" onclick="toggleCartDrawer()" style="cursor:pointer"></i>
         </div>
         <div class="cart-drawer-items" id="cart-drawer-items">
             <!-- Populated by js/cart.js -->
         </div>
-
-        <div id="cart-shipping-progress"></div>
-
-        <div class="cart-drawer-footer" id="cart-drawer-footer">
-            <div class="flex-between" style="margin-bottom:1.5rem">
-                <span class="text-bold">TOTAL</span>
-                <span id="cart-drawer-total" class="text-red text-bold" style="font-size:1.5rem">0 DH</span>
+        <div class="cart-drawer-footer">
+            <div class="flex-between" style="margin-bottom: 20px;">
+                <span style="font-weight: 700;">TOTAL</span>
+                <span id="cart-drawer-total" style="color: var(--ali-red); font-weight: 900; font-size: 24px;">0 DH</span>
             </div>
-            <button class="btn btn-primary w-full btn-lg" onclick="window.location.href='/checkout.html'">
-                COMMANDER MAINTENANT
-            </button>
-            <button class="btn btn-secondary w-full" style="margin-top:1rem" onclick="toggleCartDrawer()">
-                CONTINUER MES ACHATS
-            </button>
+            <button class="btn btn-primary w-full" onclick="window.location.href='/checkout.html'">COMMANDER</button>
         </div>
     </div>
 
-    <div id="scroll-progress" class="scroll-progress"></div>
     <div id="toast-container"></div>
 
-    <script src="js/config.js?v=2.1"></script>
-    <script src="js/events.js?v=2.1"></script>
-    <script src="js/products.js?v=2.1"></script>
-    <script src="js/cart.js?v=2.1"></script>
-    <script src="js/wishlist.js?v=2.1"></script>
-    <script src="js/QuickView.js?v=2.1"></script>
-    <script src="js/ThemeToggle.js?v=2.1"></script>
-    <script src="js/main.js?v=2.1"></script>
+    <script src="js/config.js?v=3.5"></script>
+    <script src="js/products.js?v=3.5"></script>
+    <script src="js/cart.js?v=3.5"></script>
+    <script src="js/wishlist.js?v=3.5"></script>
+    <script src="js/ThemeToggle.js?v=3.5"></script>
+    <script src="js/main.js?v=3.5"></script>
 </body>
 </html>

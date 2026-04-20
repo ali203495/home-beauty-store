@@ -15,14 +15,14 @@
     <meta property="og:image" content="https://el-wali-shop.work.gd/assets/webp/hero.webp">
     <meta property="og:url" content="https://el-wali-shop.work.gd/about">
 
-    <link rel="stylesheet" href="css/index.css">
-    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/index.css?v=2.5">
+    <link rel="stylesheet" href="css/components.css?v=2.5">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body>
 
-    <!-- 1. TOP BAR (RED) -->
+    <!-- 1. TOP BAR (DARK) -->
     <div class="top-bar">
         <div class="container flex-between">
             <div class="flex gap-lg">
@@ -30,7 +30,7 @@
                 <span><i class="fas fa-phone"></i> +212 699-705617</span>
             </div>
             <div class="flex gap-lg">
-                <a href="https://facebook.com" target="_blank" rel="noopener"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://www.facebook.com/share/g/18L9fxx9pG/" target="_blank" rel="noopener"><i class="fab fa-facebook-f"></i></a>
                 <a href="https://instagram.com" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
                 <a href="https://wa.me/212699705617" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i></a>
                 <a href="/admin-login.html" style="opacity: 0.5;">ADMIN</a>
@@ -46,7 +46,7 @@
 
             <div class="search-bar">
                 <i class="fas fa-search search-icon"></i>
-                <input type="text" id="global-search" placeholder="Rechercher un produit, une marque, une catégorie...">
+                <input type="text" id="global-search" placeholder="Rechercher un produit, une catégorie, une marque...">
                 <button class="search-btn">Rechercher</button>
                 <div class="search-suggestions" id="search-suggestions"></div>
             </div>
@@ -74,33 +74,68 @@
     <!-- 3. SECONDARY NAVBAR -->
     <nav class="secondary-nav">
         <div class="container flex">
-            <button class="cat-toggle-btn" onclick="window.location.href='/'">
-                <i class="fas fa-bars"></i> NOS RAYONS
+            <button class="cat-toggle-btn" id="mega-menu-btn">
+                <i class="fas fa-bars"></i> NOS CATÉGORIES
             </button>
+            <div class="mega-menu" id="mega-menu">
+                <div class="mega-menu-grid">
+                    <a href="/products.html?cat=Electroménager" class="mega-item">
+                        <i class="fas fa-refrigerator"></i>
+                        <span>Electroménager</span>
+                    </a>
+                    <a href="/products.html?cat=TV" class="mega-item">
+                        <i class="fas fa-tv"></i>
+                        <span>TV & Audio</span>
+                    </a>
+                    <a href="/products.html?cat=Climatisation" class="mega-item">
+                        <i class="fas fa-wind"></i>
+                        <span>Climatisation</span>
+                    </a>
+                    <a href="/products.html?cat=Cuisine" class="mega-item">
+                        <i class="fas fa-blender"></i>
+                        <span>Cuisine</span>
+                    </a>
+                    <a href="/products.html?cat=Maquillage" class="mega-item">
+                        <i class="fas fa-spa"></i>
+                        <span>Beauté & Soin</span>
+                    </a>
+                </div>
+            </div>
             <div class="mega-nav-links">
                 <a href="/products.html?cat=Electroménager">Electroménager</a>
-                <a href="/products.html?cat=TV">TV &amp; Audio</a>
+                <a href="/products.html?cat=TV">TV & Audio</a>
                 <a href="/products.html?cat=Climatisation">Climatisation</a>
                 <a href="/products.html?cat=Cuisine">Cuisine</a>
-                <a href="/products.html?cat=Beauté">Beauté &amp; Soin</a>
+                <a href="/products.html?cat=Maquillage">Beauté & Soin</a>
+                <a href="/products.html?cat=Plastique">Plastique</a>
                 <a href="/products.html" style="color: var(--accent-red); font-weight: 900;">PROMOTIONS %</a>
             </div>
         </div>
     </nav>
-
-    <!-- Page Hero Banner -->
-    <div style="background: linear-gradient(135deg, var(--accent-slate) 0%, #1e293b 100%); padding: 4rem 0; text-align: center; color: white; position: relative; overflow: hidden;">
-        <div style="position: absolute; inset: 0; background: url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"60\" height=\"60\"><circle cx=\"30\" cy=\"30\" r=\"1\" fill=\"rgba(225,29,72,0.3)\"/></svg>') repeat; opacity: 0.5;"></div>
-        <div class="container" style="position: relative;">
-            <div class="breadcrumb" style="font-size: 0.8rem; margin-bottom: 1rem; opacity: 0.7;">
-                <a href="/" style="text-decoration: underline; color: white;">Accueil</a>
-                <span style="margin: 0 0.5rem;">/</span>
-                <span>À Propos</span>
-            </div>
-            <h1 style="font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 900; letter-spacing: -0.03em; margin-bottom: 1rem;">Notre <span style="color: var(--accent-red);">Histoire</span></h1>
-            <p style="font-size: 1.1rem; opacity: 0.8; max-width: 600px; margin: 0 auto;">L'excellence de l'électroménager et de la beauté au cœur de Marrakech depuis notre création.</p>
+    
+    <!-- 4. TRUST BAR -->
+    <div class="trust-bar">
+        <div class="container trust-bar-inner">
+            <div class="trust-item"><i class="fas fa-truck"></i> Livraison gratuite à Marrakech</div>
+            <div class="trust-item"><i class="fas fa-shield-check"></i> Garantie constructeur incluse</div>
+            <div class="trust-item"><i class="fas fa-tools"></i> Installation climatisation offerte</div>
+            <div class="trust-item"><i class="fab fa-whatsapp"></i> Support WhatsApp 7j/7</div>
+            <div class="trust-item"><i class="fas fa-hand-holding-usd"></i> Paiement à la livraison</div>
         </div>
     </div>
+
+    <!-- Page Hero Banner -->
+    <header class="page-hero-premium">
+        <div class="container">
+            <div class="breadcrumb">
+                <a href="/">ACCUEIL</a>
+                <span class="breadcrumb-sep">/</span>
+                <span>NOTRE HISTOIRE</span>
+            </div>
+            <h1>NOTRE <span>HISTOIRE</span></h1>
+            <p>L'excellence de l'électroménager et de la beauté à Marrakech depuis notre création.</p>
+        </div>
+    </header>
 
     <!-- Content Section -->
     <section class="section">

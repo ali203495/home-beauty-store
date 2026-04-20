@@ -11,7 +11,11 @@ const Cart = {
         localStorage.setItem(CART_KEY, JSON.stringify(this.items));
         this.updateBadge();
         // Dispatch event for other listeners
-        window.dispatchEvent(new CustomEvent('cartUpdated', { detail: this.items }));
+        window.dispatchEvent(new CustomEvent('cartUpdated', { detail: { 
+            items: this.items,
+            total: this.getTotal(),
+            count: this.getCount()
+        }}));
     },
 
     add(productId, quantity = 1) {
@@ -93,13 +97,13 @@ const Cart = {
 
         if (this.items.length === 0) {
             container.innerHTML = `
-                <div class="text-center" style="padding: 5rem 2rem; opacity: 0.8; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
-                    <div style="width: 80px; height: 80px; background: var(--bg-surface); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
-                        <i class="fas fa-shopping-basket" style="font-size: 2.2rem; color: var(--accent-red);"></i>
+                <div class="cart-empty-state">
+                    <div class="empty-icon-wrap">
+                        <i class="fas fa-shopping-basket"></i>
                     </div>
-                    <p style="font-weight: 900; font-size: 1rem; color: var(--accent-slate); letter-spacing: 0.1em; margin-bottom: 0.5rem;">VOTRE PANIER EST VIDE</p>
-                    <p class="text-muted" style="font-size: 0.85rem; margin-bottom: 2rem;">Il semblerait que vous n'ayez pas encore ajouté d'articles.</p>
-                    <button onclick="toggleCartDrawer()" class="btn btn-secondary btn-sm" style="width: 100%;">CONTINUER MES ACHATS</button>
+                    <p class="empty-title">VOTRE PANIER EST VIDE</p>
+                    <p class="empty-text">Continuez vos achats pour découvrir nos offres.</p>
+                    <button onclick="toggleCartDrawer()" class="btn btn-primary w-full">EXPLORER LA BOUTIQUE</button>
                 </div>
             `;
             if (footerCounter) footerCounter.textContent = '0 DH';
@@ -107,19 +111,23 @@ const Cart = {
         }
 
         container.innerHTML = this.items.map(item => `
-            <div class="cart-drawer-item animate-slide-right">
+            <div class="cart-drawer-item">
                 <div class="drawer-item-img">
                     <img src="${item.image}" alt="${item.name}">
                 </div>
                 <div class="drawer-item-info">
-                    <h4>${item.name}</h4>
-                    <div class="flex-between" style="margin-top:0.5rem">
+                    <div class="flex-between">
+                        <h4>${item.name}</h4>
+                        <button onclick="Cart.remove('${item.id}'); Cart.renderDrawer();" class="item-remove-btn">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="flex-between" style="margin-top: 10px;">
                         <span class="drawer-item-price">${item.price} DH</span>
-                        <div class="flex gap-sm align-center">
-                            <span class="text-xs text-muted">Qté: ${item.quantity}</span>
-                            <button onclick="Cart.remove('${item.id}')" style="border:none;background:none;color:var(--text-muted);cursor:pointer;font-size:0.8rem">
-                                <i class="fas fa-trash"></i>
-                            </button>
+                        <div class="quantity-controls">
+                            <button onclick="Cart.updateQuantity('${item.id}', ${item.quantity - 1}); Cart.renderDrawer();">-</button>
+                            <span>${item.quantity}</span>
+                            <button onclick="Cart.updateQuantity('${item.id}', ${item.quantity + 1}); Cart.renderDrawer();">+</button>
                         </div>
                     </div>
                 </div>
@@ -149,25 +157,16 @@ const Cart = {
 
         container.style.display = 'block';
         container.innerHTML = `
-            <div class="shipping-progress-wrapper" style="margin-bottom: 2rem; padding: 0 1.5rem;">
-                <div class="flex-between mb-sm" style="font-size: 0.75rem; font-weight: 700; letter-spacing: 0.05em; color: var(--accent-slate);">
+            <div class="shipping-progress-wrapper">
+                <div class="flex-between" style="font-size: 12px; font-weight: 700; color: var(--ali-text); margin-bottom: 8px;">
                     <span>${progress >= 100 ? 'LIVRAISON GRATUITE ATTEINTE !' : 'LIVRAISON GRATUITE'}</span>
-                    <span>${progress >= 100 ? '<i class="fas fa-check-circle text-success"></i>' : remaining.toLocaleString() + ' DH RESTANTS'}</span>
+                    <span style="color: var(--ali-red)">${progress >= 100 ? '✓' : remaining + ' DH RESTANTS'}</span>
                 </div>
-                <div class="progress-bar-bg" style="height: 6px; background: rgba(0,0,0,0.1); border-radius: 10px; overflow: hidden; position: relative;">
-                    <div class="progress-bar-fill ${progress >= 100 ? 'success' : 'pulse'}" 
-                         style="width: ${progress}%; height: 100%; height: 100%; background: ${progress >= 100 ? '#22c55e' : 'var(--accent-red)'}; transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);">
+                <div class="progress-bar-bg" style="height: 6px; background: #eee; border-radius: 3px; overflow: hidden;">
+                    <div class="progress-bar-fill" 
+                         style="width: ${progress}%; height: 100%; background: var(--ali-red); transition: width 0.5s ease;">
                     </div>
                 </div>
-                ${progress < 100 ? `
-                    <p style="font-size: 0.7rem; color: var(--text-muted); margin-top: 0.5rem; text-align: center;">
-                        Ajoutez <span style="color: var(--accent-red); font-weight: 800;">${remaining.toLocaleString()} DH</span> pour profiter de la livraison gratuite !
-                    </p>
-                ` : `
-                    <p style="font-size: 0.7rem; color: #16a34a; margin-top: 0.5rem; text-align: center; font-weight: 700;">
-                        Félicitations ! Vous bénéficiez de la livraison gratuite à domicile.
-                    </p>
-                `}
             </div>
         `;
     },
