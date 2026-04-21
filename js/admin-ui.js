@@ -26,18 +26,29 @@ window.AdminUI = {
 
     async checkBackendHealth() {
         const statusEl = document.getElementById('backend-status-indicator');
+        const dbStatusEl = document.getElementById('db-status-indicator');
         if (!statusEl) return;
+
         try {
-            const res = await fetch(`${CONFIG.apiBaseUrl}/health`);
+            const res = await fetch(`${CONFIG.apiBaseUrl}/api/health/detailed`);
             if (res.ok) {
-                statusEl.innerHTML = '<span class="status-dot online"></span> API EN LIGNE';
-                statusEl.style.color = '#22c55e';
+                const data = await res.json();
+                const isFullyOp = data.status === 'fully_operational';
+                
+                statusEl.innerHTML = `<span class="status-dot ${isFullyOp ? 'online' : 'degraded'}"></span> API: ${data.details.api.toUpperCase()}`;
+                statusEl.style.color = isFullyOp ? '#22c55e' : '#facc15';
+
+                if (dbStatusEl) {
+                    dbStatusEl.innerHTML = `<span class="status-dot ${data.details.database === 'connected' ? 'online' : 'offline'}"></span> DB: ${data.details.database.toUpperCase()}`;
+                    dbStatusEl.style.color = data.details.database === 'connected' ? '#22c55e' : '#ef4444';
+                }
             } else {
                 throw new Error();
             }
         } catch (e) {
-            statusEl.innerHTML = '<span class="status-dot offline"></span> API HORS LIGNE';
+            statusEl.innerHTML = '<span class="status-dot offline"></span> SYSTÈME HORS LIGNE';
             statusEl.style.color = '#ef4444';
+            if (dbStatusEl) dbStatusEl.innerHTML = '';
         }
     },
 

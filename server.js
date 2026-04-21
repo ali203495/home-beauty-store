@@ -20,23 +20,42 @@ const allowedOrigins = [
     'http://localhost:3000/',
     'http://localhost:5500',
     'https://home-beauty-store-19cf.vercel.app',
-    'https://home-beauty-store-19cf.vercel.app/'
+    'https://home-beauty-store-19cf.vercel.app/',
+    'https://home-beauty-store-api.onrender.com', // Self-ping
+    'https://el-wali-shop.vercel.app' // Potential custom domain
 ];
 
 app.use(cors({
     origin: function (origin, callback) {
-        // allow requests with no origin (like mobile apps or curl requests)
         if (!origin) return callback(null, true);
-        if (allowedOrigins.indexOf(origin) === -1) {
-            const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
-            return callback(new Error(msg), false);
-        }
-        return callback(null, true);
+        const isAllowed = allowedOrigins.some(o => origin.startsWith(o));
+        if (isAllowed) return callback(null, true);
+        
+        const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+        return callback(new Error(msg), false);
     },
     credentials: true
 }));
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, '/')));
+
+// --- CORE: SYSTEM MONITORING ---
+
+app.get('/health', (req, res) => res.status(200).json({ status: 'healthy', timestamp: new Date().toISOString() }));
+
+app.get('/api/health/detailed', async (req, res) => {
+    const dbConnected = await db.testConnection();
+    res.json({
+        status: dbConnected ? 'fully_operational' : 'degraded',
+        timestamp: new Date().toISOString(),
+        details: {
+            api: 'online',
+            database: dbConnected ? 'connected' : 'disconnected',
+            environment: process.env.NODE_ENV || 'development',
+            platform: process.env.VERCEL === '1' ? 'Vercel' : 'Standard Node'
+        }
+    });
+});
 
 // --- CORE: AUTHENTICATION ---
 

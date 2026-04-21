@@ -569,12 +569,45 @@
             .mobile-toggle { display: block; font-size: 1.25rem; }
         }
 
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 6px;
+            position: relative;
+        }
+        .status-dot.online { background: #22c55e; box-shadow: 0 0 8px #22c55e; }
+        .status-dot.offline { background: #ef4444; box-shadow: 0 0 8px #ef4444; }
+        .status-dot.degraded { background: #facc15; box-shadow: 0 0 8px #facc15; }
+        .status-dot.online::after {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            border: 2px solid #22c55e;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(2); opacity: 0; }
+        }
+
+        .system-health {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            border: 1px solid var(--border-subtle);
+            font-size: 0.65rem;
+            font-weight: 800;
+            letter-spacing: 0.05em;
+        }
+
         @media (max-width: 768px) {
-            .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
-            .search-pill { display: none; } /* Hide search pill on small mobile, rely on filter in tables */
-            .main-content { padding: 1.5rem; }
-            .top-nav { padding: 0 1.5rem; }
-            h1 { font-size: 1.5rem; }
+            .system-health { display: none; }
         }
     </style>
 </head>
@@ -660,6 +693,16 @@
                     <button class="lang-btn" onclick="I18n.setLang('ar')" id="lang-ar">AR</button>
                     <button class="lang-btn active" onclick="I18n.setLang('fr')" id="lang-fr">FR</button>
                     <button class="lang-btn" onclick="I18n.setLang('en')" id="lang-en">EN</button>
+                </div>
+                
+                <!-- System Health Indicators -->
+                <div class="system-health">
+                    <div id="backend-status-indicator" class="flex align-center">
+                        <span class="status-dot online"></span> API: SYNCING...
+                    </div>
+                    <div id="db-status-indicator" class="flex align-center">
+                        <span class="status-dot online"></span> DB: SYNCING...
+                    </div>
                 </div>
 
                 <div class="user-pill">

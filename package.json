@@ -2,8 +2,9 @@
   "name": "home-beauty-store",
   "version": "1.0.0",
   "description": "Professional E-commerce platform for high-end home appliances and beauty products in Marrakech. Optimized for mobile discovery and local WhatsApp-based ordering.",
-  "main": "gen_hash.js",
+  "main": "server.js",
   "scripts": {
+    "start": "node server.js",
     "build": "echo build_complete",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
