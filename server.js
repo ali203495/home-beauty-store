@@ -11,54 +11,73 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const JWT_SECRET = process.env.JWT_SECRET || 'mlh_super_secret_2026';
 
-// Health Check for Deployment Services (Render/Vercel)
-app.get('/health', (req, res) => res.status(200).json({ status: 'healthy', timestamp: new Date().toISOString() }));
+// --- MIDDLEWARE: LOGGING ---
+app.use((req, res, next) => {
+    console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+    next();
+});
 
-// Middleware
+// --- MIDDLEWARE: CORS ---
 const allowedOrigins = [
     'http://localhost:3000',
-    'http://localhost:3000/',
     'http://localhost:5500',
     'https://home-beauty-store-19cf.vercel.app',
-    'https://home-beauty-store-19cf.vercel.app/',
-    'https://home-beauty-store-api.onrender.com', // Self-ping
-    'https://el-wali-shop.vercel.app' // Potential custom domain
+    'https://home-beauty-store-api.onrender.com',
+    'https://el-wali-shop.vercel.app'
 ];
 
 app.use(cors({
     origin: function (origin, callback) {
+        // Allow requests with no origin (like mobile apps or curl)
         if (!origin) return callback(null, true);
-        const isAllowed = allowedOrigins.some(o => origin.startsWith(o));
-        if (isAllowed) return callback(null, true);
         
-        const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
-        return callback(new Error(msg), false);
+        const isAllowed = allowedOrigins.some(o => origin.startsWith(o)) || 
+                         origin.endsWith('.vercel.app') || 
+                         origin.endsWith('.onrender.com');
+
+        if (isAllowed) {
+            callback(null, true);
+        } else {
+            console.warn(`CORS Blocked: ${origin}`);
+            callback(new Error('Not allowed by CORS'));
+        }
     },
     credentials: true
 }));
+
 app.use(bodyParser.json());
+
+// Serving static files (Critical for Vercel/Render combined deployments)
 app.use(express.static(path.join(__dirname, '/')));
 
 // --- CORE: SYSTEM MONITORING ---
-
-app.get('/health', (req, res) => res.status(200).json({ status: 'healthy', timestamp: new Date().toISOString() }));
-
-app.get('/api/health/detailed', async (req, res) => {
-    const dbConnected = await db.testConnection();
-    res.json({
-        status: dbConnected ? 'fully_operational' : 'degraded',
+app.get('/api/health', (req, res) => {
+    res.status(200).json({ 
+        status: 'healthy', 
         timestamp: new Date().toISOString(),
-        details: {
-            api: 'online',
-            database: dbConnected ? 'connected' : 'disconnected',
-            environment: process.env.NODE_ENV || 'development',
-            platform: process.env.VERCEL === '1' ? 'Vercel' : 'Standard Node'
-        }
+        node_version: process.version
     });
 });
 
-// --- CORE: AUTHENTICATION ---
+app.get('/api/health/detailed', async (req, res) => {
+    try {
+        const dbConnected = await db.testConnection();
+        res.json({
+            status: dbConnected ? 'fully_operational' : 'degraded',
+            timestamp: new Date().toISOString(),
+            details: {
+                api: 'online',
+                database: dbConnected ? 'connected' : 'disconnected',
+                environment: process.env.NODE_ENV || 'production',
+                platform: process.env.VERCEL === '1' ? 'Vercel' : 'Standard Node'
+            }
+        });
+    } catch (err) {
+        res.status(500).json({ status: 'error', message: err.message });
+    }
+});
 
+// --- CORE: AUTHENTICATION ---
 const authenticateAdmin = (req, res, next) => {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -76,6 +95,10 @@ const authenticateAdmin = (req, res, next) => {
 
 app.post('/api/admin/login', async (req, res) => {
     const { username, password } = req.body;
+    if (!username || !password) {
+        return res.status(400).json({ error: 'Username et password requis' });
+    }
+
     try {
         const admin = await db.get('SELECT * FROM admins WHERE username = ?', [username]);
         if (!admin) return res.status(401).json({ error: 'Identifiants invalides' });
@@ -83,15 +106,23 @@ app.post('/api/admin/login', async (req, res) => {
         const isMatch = await bcrypt.compare(password, admin.passwordHash);
         if (!isMatch) return res.status(401).json({ error: 'Identifiants invalides' });
 
-        const token = jwt.sign({ id: admin.id, username: admin.username }, JWT_SECRET, { expiresIn: '8h' });
-        res.json({ token, admin: { username: admin.username, role: admin.role } });
+        const token = jwt.sign(
+            { id: admin.username, role: admin.role }, 
+            JWT_SECRET, 
+            { expiresIn: '24h' }
+        );
+
+        res.json({ 
+            token, 
+            admin: { username: admin.username, role: admin.role } 
+        });
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        console.error('Login Error:', err);
+        res.status(500).json({ error: 'Erreur interne du serveur' });
     }
 });
 
 // --- ENDPOINTS: PRODUCTS ---
-
 app.get('/api/products', async (req, res) => {
     try {
         const rows = await db.all('SELECT * FROM products WHERE visible = 1');
@@ -113,6 +144,11 @@ app.get('/api/products/:id', async (req, res) => {
 
 app.post('/api/admin/products', authenticateAdmin, async (req, res) => {
     const p = req.body;
+    // Simple validation
+    if (!p.id || !p.name || !p.price) {
+        return res.status(400).json({ error: 'Données produit incomplètes' });
+    }
+
     const query = `INSERT INTO products 
         (id, name, category, price, rating, reviews, image, badge, visible, description, specs, stock, lastUpdated) 
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -122,16 +158,12 @@ app.post('/api/admin/products', authenticateAdmin, async (req, res) => {
         description=EXCLUDED.description, specs=EXCLUDED.specs, stock=EXCLUDED.stock, lastUpdated=EXCLUDED.lastUpdated`;
     
     try {
-        await db.run(query, [p.id, p.name, p.category, p.price, p.rating, p.reviews, p.image, p.badge, p.visible, p.description, JSON.stringify(p.specs), p.stock, new Date().toISOString()]);
-        res.json({ success: true });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
-app.delete('/api/admin/products/:id', authenticateAdmin, async (req, res) => {
-    try {
-        await db.run('DELETE FROM products WHERE id = ?', [req.params.id]);
+        await db.run(query, [
+            p.id, p.name, p.category, p.price, p.rating, p.reviews, 
+            p.image, p.badge, p.visible, p.description, 
+            typeof p.specs === 'string' ? p.specs : JSON.stringify(p.specs), 
+            p.stock, new Date().toISOString()
+        ]);
         res.json({ success: true });
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -139,14 +171,17 @@ app.delete('/api/admin/products/:id', authenticateAdmin, async (req, res) => {
 });
 
 // --- ENDPOINTS: ORDERS ---
-
 app.post('/api/orders', async (req, res) => {
     const { order, items } = req.body;
+    if (!order || !items || !Array.isArray(items)) {
+        return res.status(400).json({ error: 'Commande invalide' });
+    }
+
     try {
-        const resOrder = await db.run(`INSERT INTO orders 
+        await db.run(`INSERT INTO orders 
             (id, date, total, status, customer_name, customer_phone, customer_address, customer_neighborhood) 
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)`, 
-            [order.id, order.date, order.total, order.status, order.customer.name, order.customer.phone, order.customer.address, order.customer.neighborhood]);
+            [order.id, order.date, order.total, order.status || 'Nouveau', order.customer.name, order.customer.phone, order.customer.address, order.customer.neighborhood]);
 
         for (let item of items) {
             await db.run(`INSERT INTO order_items (order_id, product_id, product_name, quantity, price) 
@@ -154,7 +189,8 @@ app.post('/api/orders', async (req, res) => {
         }
         res.json({ success: true, orderId: order.id });
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        console.error('Order Error:', err);
+        res.status(500).json({ error: 'Impossible d\'enregistrer la commande' });
     }
 });
 
@@ -167,45 +203,10 @@ app.get('/api/admin/orders', authenticateAdmin, async (req, res) => {
     }
 });
 
-app.get('/api/admin/orders/:id', authenticateAdmin, async (req, res) => {
-    try {
-        const order = await db.get('SELECT * FROM orders WHERE id = ?', [req.params.id]);
-        if (!order) return res.status(404).json({ error: 'Commande introuvable' });
-        const items = await db.all('SELECT * FROM order_items WHERE order_id = ?', [req.params.id]);
-        res.json({ ...order, items });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
-app.patch('/api/admin/orders/:id', authenticateAdmin, async (req, res) => {
-    const { status } = req.body;
-    try {
-        await db.run('UPDATE orders SET status = ? WHERE id = ?', [status, req.params.id]);
-        res.json({ success: true });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
-app.delete('/api/admin/orders/:id', authenticateAdmin, async (req, res) => {
-    try {
-        await db.run('DELETE FROM orders WHERE id = ?', [req.params.id]);
-        await db.run('DELETE FROM order_items WHERE order_id = ?', [req.params.id]);
-        res.json({ success: true });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
-app.get('/api/admin/stats', authenticateAdmin, async (req, res) => {
-    try {
-        const rows = await db.all('SELECT status, COUNT(*) as count, SUM(total) as revenue FROM orders GROUP BY status');
-        const prodCount = await db.get('SELECT COUNT(*) as productCount FROM products');
-        res.json({ orders: rows, products: prodCount });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
+// --- GLOBAL ERROR HANDLER ---
+app.use((err, req, res, next) => {
+    console.error('Unhandled Error:', err.stack);
+    res.status(500).json({ error: 'Quelque chose a mal tourné !' });
 });
 
 // Vercel Deployment Export
@@ -214,7 +215,7 @@ if (process.env.VERCEL === '1') {
 } else {
   app.listen(PORT, () => {
     console.log(`--- Marrakech Luxe Production Server ---`);
-    console.log(`Mode: Local Development (SQLite)`);
+    console.log(`Mode: ${process.env.NODE_ENV || 'development'}`);
     console.log(`Server running at http://localhost:${PORT}`);
   });
 }

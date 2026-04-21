@@ -114,7 +114,13 @@ img {
 .h-full { height: 100%; }
 .text-center { text-align: center; }
 .text-right { text-align: right; }
-.text-balance { text-wrap: balance; }
+.text-balance { 
+  text-wrap: wrap; 
+}
+
+@supports (text-wrap: balance) {
+  .text-balance { text-wrap: balance; }
+}
 
 .shadow-sm { box-shadow: var(--shadow-sm); }
 .shadow-md { box-shadow: var(--shadow-md); }
