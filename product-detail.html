@@ -5,8 +5,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Détails du Produit — MARRAKECH LUXE</title>
-  <link rel="stylesheet" href="css/index.css?v=2.5">
-  <link rel="stylesheet" href="css/components.css?v=2.5">
+  <link rel="stylesheet" href="css/index.css?v=4.0">
+  <link rel="stylesheet" href="css/components.css?v=4.0">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
@@ -29,41 +29,29 @@
         </div>
     </div>
 
-    <!-- 2. MAIN HEADER -->
-    <header class="main-header">
-        <div class="container flex-between gap-xl">
-            <i class="fas fa-bars mobile-menu-btn" onclick="toggleMobileDrawer()"></i>
-            <a href="/" class="nav-logo">MARRAKECH<span>.LUXE</span></a>
+    <!-- 2. MAIN HEADER (Unified) -->
+    <header class="header-main">
+        <div class="container header-inner">
+            <a href="/" class="header-logo">MARRAKECH<span>.LUXE</span></a>
 
-            <div class="search-bar">
-                <i class="fas fa-search search-icon"></i>
-                <input type="text" id="global-search" placeholder="Rechercher un produit, une catégorie, une marque...">
-                <button class="search-btn">Rechercher</button>
-                <div class="search-suggestions" id="search-suggestions"></div>
+            <div class="header-search">
+                <div class="search-wrap">
+                   <input type="text" id="global-search" placeholder="Rechercher un produit...">
+                   <button class="search-btn"><i class="fas fa-search"></i></button>
+                </div>
             </div>
 
-            <div class="nav-actions">
-                <div class="theme-toggle-container"></div>
-                <div class="nav-action-item">
-                    <i class="fas fa-user-circle"></i>
-                    <span>Compte</span>
-                </div>
-                <div class="nav-action-item" onclick="window.location.href='/products.html?wishlist=true'">
+            <div class="header-actions">
+                <div class="header-action-item" onclick="window.location.href='/products.html?wishlist=true'">
                     <i class="fas fa-heart"></i>
                     <span>Favoris</span>
-                    <span id="wishlist-badge" class="cart-badge" style="background: var(--accent-red); display: none;">0</span>
                 </div>
-                <div class="nav-action-item cart-icon-wrapper" onclick="toggleCartDrawer()">
+                <div class="header-action-item cart-icon-wrap" onclick="toggleCartDrawer()">
                     <i class="fas fa-shopping-basket"></i>
                     <span>Panier</span>
                     <span class="cart-badge">0</span>
                 </div>
             </div>
-            <i class="fas fa-search mobile-search-btn" onclick="toggleMobileSearch()"></i>
-        </div>
-        <div class="mobile-search-overlay" id="mobile-search-overlay">
-            <input type="text" placeholder="Rechercher..." id="mobile-search-input">
-            <div class="search-suggestions" id="mobile-suggestions"></div>
         </div>
     </header>
 

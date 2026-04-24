@@ -46,13 +46,13 @@ const Cart = {
             }
         }
         
-        this.showToast('Produit ajouté au panier !', 'success');
+        if (window.App && App.showToast) App.showToast('Produit ajouté au panier !', 'success');
     },
 
     remove(productId) {
         this.items = this.items.filter(item => item.id !== productId);
         this.save();
-        this.showToast('Produit retiré du panier', 'info');
+        if (window.App && App.showToast) App.showToast('Produit retiré du panier', 'info');
     },
 
     updateQuantity(productId, quantity) {
@@ -172,22 +172,12 @@ const Cart = {
     },
 
     showToast(message, type = 'success') {
-        const container = document.getElementById('toast-container');
-        if (!container) return;
-
-        const toast = document.createElement('div');
-        toast.className = `toast ${type} animate-slide-up`;
-        toast.innerHTML = `
-            <span class="toast-icon">${type === 'success' ? '✓' : 'ℹ'}</span>
-            <span class="toast-msg">${message}</span>
-        `;
-
-        container.appendChild(toast);
-        setTimeout(() => {
-            toast.style.opacity = '0';
-            toast.style.transform = 'translateY(-20px)';
-            setTimeout(() => toast.remove(), 400);
-        }, 3000);
+        if (window.App && App.showToast) {
+            App.showToast(message, type);
+        } else {
+            console.warn("App.showToast not found, falling back to basic alert");
+            // alert(message);
+        }
     }
 };
 

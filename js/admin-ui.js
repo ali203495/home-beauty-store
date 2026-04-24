@@ -119,19 +119,23 @@ window.AdminUI = {
         tbody.innerHTML = orders.map(o => `
             <tr>
                 <td class="text-bold text-red">#${o.id}</td>
-                <td><div class="text-bold">${o.customer.name}</div><div class="text-muted" style="font-size: 0.75rem;">${o.customer.phone}</div></td>
-                <td>${o.items.length} articles</td>
+                <td><div class="text-bold">${o.customer_name || 'Client Inconnu'}</div><div class="text-muted" style="font-size: 0.75rem;">${o.customer_phone || ''}</div></td>
+                <td>${o.items_count || '-'} articles</td>
                 <td class="text-bold">${o.total} DH</td>
                 <td>
                     <select onchange="AdminUI.updateOrderStatus('${o.id}', this.value)" class="glass p-xs text-primary" style="font-size: 0.7rem; font-weight: 800;">
                         <option value="Nouveau" ${o.status === 'Nouveau' ? 'selected' : ''}>NOUVEAU</option>
                         <option value="En cours" ${o.status === 'En cours' ? 'selected' : ''}>EN COURS</option>
                         <option value="Livré" ${o.status === 'Livré' ? 'selected' : ''}>LIVRÉ</option>
+                        <option value="Annulé" ${o.status === 'Annulé' ? 'selected' : ''}>ANNULÉ</option>
                     </select>
                 </td>
-                <td class="text-right"><button class="glass p-xs" onclick="AdminUI.viewOrder('${o.id}')"><i class="fas fa-eye"></i></button></td>
+                <td class="text-right">
+                   <button class="glass p-xs" onclick="AdminUI.viewOrder('${o.id}')"><i class="fas fa-eye"></i></button>
+                   <button class="glass p-xs text-red" onclick="AdminUI.deleteOrder('${o.id}')"><i class="fas fa-trash-alt"></i></button>
+                </td>
             </tr>
-        `).join('');
+        `).join('') || '<tr><td colspan="6" class="text-center p-md text-muted">Aucune commande trouvée</td></tr>';
     },
 
     async renderProducts() {
@@ -257,10 +261,16 @@ window.AdminUI = {
             OrderDB.getOrders().then(orders => {
                 recentOrdersList.innerHTML = orders.slice(0, 5).map(o => `
                     <div class="flex-between py-md border-bottom" style="font-size: 0.85rem;">
-                        <div><span class="text-bold">#${o.id}</span> <div class="text-muted">${o.customer.name}</div></div>
-                        <div class="text-right"><div class="text-bold text-red">${o.total} DH</div><div class="text-muted" style="font-size: 0.7rem;">${o.status}</div></div>
+                        <div>
+                            <span class="text-bold">#${o.id}</span> 
+                            <div class="text-muted" style="font-size: 0.75rem;">${o.customer_name}</div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-bold text-red">${o.total} DH</div>
+                            <div class="badge" style="font-size: 0.6rem; padding: 2px 6px; background: rgba(59, 130, 246, 0.1); color: #3b82f6;">${o.status}</div>
+                        </div>
                     </div>
-                `).join('') || '<p class="text-muted">Aucune commande.</p>';
+                `).join('') || '<p class="text-muted p-md text-center">Aucune commande récente.</p>';
             });
         }
     },

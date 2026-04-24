@@ -4,8 +4,20 @@
  */
 
 const Checkout = {
-    init() {
-        // Redirection if cart is empty
+    async init() {
+        const params = new URLSearchParams(window.location.search);
+        const directId = params.get('id');
+
+        if (directId && window.Cart) {
+            // Check if it's already in cart, if not add it
+            const exists = Cart.items.find(i => i.id === directId);
+            if (!exists) {
+                if (window.ProductDB) await ProductDB.fetchAll();
+                Cart.add(directId);
+            }
+        }
+
+        // Redirection if cart is STILL empty
         if (Cart.items.length === 0) {
             window.location.href = 'index.html';
             return;
@@ -27,8 +39,13 @@ const Checkout = {
         const phoneInput = document.getElementById('phone-input');
         if (phoneInput) {
             phoneInput.addEventListener('input', (e) => {
+                // Strict cleansing: Only allow digits, max 10
                 let val = e.target.value.replace(/\D/g, '');
-                if (val.length > 10) val = val.substring(0, 10);
+                if (val.startsWith('0')) {
+                    if (val.length > 10) val = val.substring(0, 10);
+                } else if (val.length > 9) { // International or missing 0
+                    val = val.substring(0, 9);
+                }
                 e.target.value = val;
             });
         }
@@ -107,37 +124,39 @@ const Checkout = {
             id: 'ALI-' + Math.random().toString(36).substr(2, 9).toUpperCase(),
             date: new Date().toISOString(),
             customer: {
-                firstName: formData.get('firstname'),
-                lastName: formData.get('lastname'),
-                phone: formData.get('phone'),
+                firstName: formData.get('firstname')?.trim(),
+                lastName: formData.get('lastname')?.trim(),
+                phone: formData.get('phone')?.trim(),
                 city: city,
-                neighborhood: formData.get('neighborhood') || '',
-                address: formData.get('address')
+                neighborhood: formData.get('neighborhood')?.trim() || '',
+                address: formData.get('address')?.trim()
             },
             items: JSON.parse(JSON.stringify(Cart.items)),
-            subtotal: subtotal,
-            shipping: shipping,
-            total: subtotal + shipping,
+            subtotal: parseFloat(subtotal) || 0,
+            shipping: parseFloat(shipping) || 0,
+            total: parseFloat(subtotal + shipping) || 0,
             status: 'En attente'
         };
 
-        try {
-            // Save to Backend (Production Parity)
-            if (window.OrderDB) {
-                await OrderDB.saveOrder(orderData);
-            } else {
-                // Legacy LocalStorage Fallback
-                const orders = JSON.parse(localStorage.getItem('mlh_orders') || '[]');
-                orders.unshift(orderData);
-                localStorage.setItem('mlh_orders', JSON.stringify(orders));
-            }
+        // --- Data Integrity Guard ---
+        if (!orderData.customer.firstName || !orderData.customer.lastName || !orderData.customer.phone || !orderData.customer.address) {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+            alert("Veuillez remplir tous les champs obligatoires.");
+            return;
+        }
 
-            // Clear Cart and Redirect
-            Cart.clear();
-            window.location.href = `order-success.html?id=${orderData.id}`;
+        try {
+            const res = await OrderDB.saveOrder(orderData);
+            if (res && res.success) {
+                Cart.clear();
+                window.location.href = `order-success.html?id=${orderData.id}`;
+            } else {
+                throw new Error(res ? res.error : "Erreur inconnue");
+            }
         } catch (err) {
             console.error("Order Submit Error:", err);
-            alert("Une erreur est survenue. Veuillez réessayer.");
+            alert("Une erreur est survenue lors de l'enregistrement : " + (err.message || "Veuillez réessayer."));
             btn.innerHTML = originalText;
             btn.disabled = false;
         }

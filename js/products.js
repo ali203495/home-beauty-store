@@ -398,13 +398,12 @@ const OrderDB = {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ order, items: order.items })
             });
-            return await response.json();
+            const data = await response.json();
+            if (!response.ok) return { success: false, error: data.error };
+            return data;
         } catch (err) {
-            console.error("Order submission to backend failed.", err);
-            // Emergency fallback to local storage
-            const orders = JSON.parse(localStorage.getItem('mlh_orders') || '[]');
-            orders.unshift(order);
-            localStorage.setItem('mlh_orders', JSON.stringify(orders));
+            console.error("OrderDB API Error:", err);
+            return { success: false, error: "Connexion au serveur impossible" };
         }
     },
 

@@ -111,26 +111,11 @@ const App = {
         }, observerOptions);
 
         // Targeted elements for high-end entry - Now generalized to ANY .reveal-hidden
-        const selectors = '.section, .hero-grid, .hero-small, .cat-strip, .compact-card, .trust-bar-inner > div, .reveal-hidden';
-        const revealElements = document.querySelectorAll(selectors);
+        const revealElements = document.querySelectorAll('.ali-card, .advantages, .hero-promos > div, .cat-item, .section-title-editorial, .reveal-hidden');
         
         revealElements.forEach((el, index) => {
-            // Only add default 'reveal-up' if no directional animation is specified
-            if (!el.classList.contains('reveal-left') && 
-                !el.classList.contains('reveal-right') && 
-                !el.classList.contains('reveal-scale') && 
-                !el.classList.contains('reveal-up')) {
-                el.classList.add('reveal-up');
-            }
-            
-            // Auto-stagger in grids if not manually specified
-            if (![...el.classList].some(c => c.startsWith('stagger-'))) {
-                if (el.parentElement.classList.contains('grid') || el.parentElement.classList.contains('flex')) {
-                    const staggerClass = `stagger-${(index % 4) + 1}`;
-                    el.classList.add(staggerClass);
-                }
-            }
-
+            el.classList.add('reveal-hidden'); // Ensure base class
+            if (index < 4) el.classList.add('stagger-' + ((index % 4) + 1));
             observer.observe(el);
         });
     },
@@ -354,16 +339,25 @@ const App = {
         }
     },
 
-    showToast(msg) {
+    showToast(msg, type = 'success') {
         const container = document.getElementById('toast-container');
         if (!container) return;
         
         const toast = document.createElement('div');
-        toast.className = 'toast animate-fade';
-        toast.innerText = msg;
+        toast.className = `toast animate-fade ${type}`;
+        toast.innerHTML = `
+            <div style="display:flex; align-items:center; gap:12px;">
+                <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+                <span>${msg}</span>
+            </div>
+        `;
         container.appendChild(toast);
         
-        setTimeout(() => toast.remove(), 3000);
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateX(20px)';
+            setTimeout(() => toast.remove(), 400);
+        }, 3000);
     }
 };
 

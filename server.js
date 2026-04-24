@@ -171,17 +171,64 @@ app.post('/api/admin/products', authenticateAdmin, async (req, res) => {
 });
 
 // --- ENDPOINTS: ORDERS ---
-app.post('/api/orders', async (req, res) => {
-    const { order, items } = req.body;
-    if (!order || !items || !Array.isArray(items)) {
-        return res.status(400).json({ error: 'Commande invalide' });
+
+// Validation Helper
+const isValidOrder = (data) => {
+    const { order, items } = data;
+    if (!order || !items || !Array.isArray(items) || items.length === 0) return { valid: false, error: 'Structure de commande manquante ou invalide' };
+    
+    // Check Customer Fields
+    const c = order.customer || {};
+    const hasName = order.customer.name || (order.customer.firstName && order.customer.lastName);
+    if (!hasName || !c.phone || !c.address) {
+        return { valid: false, error: 'Informations client incomplètes (Nom, téléphone, adresse requis)' };
     }
 
+    // Check Order Fields
+    if (!order.id || !order.total || isNaN(parseFloat(order.total))) {
+        return { valid: false, error: 'Données de paiement ou ID commande invalides' };
+    }
+
+    // Check Items
+    for (let item of items) {
+        if (!item.id || !item.name || !item.price || !item.quantity) {
+            return { valid: false, error: `Données d'article invalides pour : ${item.name || item.id}` };
+        }
+    }
+
+    return { valid: true };
+};
+
+app.post('/api/orders', async (req, res) => {
+    const validation = isValidOrder(req.body);
+    if (!validation.valid) {
+        console.warn(`[VALIDATION FAILED] ${validation.error}`, req.body);
+        return res.status(400).json({ error: validation.error });
+    }
+
+    const { order, items } = req.body;
     try {
+        // Construct full name if firstName/lastName provided (AliExpress style)
+        const customerName = order.customer.name || 
+            `${order.customer.firstName || ''} ${order.customer.lastName || ''}`.trim() || 
+            'Client Anonyme';
+
         await db.run(`INSERT INTO orders 
-            (id, date, total, status, customer_name, customer_phone, customer_address, customer_neighborhood) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)`, 
-            [order.id, order.date, order.total, order.status || 'Nouveau', order.customer.name, order.customer.phone, order.customer.address, order.customer.neighborhood]);
+            (id, date, customer_name, customer_phone, customer_city, customer_neighborhood, customer_address, subtotal, shipping, total, status) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, 
+            [
+                order.id, 
+                order.date, 
+                customerName, 
+                order.customer.phone, 
+                order.customer.city || 'Marrakech', 
+                order.customer.neighborhood || '', 
+                order.customer.address || '', 
+                order.subtotal || order.total || 0, 
+                order.shipping || 0, 
+                order.total, 
+                order.status || 'Nouveau'
+            ]);
 
         for (let item of items) {
             await db.run(`INSERT INTO order_items (order_id, product_id, product_name, quantity, price) 
@@ -196,10 +243,36 @@ app.post('/api/orders', async (req, res) => {
 
 app.get('/api/admin/orders', authenticateAdmin, async (req, res) => {
     try {
-        const rows = await db.all('SELECT * FROM orders ORDER BY date DESC');
+        const rows = await db.all(`
+            SELECT o.*, COUNT(oi.id) as items_count 
+            FROM orders o
+            LEFT JOIN order_items oi ON o.id = oi.order_id
+            GROUP BY o.id
+            ORDER BY o.date DESC
+        `);
         res.json(rows);
     } catch (err) {
         res.status(500).json({ error: err.message });
+    }
+});
+
+app.get('/api/admin/stats', authenticateAdmin, async (req, res) => {
+    try {
+        const orderStats = await db.get('SELECT COUNT(*) as count, SUM(total) as revenue FROM orders');
+        const productStats = await db.get('SELECT COUNT(*) as productCount FROM products');
+        
+        res.json({
+            orders: [{
+                revenue: orderStats.revenue || 0,
+                count: orderStats.count || 0
+            }],
+            products: {
+                productCount: productStats.productCount || 0
+            }
+        });
+    } catch (err) {
+        console.error('Stats Error:', err);
+        res.status(500).json({ error: 'Erreur lors de la récupération des statistiques' });
     }
 });
 

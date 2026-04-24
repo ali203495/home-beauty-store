@@ -14,8 +14,8 @@
     <meta name="description"
         content="Parcourez notre catalogue exclusif d'électroménager, climatisation et produits de beauté à Marrakech. Qualité premium et prix compétitifs.">
     <link rel="icon" type="image/png" href="assets/webp/logo.webp">
-    <link rel="stylesheet" href="css/index.css?v=2.5">
-    <link rel="stylesheet" href="css/components.css?v=2.5">
+    <link rel="stylesheet" href="css/index.css?v=4.0">
+    <link rel="stylesheet" href="css/components.css?v=4.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
@@ -148,47 +148,45 @@
                 <!-- Sidebar Filter -->
                 <aside class="filter-sidebar">
                     <!-- Category Filter -->
-                    <div class="filter-card shadow-sm">
-                        <h4 class="filter-title">Catégories</h4>
+                    <div class="filter-card">
+                        <h4 class="filter-title"><i class="fas fa-layer-group"></i> Catégories</h4>
                         <div id="category-filters" class="filter-options">
                             <!-- Categories injected by JS -->
                         </div>
                     </div>
 
                     <!-- Brand Filter -->
-                    <div class="filter-card shadow-sm">
-                        <h4 class="filter-title">Marques Populaires</h4>
-                        <div id="brand-filters" class="filter-options">
+                    <div class="filter-card">
+                        <h4 class="filter-title"><i class="fas fa-tags"></i> Marques</h4>
+                        <div id="brand-filters" class="filter-options brand-grid-auto">
                             <!-- Brands injected by JS -->
                         </div>
                     </div>
 
                     <!-- Price Filter -->
-                    <div class="filter-card shadow-sm">
-                        <h4 class="filter-title">Budget (DH)</h4>
+                    <div class="filter-card">
+                        <h4 class="filter-title"><i class="fas fa-wallet"></i> Budget (DH)</h4>
                         <div class="filter-options">
                             <div class="price-range-inputs">
                                 <div class="price-input-group">
-                                    <label>Min</label>
-                                    <input type="number" id="min-price" class="form-input" placeholder="0">
+                                    <input type="number" id="min-price" class="ali-input" placeholder="Min">
                                 </div>
                                 <div class="price-input-group">
-                                    <label>Max</label>
-                                    <input type="number" id="max-price" class="form-input" placeholder="+">
+                                    <input type="number" id="max-price" class="ali-input" placeholder="Max">
                                 </div>
                             </div>
-                            <button class="btn btn-primary w-full" style="margin-top: 1rem;" onclick="updateFilters()">
-                                APPLIQUER
+                            <button class="btn btn-primary w-full" style="margin-top: 1rem; border-radius: var(--radius-sm);" onclick="updateFilters()">
+                                FILTRER
                             </button>
                         </div>
                     </div>
 
-                    <div class="filter-card trust-promo text-center">
-                        <i class="fab fa-whatsapp"></i>
-                        <h4>Aide à l'achat ?</h4>
-                        <p class="text-xs text-muted">Chattez avec un expert expert sur WhatsApp.</p>
-                        <a href="https://wa.me/212699705617" target="_blank" class="btn btn-secondary btn-sm w-full" style="margin-top: 1rem;">
-                            Discuter
+                    <div class="filter-card trust-promo text-center" style="background: var(--bg-dark); color: white;">
+                        <i class="fab fa-whatsapp" style="font-size: 2.5rem; color: #25d366; margin-bottom: 12px;"></i>
+                        <h4 style="color: white; font-weight: 900;">Aide en Direct?</h4>
+                        <p style="font-size: 0.75rem; opacity: 0.8;">Chattez avec un expert sur WhatsApp pour vos achats.</p>
+                        <a href="https://wa.me/212699705617" target="_blank" class="btn btn-primary btn-sm w-full" style="margin-top: 1.5rem; background: #25d366 !important; border:none;">
+                           DISCUTER MAINTENANT
                         </a>
                     </div>
                 </aside>
