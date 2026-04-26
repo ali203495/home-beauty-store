@@ -1,156 +1,212 @@
 <script setup lang="ts">
-// Nuxt 4 index.vue
+const { data: categories } = await useFetch('/api/categories')
+const { data: featuredProducts } = await useFetch('/api/products?featured=true')
 </script>
 
 <template>
-  <div class="hero-container">
-    <div class="glass-card">
-      <h1 class="title">Home Beauty Store <span class="v4">v4</span></h1>
-      <p class="subtitle">Restarted with Nuxt 4 & TypeScript</p>
-      <div class="status-badge">Backend Ready: server/api/status.ts</div>
-      
-      <div class="feature-grid">
-        <div class="feature-item">
-          <span class="icon">✨</span>
-          <h3>Vue 3</h3>
-          <p>Composition API with Script Setup</p>
+  <div class="homepage">
+    <!-- Hero Banner -->
+    <section class="hero">
+      <div class="container hero-inner">
+        <div class="hero-content">
+          <span class="badge">Ramadan Deals 🌙</span>
+          <h1 class="title-lg">Beauty Essentials, <br/> Delivered to You.</h1>
+          <p>Discover professional skincare and makeup at the best prices.</p>
+          <NuxtLink to="/products" class="btn btn-primary">Shop All Products</NuxtLink>
         </div>
-        <div class="feature-item">
-          <span class="icon">🚀</span>
-          <h3>Nuxt 4</h3>
-          <p>Modern Directory Structure</p>
-        </div>
-        <div class="feature-item">
-          <span class="icon">🛡️</span>
-          <h3>TypeScript</h3>
-          <p>End-to-end Type Safety</p>
+        <div class="hero-image">
+          <img src="https://images.unsplash.com/photo-1596462502278-27bfdc4033c8?auto=format&fit=crop&q=80&w=800" alt="Beauty Hero" />
         </div>
       </div>
+    </section>
 
-      <NuxtLink to="/api/status" target="_blank" class="cta-button">
-        Check Backend API
-      </NuxtLink>
-    </div>
+    <!-- Categories Grid -->
+    <section class="section-padding container">
+      <div class="section-header">
+        <h2 class="title-md">Browse by Category</h2>
+        <NuxtLink to="/categories" class="view-all">View All →</NuxtLink>
+      </div>
+      <div class="categories-grid">
+        <NuxtLink 
+          v-for="cat in categories" 
+          :key="cat.slug" 
+          :to="`/categories/${cat.slug}`" 
+          class="category-card"
+        >
+          <div class="cat-img">
+            <img :src="cat.image" :alt="cat.name" />
+          </div>
+          <h3>{{ cat.name }}</h3>
+        </NuxtLink>
+      </div>
+    </section>
+
+    <!-- Featured Products -->
+    <section class="section-padding bg-light">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="title-md">Featured Best Sellers</h2>
+          <NuxtLink to="/products" class="view-all">Shop All →</NuxtLink>
+        </div>
+        <div class="products-grid">
+          <div v-for="product in featuredProducts" :key="product.id" class="product-card card">
+             <div class="product-img">
+                <img :src="JSON.parse(product.images)[0]" :alt="product.name">
+             </div>
+             <div class="product-info">
+                <span class="product-brand">{{ product.brand?.name }}</span>
+                <NuxtLink :to="`/products/${product.slug}`" class="product-name">{{ product.name }}</NuxtLink>
+                <div class="price-row">
+                   <div class="prices">
+                      <span v-if="product.salePrice" class="sale-price">${{ product.salePrice }}</span>
+                      <span :class="{'old-price': product.salePrice}">${{ product.price }}</span>
+                   </div>
+                   <button class="btn-add-cart">+</button>
+                </div>
+             </div>
+          </div>
+        </div>
+      </div>
+    </section>
   </div>
 </template>
 
 <style scoped>
-.hero-container {
-  min-height: 100vh;
+.hero {
+  background: white;
+  padding: 6rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.hero-inner {
   display: flex;
   align-items: center;
-  justify-content: center;
-  background: radial-gradient(circle at top left, #1a1a2e, #16213e);
-  color: white;
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  overflow: hidden;
+  gap: 4rem;
 }
 
-.glass-card {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 4rem;
-  border-radius: 2rem;
-  text-align: center;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-  max-width: 800px;
-  width: 90%;
-  animation: fadeIn 1s ease-out;
-}
+.hero-content { flex: 1; }
+.hero-image { flex: 1; border-radius: 2rem; overflow: hidden; box-shadow: var(--shadow-lg); }
+.hero-image img { width: 100%; display: block; }
 
-.title {
-  font-size: 4rem;
-  font-weight: 800;
-  margin-bottom: 0.5rem;
-  background: linear-gradient(to right, #6366f1, #a855f7);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.v4 {
-  font-size: 1.5rem;
-  vertical-align: super;
-  background: #a855f7;
-  -webkit-text-fill-color: white;
-  padding: 0.2rem 0.6rem;
-  border-radius: 0.5rem;
-}
-
-.subtitle {
-  font-size: 1.25rem;
-  color: #94a3b8;
-  margin-bottom: 2rem;
-}
-
-.status-badge {
+.badge {
   display: inline-block;
-  padding: 0.5rem 1rem;
-  background: rgba(16, 185, 129, 0.1);
-  color: #10b981;
-  border: 1px solid rgba(16, 185, 129, 0.2);
-  border-radius: 9999px;
-  font-family: monospace;
-  font-size: 0.875rem;
-  margin-bottom: 3rem;
-}
-
-.feature-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 2rem;
-  margin-bottom: 3rem;
-}
-
-.feature-item {
-  padding: 1.5rem;
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 1rem;
-  transition: transform 0.3s ease;
-}
-
-.feature-item:hover {
-  transform: translateY(-5px);
-  background: rgba(255, 255, 255, 0.05);
-}
-
-.icon {
-  font-size: 2rem;
-  display: block;
+  padding: 0.25rem 0.75rem;
+  background: rgba(230, 49, 0, 0.1);
+  color: var(--primary);
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+  font-size: 0.8rem;
   margin-bottom: 1rem;
 }
 
-.feature-item h3 {
-  font-size: 1.1rem;
-  margin-bottom: 0.5rem;
-  color: #e2e8f0;
+.hero p {
+  font-size: 1.2rem;
+  color: var(--text-muted);
+  margin: 1.5rem 0 2.5rem;
 }
 
-.feature-item p {
-  font-size: 0.9rem;
-  color: #94a3b8;
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2.5rem;
 }
 
-.cta-button {
-  display: inline-block;
-  background: #6366f1;
+.view-all {
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.categories-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1.5rem;
+}
+
+.category-card {
+  text-align: center;
+}
+
+.cat-img {
+  width: 100%;
+  aspect-ratio: 1;
+  background: #f3f4f6;
+  border-radius: 1rem;
+  overflow: hidden;
+  margin-bottom: 0.75rem;
+  border: 1px solid var(--border);
+}
+
+.cat-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease; }
+.category-card:hover img { transform: scale(1.1); }
+.category-card h3 { font-size: 1rem; margin: 0; }
+
+.bg-light { background: var(--bg-main); }
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+}
+
+.product-card {
+  padding: 0;
+  overflow: hidden;
+}
+
+.product-img {
+  width: 100%;
+  aspect-ratio: 1;
+  overflow: hidden;
+}
+
+.product-img img { width: 100%; height: 100%; object-fit: cover; }
+
+.product-info {
+  padding: 1rem;
+}
+
+.product-brand {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 0.25rem;
+}
+
+.product-name {
+  font-weight: 700;
+  font-size: 1rem;
+  margin-bottom: 0.75rem;
+  display: block;
+}
+
+.price-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.prices { display: flex; gap: 0.5rem; align-items: baseline; }
+.sale-price { color: var(--primary); font-weight: 800; font-size: 1.2rem; }
+.old-price { text-decoration: line-through; color: var(--text-muted); font-size: 0.9rem; }
+
+.btn-add-cart {
+  background: var(--secondary);
   color: white;
-  padding: 1rem 2rem;
-  border-radius: 0.75rem;
-  text-decoration: none;
-  font-weight: 600;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 14px 0 rgba(99, 102, 241, 0.39);
+  border: none;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.cta-button:hover {
-  background: #4f46e5;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+@media (max-width: 768px) {
+  .hero-inner { flex-direction: column; text-align: center; gap: 2rem; }
+  .title-lg { font-size: 1.8rem; }
 }
 </style>

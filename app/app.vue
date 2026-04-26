@@ -1,12 +1,18 @@
+<script setup lang="ts">
+import '~/assets/css/main.css'
+import Header from '~/components/layout/Header.vue'
+</script>
+
 <template>
-  <div>
-    <NuxtPage />
+  <div class="layout-wrapper">
+    <Header />
+    <main>
+      <NuxtPage />
+    </main>
+    <!-- Future Footer goes here -->
   </div>
 </template>
 
 <style>
-body {
-  margin: 0;
-  padding: 0;
-}
+/* Global resets if needed */
 </style>
