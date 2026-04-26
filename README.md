@@ -1,34 +1,75 @@
-# Marrakech Luxe Home 🏠✨
+# Nuxt Minimal Starter
 
-Professional E-commerce platform for high-end home appliances and beauty products in Marrakech. Optimized for mobile discovery and local WhatsApp-based ordering.
+Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
 
-## 🚀 Key Features
+## Setup
 
-- **Professional Storefront**: Premium design with real-time search and category filtering.
-- **Advanced Cart & Checkout**: Dedicated checkout page with WhatsApp order summary.
-- **Admin Dashboard**: Comprehensive order management, sales analytics (CSS charts), and product management.
-- **Communication Automation**: One-click WhatsApp templates for order confirmation and shipping updates.
-- **Trust Pages**: Built-in About, Privacy, and Terms of Service pages.
+Make sure to install dependencies:
 
-## 🛠 Technology Stack
+```bash
+# npm
+npm install
 
-- **HTML5/CSS3**: Modern, responsive UI with CSS variables and glassmorphism.
-- **Vanilla JavaScript**: Robust logic for cart, products, and admin tools.
-- **LocalStorage/OrderDB**: Client-side data persistence for products and orders.
-- **FontAwesome**: High-quality iconography.
+# pnpm
+pnpm install
 
-## 📦 Deployment
+# yarn
+yarn install
 
-This website is optimized for **Vercel** (recommended) and **GitHub Pages**.
+# bun
+bun install
+```
 
-### 🚀 Deploy to Vercel
-1. Log in to [Vercel](https://vercel.com) with GitHub.
-2. Import the `ali203495/home-beauty-store` repository.
-3. Click **Deploy**. (The `vercel.json` provides clean URLs).
+## Development Server
 
-### 🐙 Deploy to GitHub Pages
-1. Push code to the `main` branch.
-2. Enable GitHub Pages in Settings > Pages.
+Start the development server on `http://localhost:3000`:
 
----
-© 2026 Marrakech Luxe Home. All rights reserved.
+```bash
+# npm
+npm run dev
+
+# pnpm
+pnpm dev
+
+# yarn
+yarn dev
+
+# bun
+bun run dev
+```
+
+## Production
+
+Build the application for production:
+
+```bash
+# npm
+npm run build
+
+# pnpm
+pnpm build
+
+# yarn
+yarn build
+
+# bun
+bun run build
+```
+
+Locally preview production build:
+
+```bash
+# npm
+npm run preview
+
+# pnpm
+pnpm preview
+
+# yarn
+yarn preview
+
+# bun
+bun run preview
+```
+
+Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
