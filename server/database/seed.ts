@@ -12,11 +12,14 @@ async function seed() {
   // await db.delete(brands)
   // await db.delete(users)
 
-  // Seed Admin
-  const hashedPassword = await bcrypt.hash('admin123', 10)
+  // Seed Admin from Environment Variables
+  const adminEmail = process.env.ADMIN_EMAIL || 'admin@el-wali.com'
+  const adminPassword = process.env.ADMIN_PASSWORD || 'admin123'
+  
+  const hashedPassword = await bcrypt.hash(adminPassword, 10)
   const [admin] = await db.insert(users).values({
     name: 'Admin User',
-    email: 'admin@homebeauty.com',
+    email: adminEmail,
     passwordHash: hashedPassword,
     role: 'admin',
   }).returning()

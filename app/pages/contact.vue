@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const { data: settings } = await useFetch('/api/settings')
+const { user, loggedIn } = useUserSession()
 
 useSeoMeta({
   title: 'Contact Us | EL-WALI SHOP Marrakech',
@@ -11,7 +12,10 @@ useSeoMeta({
   <div class="contact-page container section-padding fade-in-up">
     <div class="contact-layout">
        <div class="contact-info-section">
-          <h1 class="title-lg">Get in Touch</h1>
+          <h1 class="title-lg">
+             <template v-if="loggedIn">Hello, {{ user?.name?.split(' ')[0] }}!</template>
+             <template v-else>Get in Touch</template>
+          </h1>
           <p class="subtitle">Our central warehouse is located in the heart of Marrakech. We pride ourselves on local delivery excellence.</p>
 
           <div class="info-grid card">

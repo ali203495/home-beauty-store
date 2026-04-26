@@ -55,6 +55,11 @@ const logout = async () => {
         </NuxtLink>
         
         <div v-if="loggedIn" class="user-meta">
+          <div class="user-greeting">
+            <span class="hi">Hello,</span>
+            <span class="user-name">{{ user?.name?.split(' ')[0] }}</span>
+          </div>
+          <NuxtLink v-if="user?.role === 'admin'" to="/admin" class="nav-link admin-link">Admin Panel</NuxtLink>
           <NuxtLink to="/account" class="nav-link">Account</NuxtLink>
           <button @click="logout" class="btn-logout">Logout</button>
         </div>
@@ -162,6 +167,21 @@ const logout = async () => {
   cursor: pointer;
   font-size: 0.8rem;
 }
+
+.user-greeting { display: flex; flex-direction: column; line-height: 1; }
+.user-greeting .hi { font-size: 0.7rem; color: #94a3b8; font-weight: 700; text-transform: uppercase; }
+.user-greeting .user-name { font-size: 0.9rem; font-weight: 800; color: #1e293b; }
+
+.admin-link { 
+  background: rgba(239, 68, 68, 0.1); 
+  color: #ef4444; 
+  padding: 0.4rem 0.8rem; 
+  border-radius: 50px; 
+  font-size: 0.75rem; 
+  font-weight: 800;
+  text-transform: uppercase;
+}
+.admin-link:hover { background: #ef4444; color: white; }
 
 .btn-logout:hover { color: var(--primary); }
 

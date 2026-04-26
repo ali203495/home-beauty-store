@@ -45,15 +45,18 @@ const handleLogin = async () => {
         <button type="submit" class="btn btn-primary w-full" :disabled="loading">
           {{ loading ? 'Signing in...' : 'Sign In' }}
         </button>
+
+        <div class="divider">OR</div>
+
+        <a href="/api/auth/google" class="btn-google">
+           <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_\"G\"_logo.svg" alt="Google Logo" />
+           Sign in with Google
+        </a>
       </form>
 
       <div class="auth-footer">
         <span>Don't have an account? </span>
         <NuxtLink to="/auth/register">Sign Up</NuxtLink>
-      </div>
-      
-      <div class="demo-notice">
-         <strong>Demo Admin:</strong> admin@homebeauty.com / admin123
       </div>
     </div>
   </div>
@@ -122,13 +125,25 @@ const handleLogin = async () => {
 
 .auth-footer a { color: var(--primary); font-weight: 700; }
 
-.demo-notice {
-   margin-top: 2rem;
-   padding: 1rem;
-   background: #fef3c7;
-   border: 1px solid #f59e0b;
-   border-radius: var(--radius-sm);
-   font-size: 0.8rem;
-   color: #92400e;
+.divider { text-align: center; margin: 1.5rem 0; font-size: 0.8rem; color: #94a3b8; font-weight: 800; position: relative; }
+.divider::before, .divider::after { content: ''; position: absolute; top: 50%; width: 40%; height: 1px; background: #e2e8f0; }
+.divider::before { left: 0; } .divider::after { right: 0; }
+
+.btn-google {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  width: 100%;
+  padding: 0.75rem;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+  color: #1e293b;
+  text-decoration: none;
+  transition: 0.2s;
 }
+.btn-google:hover { background: #f8fafc; border-color: #cbd5e1; }
+.btn-google img { width: 20px; height: 20px; }
 </style>

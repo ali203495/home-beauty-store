@@ -5,6 +5,14 @@ export default defineNuxtConfig({
   modules: [
     'nuxt-auth-utils'
   ],
+  runtimeConfig: {
+    oauth: {
+      google: {
+        clientId: process.env.NUXT_OAUTH_GOOGLE_CLIENT_ID,
+        clientSecret: process.env.NUXT_OAUTH_GOOGLE_CLIENT_SECRET
+      }
+    }
+  },
   future: {
     compatibilityVersion: 4,
   },
