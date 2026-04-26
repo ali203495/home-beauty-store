@@ -1,6 +1,8 @@
 <script setup lang="ts">
 const route = useRoute()
 const slug = route.params.slug
+const { addToCart } = useCart()
+const quantity = ref(1)
 
 const { data: product } = await useFetch(`/api/products/${slug}`)
 
@@ -79,8 +81,18 @@ onMounted(async () => {
              <p v-else class="stock-info out">✖ Out of Stock</p>
 
              <div class="add-block">
-                <div class="qty-btn">1</div>
-                <button class="btn btn-primary btn-xl">Add to Basket</button>
+                <div class="qty-control">
+                   <button @click="quantity = Math.max(1, quantity - 1)">-</button>
+                   <span>{{ quantity }}</span>
+                   <button @click="quantity++">+</button>
+                </div>
+                <button 
+                  class="btn btn-primary btn-xl" 
+                  :disabled="product.stock === 0"
+                  @click="addToCart({...product, quantity})"
+                >
+                  {{ product.stock > 0 ? 'Add to Basket' : 'Out of Stock' }}
+                </button>
              </div>
           </div>
 
@@ -147,9 +159,15 @@ onMounted(async () => {
 .stock-info.in { color: #10b981; }
 .stock-info.out { color: #ef4444; }
 
-.add-block { display: flex; gap: 1rem; }
-.qty-btn { padding: 1rem 1.5rem; border: 1px solid var(--border); border-radius: var(--radius); font-weight: 700; }
-.btn-xl { flex: 1; padding: 1.25rem; font-size: 1.2rem; }
+.add-block { display: flex; gap: 1.5rem; }
+.qty-control { 
+  display: flex; align-items: center; gap: 1rem; border: 1px solid var(--border); 
+  border-radius: var(--radius); padding: 0.5rem 1.5rem; background: #f8fafc;
+}
+.qty-control button { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--secondary); font-weight: 900; }
+.qty-control span { font-weight: 800; font-size: 1.2rem; min-width: 25px; text-align: center; }
+
+.btn-xl { flex: 1; padding: 1.25rem; font-size: 1.2rem; border-radius: 50px; }
 
 .trust-badges { display: flex; gap: 1.5rem; margin-top: 2.5rem; border-top: 1px solid var(--border); padding-top: 2rem; }
 .badge { font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; }

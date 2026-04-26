@@ -2,6 +2,8 @@
 const { data: categories } = await useFetch('/api/categories?rootOnly=true')
 const { data: flashDeals } = await useFetch('/api/deals')
 const { data: recommended } = await useFetch('/api/tracking/recommended')
+const { addToCart } = useCart()
+
 
 
 useSeoMeta({
@@ -97,7 +99,7 @@ useSeoMeta({
                       <span v-if="product.salePrice" class="sale-price">${{ product.salePrice }}</span>
                       <span :class="{'old-price': product.salePrice}">${{ product.price }}</span>
                    </div>
-                   <button class="btn-add-cart">+</button>
+                   <button class="btn-add-cart" @click="addToCart(product)">+</button>
                 </div>
              </div>
           </div>
