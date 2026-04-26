@@ -1,29 +1,29 @@
-import { sqliteTable, text, integer, real } from 'drizzle-orm/sqlite-core'
+import { pgTable, serial, text, integer, doublePrecision, timestamp, boolean } from 'drizzle-orm/pg-core'
 import { relations } from 'drizzle-orm'
 
-export const users = sqliteTable('users', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
+export const users = pgTable('users', {
+  id: serial('id').primaryKey(),
   name: text('name').notNull(),
   email: text('email').notNull().unique(),
   passwordHash: text('password_hash').notNull(),
-  role: text('role', { enum: ['user', 'admin'] }).default('user').notNull(),
+  role: text('role').$type<'user' | 'admin'>().default('user').notNull(),
   avatar: text('avatar'),
   phone: text('phone'),
-  createdAt: integer('created_at', { mode: 'timestamp' }).$defaultFn(() => new Date()),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
 })
 
-export const categories = sqliteTable('categories', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
+export const categories = pgTable('categories', {
+  id: serial('id').primaryKey(),
   name: text('name').notNull(),
   slug: text('slug').notNull().unique(),
   image: text('image'),
-  parentId: integer('parent_id'),// References categories.id for subcategories
+  parentId: integer('parent_id'),
   description: text('description'),
   sortOrder: integer('sort_order').default(0),
 })
 
-export const brands = sqliteTable('brands', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
+export const brands = pgTable('brands', {
+  id: serial('id').primaryKey(),
   name: text('name').notNull(),
   slug: text('slug').notNull().unique(),
   logo: text('logo'),
@@ -31,43 +31,43 @@ export const brands = sqliteTable('brands', {
   website: text('website'),
 })
 
-export const products = sqliteTable('products', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
+export const products = pgTable('products', {
+  id: serial('id').primaryKey(),
   name: text('name').notNull(),
   slug: text('slug').notNull().unique(),
   description: text('description'),
-  price: real('price').notNull(),
-  salePrice: real('sale_price'),
+  price: doublePrecision('price').notNull(),
+  salePrice: doublePrecision('sale_price'),
   stock: integer('stock').default(0).notNull(),
-  images: text('images'), // JSON array of image URLs
+  images: text('images'), // JSON array string
   categoryId: integer('category_id').references(() => categories.id),
   brandId: integer('brand_id').references(() => brands.id),
-  tags: text('tags'), // JSON array
-  specifications: text('specifications'), // JSON object
-  isFeatured: integer('is_featured', { mode: 'boolean' }).default(false),
-  isActive: integer('is_active', { mode: 'boolean' }).default(true),
-  createdAt: integer('created_at', { mode: 'timestamp' }).$defaultFn(() => new Date()),
+  tags: text('tags'), // JSON array string
+  specifications: text('specifications'), // JSON object string
+  isFeatured: boolean('is_featured').default(false),
+  isActive: boolean('is_active').default(true),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
 })
 
-export const reviews = sqliteTable('reviews', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
+export const reviews = pgTable('reviews', {
+  id: serial('id').primaryKey(),
   userId: integer('user_id').notNull().references(() => users.id),
   productId: integer('product_id').notNull().references(() => products.id),
   rating: integer('rating').notNull(),
   title: text('title'),
   body: text('body'),
-  createdAt: integer('created_at', { mode: 'timestamp' }).$defaultFn(() => new Date()),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
 })
 
-export const orders = sqliteTable('orders', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
+export const orders = pgTable('orders', {
+  id: serial('id').primaryKey(),
   userId: integer('user_id').notNull().references(() => users.id),
-  items: text('items').notNull(), // JSON array of items
-  subtotal: real('subtotal').notNull(),
-  total: real('total').notNull(),
-  status: text('status', { enum: ['pending', 'processing', 'shipped', 'delivered', 'cancelled'] }).default('pending').notNull(),
-  shippingAddress: text('shipping_address').notNull(), // JSON object
-  createdAt: integer('created_at', { mode: 'timestamp' }).$defaultFn(() => new Date()),
+  items: text('items').notNull(), // JSON array string
+  subtotal: doublePrecision('subtotal').notNull(),
+  total: doublePrecision('total').notNull(),
+  status: text('status').$type<'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled'>().default('pending').notNull(),
+  shippingAddress: text('shipping_address').notNull(), // JSON object string
+  createdAt: timestamp('created_at').defaultNow().notNull(),
 })
 
 // Relations
@@ -97,4 +97,3 @@ export const reviewsRelations = relations(reviews, ({ one }) => ({
     references: [users.id],
   }),
 }))
-
