@@ -19,7 +19,7 @@ const logout = async () => {
   <header class="header">
     <div class="container header-inner">
       <NuxtLink to="/" class="logo">
-        HOME<span>BEAUTY</span>.
+        EL-WALI<span>SHOP</span>
       </NuxtLink>
 
       <div class="search-bar">

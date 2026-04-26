@@ -16,8 +16,8 @@ const { data: stats } = await useFetch('/api/admin/stats')
             <NuxtLink to="/admin" class="nav-item active">Dashboard</NuxtLink>
             <NuxtLink to="/admin/products" class="nav-item">Manage Products</NuxtLink>
             <NuxtLink to="/admin/categories" class="nav-item">Categories</NuxtLink>
+            <NuxtLink to="/admin/brands" class="nav-item">Brands</NuxtLink>
             <NuxtLink to="/admin/orders" class="nav-item">Orders</NuxtLink>
-            <NuxtLink to="/admin/users" class="nav-item">Customers</NuxtLink>
          </nav>
       </aside>
 

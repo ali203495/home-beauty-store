@@ -9,13 +9,13 @@ const { data: featuredProducts } = await useFetch('/api/products?featured=true')
     <section class="hero">
       <div class="container hero-inner">
         <div class="hero-content">
-          <span class="badge">Ramadan Deals 🌙</span>
-          <h1 class="title-lg">Beauty Essentials, <br/> Delivered to You.</h1>
-          <p>Discover professional skincare and makeup at the best prices.</p>
+          <span class="badge">Mega Deals ⚡</span>
+          <h1 class="title-lg">Everything You Need, <br/> Delivered to You.</h1>
+          <p>Discover appliances, kitchenware, cosmetics, and more at the best prices.</p>
           <NuxtLink to="/products" class="btn btn-primary">Shop All Products</NuxtLink>
         </div>
         <div class="hero-image">
-          <img src="https://images.unsplash.com/photo-1596462502278-27bfdc4033c8?auto=format&fit=crop&q=80&w=800" alt="Beauty Hero" />
+          <img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&q=80&w=800" alt="Megastore Hero" />
         </div>
       </div>
     </section>
