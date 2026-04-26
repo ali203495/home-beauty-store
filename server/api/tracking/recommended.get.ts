@@ -1,6 +1,6 @@
 import { db } from '../../utils/db'
 import { userViews, products } from '../../database/schema'
-import { eq, desc, inArray, notInArray, sql } from 'drizzle-orm'
+import { eq, desc, inArray, notInArray, sql, and } from 'drizzle-orm'
 
 export default defineEventHandler(async (event) => {
   const session = await getUserSession(event)
