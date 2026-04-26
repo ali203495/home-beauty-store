@@ -1,3 +1,4 @@
+import 'dotenv/config'
 import { db } from '../utils/db'
 import { users, categories, brands, products } from './schema'
 import bcrypt from 'bcryptjs'
