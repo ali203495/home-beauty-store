@@ -21,7 +21,16 @@ export default defineEventHandler(async (event) => {
     if (data.stock) data.stock = Number(data.stock)
     if (data.categoryId) data.categoryId = Number(data.categoryId)
     if (data.brandId) data.brandId = Number(data.brandId)
-    if (data.images && typeof data.images !== 'string') data.images = JSON.stringify(data.images)
+    
+    if (data.images && typeof data.images !== 'string') {
+       data.images = JSON.stringify(data.images)
+    }
+
+    // Enterprise Security: Validate Image Size
+    if (data.images && data.images.length > 1.5 * 1024 * 1024) {
+       throw createError({ statusCode: 413, statusMessage: 'Image data too large' })
+    }
+
     if (data.specifications && typeof data.specifications !== 'string') data.specifications = JSON.stringify(data.specifications)
     if (data.tags && typeof data.tags !== 'string') data.tags = JSON.stringify(data.tags)
 

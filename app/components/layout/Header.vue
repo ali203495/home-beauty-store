@@ -1,12 +1,21 @@
 <script setup lang="ts">
 const { user, loggedIn, clear } = useUserSession()
 
-const search = ref('')
-const handleSearch = () => {
-  if (search.value) {
-    navigateTo(`/products?q=${search.value}`)
-  }
-}
+const q = ref('')
+const router = useRouter()
+
+// Debounced search navigation
+let timeout: any
+watch(q, (newQ) => {
+  clearTimeout(timeout)
+  timeout = setTimeout(() => {
+    if (newQ.trim().length > 2 || newQ.trim() === '') {
+      router.push({ path: '/products', query: { q: newQ || undefined } })
+    }
+  }, 400)
+})
+
+const { data: settings } = await useFetch('/api/settings')
 
 const logout = async () => {
   await $fetch('/api/auth/logout', { method: 'POST' })
@@ -16,6 +25,12 @@ const logout = async () => {
 </script>
 
 <template>
+  <div v-if="settings?.shipping_restriction" class="top-announcement">
+     <div class="container message-box">
+        <span class="icon">🚛</span>
+        {{ settings.shipping_restriction }}
+     </div>
+  </div>
   <header class="header">
     <div class="container header-inner">
       <NuxtLink to="/" class="logo">
@@ -25,17 +40,15 @@ const logout = async () => {
       <div class="search-bar">
         <input 
           type="text" 
-          v-model="search" 
-          placeholder="Search products, brands and categories..." 
-          @keyup.enter="handleSearch"
+          v-model="q" 
+          placeholder="Search products, brands, categories..." 
         />
-        <button @click="handleSearch">
-          <span class="icon">🔍</span>
-        </button>
+        <div class="search-icon-btn">🔍</div>
       </div>
 
       <nav class="nav-actions">
-        <NuxtLink to="/products" class="nav-link">Shop</NuxtLink>
+        <NuxtLink to="/products" class="nav-link">Shop All</NuxtLink>
+        <NuxtLink to="/categories" class="nav-link">Categories</NuxtLink>
         <NuxtLink to="/cart" class="nav-link cart-link">
           <span class="icon">🛒</span>
           <span class="text">Cart</span>
@@ -52,38 +65,57 @@ const logout = async () => {
 </template>
 
 <style scoped>
+.header {
+  background: white;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 4px 10px -10px rgba(0,0,0,0.1);
+  transition: all 0.3s;
+}
+
+.top-announcement {
+  background: #0f172a;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 0.5rem 0;
+  text-align: center;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.message-box { display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+
+
 .header-inner {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  width: 100%;
+  align-items: center;
+  gap: 3rem;
 }
 
 .logo {
   font-size: 1.5rem;
   font-weight: 900;
-  color: white;
-  letter-spacing: -1px;
+  color: var(--secondary);
+  text-decoration: none;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
 }
 
-.logo span {
-  color: var(--primary);
-}
+.logo span { color: var(--primary); }
 
 .search-bar {
   flex: 1;
   max-width: 600px;
-  margin: 0 2rem;
+  position: relative;
   display: flex;
-  background: white;
-  border-radius: var(--radius-full);
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .search-bar input {
-  flex: 1;
-  border: none;
   padding: 0.75rem 1.5rem;
   font-size: 0.9rem;
   outline: none;

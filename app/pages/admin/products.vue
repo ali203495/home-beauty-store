@@ -6,7 +6,7 @@ const { data: categories } = await useFetch('/api/admin/categories')
 const { data: brands } = await useFetch('/api/admin/brands')
 
 const form = ref({
-  name: '', slug: '', description: '', price: 0, salePrice: null, 
+  name: '', slug: '', description: '', price: 0, salePrice: null, costPrice: null,
   stock: 0, images: '', categoryId: null, brandId: null, isFeatured: false, isActive: true
 })
 const editingId = ref<number | null>(null)
@@ -52,7 +52,73 @@ const resetForm = () => {
     stock: 0, images: '', categoryId: null, brandId: null, isFeatured: false, isActive: true
   }
 }
+
+const handleFileUpload = async (e: any) => {
+  const file = e.target.files[0]
+  if (!file) return
+  
+  // Accept up to 15MB raw input
+  if (file.size > 15 * 1024 * 1024) {
+    alert('Error: Original image is too large. Max limit is 15MB.')
+    e.target.value = ''
+    return
+  }
+
+  if (!file.type.startsWith('image/')) {
+    alert('Error: Only images are allowed.')
+    e.target.value = ''
+    return
+  }
+
+  loading.value = true
+  try {
+    const optimizedBase64 = await compressToWebP(file)
+    form.value.images = JSON.stringify([optimizedBase64])
+  } catch (err) {
+    alert('Failed to process image')
+  } finally {
+    loading.value = false
+  }
+}
+
+// Enterprise Image Optimizer (Canvas API)
+const compressToWebP = (file: File): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.readAsDataURL(file)
+    reader.onload = (event) => {
+      const img = new Image()
+      img.src = event.target?.result as string
+      img.onload = () => {
+        const canvas = document.createElement('canvas')
+        let width = img.width
+        let height = img.height
+
+        // Downscale if image is massive (e.g. > 1600px) to keep base64 string light
+        const MAX_WIDTH = 1600
+        if (width > MAX_WIDTH) {
+          height *= MAX_WIDTH / width
+          width = MAX_WIDTH
+        }
+
+        canvas.width = width
+        canvas.height = height
+        const ctx = canvas.getContext('2d')
+        ctx?.drawImage(img, 0, 0, width, height)
+        
+        // Export to WebP at 0.8 quality (Best balance)
+        const dataUrl = canvas.toDataURL('image/webp', 0.8)
+        resolve(dataUrl)
+      }
+      img.onerror = reject
+    }
+    reader.onerror = reject
+  })
+}
+
+
 </script>
+
 
 <template>
   <div class="admin-products container section-padding">
@@ -94,6 +160,10 @@ const resetForm = () => {
                 <input type="number" step="0.01" v-model="form.salePrice" />
               </div>
               <div class="input-group">
+                <label>Cost Price (Safety)</label>
+                <input type="number" step="0.01" v-model="form.costPrice" placeholder="Buy price" />
+              </div>
+              <div class="input-group">
                 <label>Stock Quantity</label>
                 <input type="number" v-model="form.stock" required />
               </div>
@@ -117,8 +187,14 @@ const resetForm = () => {
             </div>
 
             <div class="input-group">
-              <label>Images URL (JSON array format or single URL)</label>
-              <input v-model="form.images" placeholder='["https://..."]' />
+              <label>Product Images</label>
+              <div class="upload-wrapper">
+                 <input type="file" @change="handleFileUpload" accept="image/*" />
+                 <input v-model="form.images" placeholder='Or paste ["https://..."]' />
+              </div>
+              <div v-if="form.images" class="image-preview-admin">
+                 <img :src="form.images.startsWith('[') ? JSON.parse(form.images)[0] : form.images" />
+              </div>
             </div>
 
             <div class="input-group">
@@ -190,7 +266,13 @@ const resetForm = () => {
 .input-group input, .input-group select, .input-group textarea { width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: var(--radius-sm); outline: none; }
 .form-row-checks { display: flex; gap: 2rem; margin: 0.5rem 0; }
 .check-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; font-weight: 600; cursor: pointer; }
+
+.upload-wrapper { display: flex; flex-direction: column; gap: 0.5rem; }
+.image-preview-admin { margin-top: 1rem; width: 100px; height: 100px; border-radius: var(--radius-sm); overflow: hidden; border: 2px solid var(--primary); }
+.image-preview-admin img { width: 100%; height: 100%; object-fit: cover; }
+
 .form-actions { display: flex; gap: 1rem; margin-top: 1rem; }
+
 
 .overflow-x { overflow-x: auto; }
 .admin-table { width: 100%; border-collapse: collapse; min-width: 600px; }

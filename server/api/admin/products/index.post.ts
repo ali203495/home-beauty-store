@@ -18,12 +18,18 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'Name, slug and price are required' })
   }
 
+  // Enterprise Security: Validate Image Size
+  const imageStr = typeof images === 'string' ? images : JSON.stringify(images || [])
+  if (imageStr.length > 1.5 * 1024 * 1024) {
+     throw createError({ statusCode: 413, statusMessage: 'Image data too large' })
+  }
+
   const [newProduct] = await db.insert(products).values({
     name, slug, description, 
     price: Number(price), 
     salePrice: salePrice ? Number(salePrice) : null,
     stock: Number(stock) || 0,
-    images: typeof images === 'string' ? images : JSON.stringify(images || []),
+    images: imageStr,
     categoryId: Number(categoryId),
     brandId: Number(brandId),
     isFeatured: !!isFeatured,

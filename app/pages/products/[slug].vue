@@ -7,138 +7,163 @@ const { data: product } = await useFetch(`/api/products/${slug}`)
 if (!product.value) {
    throw createError({ statusCode: 404, statusMessage: 'Product not found' })
 }
+
+const { data: relatedProducts } = await useFetch('/api/products', {
+   query: { category: product.value.categoryId },
+   transform: (res: any) => res.filter((p: any) => p.id !== product.value.id).slice(0, 4)
+})
+
+useSeoMeta({
+  title: `${product.value.name} | EL-WALI SHOP`,
+  description: product.value.description?.slice(0, 160),
+  ogTitle: product.value.name,
+  ogImage: JSON.parse(product.value.images || '[]')[0],
+})
+
+const activeImg = ref(JSON.parse(product.value.images || '[]')[0] || '')
+
+// Enterprise Tracking: Record product view for smarter recommendations
+onMounted(async () => {
+   if (product.value) {
+      await $fetch('/api/tracking/view', {
+         method: 'POST',
+         body: { productId: product.value.id }
+      })
+   }
+})
 </script>
 
+
 <template>
-  <div class="product-detail container section-padding">
-    <div class="breadcrumb">
-       <NuxtLink to="/">Home</NuxtLink> / 
-       <NuxtLink to="/products">Products</NuxtLink> / 
-       <span>{{ product.name }}</span>
-    </div>
-
-    <div class="product-layout">
+  <div class="product-editorial container section-padding">
+    <div class="product-stage fade-in-up">
        <!-- Gallery -->
-       <div class="gallery-side">
-          <div class="main-img card">
-             <img :src="JSON.parse(product.images)[0]" :alt="product.name">
+       <div class="gallery-wrapper">
+          <div class="stage-img card">
+             <img :src="activeImg" :alt="product.name">
           </div>
-          <div class="thumbnails">
-             <!-- Placeholder for more images -->
-             <div class="thumb card active"><img :src="JSON.parse(product.images)[0]"></div>
+          <div class="stage-thumbs">
+             <div 
+               v-for="(img, i) in JSON.parse(product.images || '[]')" 
+               :key="i"
+               class="thumb-box card"
+               :class="{active: activeImg === img}"
+               @click="activeImg = img"
+             >
+                <img :src="img">
+             </div>
           </div>
        </div>
 
-       <!-- Info -->
-       <div class="info-side">
-          <div class="info-header">
-             <span class="brand-badge">{{ product.brand?.name }}</span>
-             <h1 class="title-md">{{ product.name }}</h1>
-             <div class="rating-summary">
-                <span class="stars">★★★★★</span>
-                <span class="count">(0 reviews)</span>
+       <!-- Purchase Info -->
+       <div class="purchase-wrapper">
+          <div class="meta-row">
+             <NuxtLink :to="`/categories/${product.category?.slug}`" class="cat-pill">
+               {{ product.category?.name }}
+             </NuxtLink>
+             <span class="sku">ID: #00{{ product.id }}</span>
+          </div>
+
+          <h1 class="product-title">{{ product.name }}</h1>
+          
+          <div class="brand-row">
+             By <NuxtLink :to="`/products?brand=${product.brandId}`" class="brand-link">{{ product.brand?.name }}</NuxtLink>
+          </div>
+
+          <div class="price-terminal card">
+             <div class="price-display">
+                <span v-if="product.salePrice" class="main-price">${{ product.salePrice }}</span>
+                <span :class="{'strike-price': product.salePrice, 'main-price': !product.salePrice}">${{ product.price }}</span>
+             </div>
+             <p v-if="product.stock > 0" class="stock-info in">✔ In Stock - Ready to ship</p>
+             <p v-else class="stock-info out">✖ Out of Stock</p>
+
+             <div class="add-block">
+                <div class="qty-btn">1</div>
+                <button class="btn btn-primary btn-xl">Add to Basket</button>
              </div>
           </div>
 
-          <div class="price-box">
-             <div class="current-price">${{ product.salePrice || product.price }}</div>
-             <div v-if="product.salePrice" class="discount-info">
-                <span class="old">${{ product.price }}</span>
-                <span class="save">Save ${{ (product.price - product.salePrice).toFixed(2) }}</span>
-             </div>
-          </div>
-
-          <div class="stock-status" :class="{'in-stock': product.stock > 0}">
-             ● {{ product.stock > 0 ? 'In Stock' : 'Out of Stock' }} ({{ product.stock }} available)
-          </div>
-
-          <div class="actions">
-             <div class="qty-selector">
-                <button>-</button>
-                <input type="number" value="1">
-                <button>+</button>
-             </div>
-             <button class="btn btn-primary btn-lg flex-1">Add to Cart</button>
-             <button class="btn-wishlist">♡</button>
-          </div>
-
-          <div class="description-section">
-             <h3>Description</h3>
-             <p>{{ product.description }}</p>
-          </div>
-
-          <div class="specs-grid" v-if="product.specifications">
-             <div v-for="(val, key) in JSON.parse(product.specifications)" :key="key" class="spec-row">
-                <span class="spec-key">{{ key }}</span>
-                <span class="spec-val">{{ val }}</span>
-             </div>
+          <div class="trust-badges">
+             <div class="badge"><span class="icon">🚚</span> Free Shipping</div>
+             <div class="badge"><span class="icon">💰</span> 30 Days Return</div>
+             <div class="badge"><span class="icon">🛡️</span> 2 Year Warranty</div>
           </div>
        </div>
     </div>
 
-    <!-- Reviews Section -->
-    <section class="reviews-section section-padding">
-       <h2 class="title-md">Customer Reviews</h2>
-       <div class="reviews-placeholder card">
-          <p>No reviews yet. Be the first to review this product!</p>
-          <button class="btn btn-secondary">Write a Review</button>
+    <!-- Details Section -->
+    <section class="details-tabs section-padding">
+       <div class="tabs-header">
+          <button class="tab-btn active">Description</button>
+          <button class="tab-btn">Specifications</button>
+          <button class="tab-btn">Shipping Info</button>
+       </div>
+       <div class="tab-content card">
+          <p class="desc-text">{{ product.description }}</p>
+       </div>
+    </section>
+
+    <!-- Related Products -->
+    <section v-if="relatedProducts?.length" class="related-section section-padding">
+       <h2 class="title-sm">You Might Also Like</h2>
+       <div class="catalog-grid">
+           <div v-for="rp in relatedProducts" :key="rp.id" class="product-card card hover-lift">
+              <NuxtLink :to="`/products/${rp.slug}`" class="product-img">
+                 <img :src="JSON.parse(rp.images || '[]')[0]" :alt="rp.name">
+              </NuxtLink>
+              <div class="product-info">
+                 <NuxtLink :to="`/products/${rp.slug}`" class="product-name">{{ rp.name }}</NuxtLink>
+                 <span class="sale-price">${{ rp.salePrice || rp.price }}</span>
+              </div>
+           </div>
        </div>
     </section>
   </div>
 </template>
 
 <style scoped>
-.breadcrumb { margin-bottom: 2rem; font-size: 0.9rem; color: var(--text-muted); }
-.breadcrumb a:hover { color: var(--primary); }
+.product-stage { display: grid; grid-template-columns: 1.2fr 1fr; gap: 4rem; }
 
-.product-layout {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 4rem;
-  align-items: start;
-}
+.stage-img img { width: 100%; border-radius: var(--radius); }
+.stage-thumbs { display: flex; gap: 1rem; margin-top: 1rem; }
+.thumb-box { width: 80px; height: 80px; cursor: pointer; padding: 0.25rem; transition: all 0.2s; }
+.thumb-box img { width: 100%; height: 100%; object-fit: cover; }
+.thumb-box.active { border-color: var(--primary); transform: scale(1.05); }
 
-.main-img img { width: 100%; display: block; border-radius: var(--radius); }
+.meta-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+.cat-pill { background: #f1f5f9; padding: 0.4rem 1rem; border-radius: 50px; font-size: 0.8rem; font-weight: 700; color: var(--secondary); text-decoration: none; }
+.sku { font-size: 0.75rem; color: var(--text-muted); }
 
-.thumbnails { display: flex; gap: 1rem; margin-top: 1rem; }
-.thumb { width: 80px; height: 80px; padding: 0.5rem; cursor: pointer; }
-.thumb img { width: 100%; height: 100%; object-fit: cover; }
-.thumb.active { border-color: var(--primary); }
+.product-title { font-size: 2.8rem; font-weight: 900; line-height: 1.1; margin-bottom: 0.5rem; }
+.brand-link { color: var(--primary); font-weight: 700; }
 
-.brand-badge { color: var(--primary); font-weight: 800; text-transform: uppercase; font-size: 0.8rem; }
-.info-header h1 { margin: 0.5rem 0; font-size: 2.2rem; }
-.rating-summary { display: flex; gap: 0.5rem; align-items: center; color: #fbbf24; }
-.rating-summary .count { color: var(--text-muted); font-size: 0.8rem; }
+.price-terminal { margin-top: 2rem; padding: 2rem; border-left: 5px solid var(--primary); }
+.price-display { margin-bottom: 1rem; }
+.main-price { font-size: 3rem; font-weight: 900; color: var(--secondary); margin-right: 1rem; }
+.strike-price { font-size: 1.5rem; text-decoration: line-through; color: var(--text-muted); }
 
-.price-box { margin: 2rem 0; background: #f8fafc; padding: 1.5rem; border-radius: var(--radius); }
-.current-price { font-size: 2.5rem; font-weight: 900; color: var(--secondary); }
-.discount-info { display: flex; gap: 1rem; align-items: center; margin-top: 0.5rem; }
-.discount-info .old { text-decoration: line-through; color: var(--text-muted); }
-.discount-info .save { color: #10b981; font-weight: 700; font-size: 0.9rem; }
+.stock-info { font-weight: 700; font-size: 0.9rem; margin-bottom: 2rem; }
+.stock-info.in { color: #10b981; }
+.stock-info.out { color: #ef4444; }
 
-.stock-status { font-weight: 700; margin-bottom: 2rem; font-size: 0.9rem; }
-.stock-status.in-stock { color: #10b981; }
+.add-block { display: flex; gap: 1rem; }
+.qty-btn { padding: 1rem 1.5rem; border: 1px solid var(--border); border-radius: var(--radius); font-weight: 700; }
+.btn-xl { flex: 1; padding: 1.25rem; font-size: 1.2rem; }
 
-.actions { display: flex; gap: 1rem; margin-bottom: 3rem; }
-.qty-selector { display: flex; border: 1px solid var(--border); border-radius: var(--radius); background: white; }
-.qty-selector button { width: 40px; border: none; background: none; cursor: pointer; font-size: 1.2rem; }
-.qty-selector input { width: 50px; border: none; text-align: center; font-weight: 700; outline: none; }
-.btn-lg { padding: 1rem 2.5rem; font-size: 1.1rem; }
-.flex-1 { flex: 1; }
-.btn-wishlist { width: 56px; border: 1px solid var(--border); background: white; border-radius: var(--radius); font-size: 1.5rem; cursor: pointer; transition: all 0.2s; }
-.btn-wishlist:hover { color: var(--primary); border-color: var(--primary); }
+.trust-badges { display: flex; gap: 1.5rem; margin-top: 2.5rem; border-top: 1px solid var(--border); padding-top: 2rem; }
+.badge { font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; }
 
-.description-section h3 { margin-bottom: 1rem; }
-.description-section p { line-height: 1.6; color: #4b5563; }
+.tabs-header { display: flex; border-bottom: 2px solid var(--border); margin-bottom: -2px; }
+.tab-btn { padding: 1rem 2rem; background: none; border: none; font-weight: 700; opacity: 0.5; cursor: pointer; transition: all 0.2s; border-bottom: 2px solid transparent; }
+.tab-btn.active { opacity: 1; border-bottom-color: var(--primary); color: var(--primary); }
+.tab-content { padding: 2.5rem; border-top: none; }
+.desc-text { line-height: 1.8; color: #4b5563; font-size: 1.1rem; }
 
-.specs-grid { margin-top: 2rem; border-top: 1px solid var(--border); padding-top: 2rem; }
-.spec-row { display: flex; padding: 0.75rem 0; border-bottom: 1px dotted var(--border); }
-.spec-key { flex: 1; font-weight: 700; color: var(--text-muted); }
-.spec-val { flex: 2; }
-
-.reviews-placeholder { text-align: center; padding: 4rem; }
+.catalog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1.5rem; }
 
 @media (max-width: 968px) {
-  .product-layout { grid-template-columns: 1fr; gap: 2rem; }
+  .product-stage { grid-template-columns: 1fr; gap: 2rem; }
+  .product-title { font-size: 2rem; }
 }
 </style>

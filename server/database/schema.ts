@@ -36,8 +36,9 @@ export const products = pgTable('products', {
   name: text('name').notNull(),
   slug: text('slug').notNull().unique(),
   description: text('description'),
-  price: doublePrecision('price').notNull(),
-  salePrice: doublePrecision('sale_price'),
+  price: decimal('price', { precision: 10, scale: 2 }).notNull(),
+  salePrice: decimal('sale_price', { precision: 10, scale: 2 }),
+  costPrice: decimal('cost_price', { precision: 10, scale: 2 }),
   stock: integer('stock').default(0).notNull(),
   images: text('images'), // JSON array string
   categoryId: integer('category_id').references(() => categories.id),
@@ -47,6 +48,24 @@ export const products = pgTable('products', {
   isFeatured: boolean('is_featured').default(false),
   isActive: boolean('is_active').default(true),
   createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull()
+})
+
+// Enterprise: Site Metadata & Global Config
+export const siteSettings = pgTable('site_settings', {
+  id: serial('id').primaryKey(),
+  key: text('key').notNull().unique(), // 'phone', 'email', 'address', 'shipping_notice', etc.
+  value: text('value').notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull()
+})
+
+// Enterprise: Activity Tracking for Recommendations
+export const userViews = pgTable('user_views', {
+  id: serial('id').primaryKey(),
+  userId: integer('user_id'), // Optional if guest
+  sessionId: text('session_id'), // Track guests
+  productId: integer('product_id').references(() => products.id),
+  viewedAt: timestamp('viewed_at').defaultNow().notNull()
 })
 
 export const reviews = pgTable('reviews', {

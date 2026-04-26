@@ -78,6 +78,22 @@ const resetForm = () => {
                 <input v-model="form.slug" required placeholder="electro-menager" />
               </div>
             </div>
+
+            <div class="form-row">
+              <div class="input-group">
+                <label>Parent Category (Optional)</label>
+                <select v-model="form.parentId">
+                  <option :value="null">None (Main Category)</option>
+                  <option v-for="c in categories" :key="c.id" :value="c.id" v-show="c.id !== editingId">
+                    {{ c.name }}
+                  </option>
+                </select>
+              </div>
+              <div class="input-group">
+                <label>Sort Order</label>
+                <input type="number" v-model="form.sortOrder" />
+              </div>
+            </div>
             
             <div class="input-group">
               <label>Image URL</label>

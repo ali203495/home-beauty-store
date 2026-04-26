@@ -1,34 +1,48 @@
-// server/api/products.get.ts
 import { db } from '../utils/db'
 import { products } from '../database/schema'
-import { eq, and, like, or } from 'drizzle-orm'
+import { eq, or, and, ilike, sql } from 'drizzle-orm'
 
 export default defineEventHandler(async (event) => {
   const query = getQuery(event)
-  const { featured, q, category } = query
+  const { category, brand, featured, search } = query
 
   const conditions = []
-  if (featured === 'true') {
-    conditions.push(eq(products.isFeatured, true))
-  }
+
+  if (category) conditions.push(eq(products.categoryId, Number(category)))
+  if (brand) conditions.push(eq(products.brandId, Number(brand)))
+  if (featured === 'true') conditions.push(eq(products.isFeatured, true))
   
-  if (q) {
-    conditions.push(
-      or(
-        like(products.name, `%${q}%`),
-        like(products.description, `%${q}%`)
-      )
-    )
+  if (search) {
+     const searchStr = String(search).trim()
+     const words = searchStr.split(/\s+/).filter(w => w.length > 2)
+     
+     if (words.length > 0) {
+        // Match ANY word in name or description (Enterprise "Better than exact" search)
+        const searchConditions = words.map(word => 
+           or(
+             ilike(products.name, `%${word}%`),
+             ilike(products.description, `%${word}%`),
+             ilike(products.tags, `%${word}%`)
+           )
+        )
+        conditions.push(and(...searchConditions))
+     } else {
+        // Fallback for short words
+        conditions.push(or(
+           ilike(products.name, `%${searchStr}%`),
+           ilike(products.description, `%${searchStr}%`)
+        ))
+     }
   }
 
-  // Always only return active products for public API
-  conditions.push(eq(products.isActive, true))
+  const where = conditions.length > 0 ? and(...conditions) : undefined
 
   return await db.query.products.findMany({
-    where: and(...conditions),
+    where,
     with: {
-      brand: true,
-      category: true
-    }
+      category: true,
+      brand: true
+    },
+    limit: 50
   })
 })
