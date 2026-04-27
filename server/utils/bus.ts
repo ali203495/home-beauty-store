@@ -8,7 +8,15 @@ const connection = new Redis(process.env.REDIS_URL || 'redis://localhost:6379', 
 
 // 1. Initialize Specialized Queues
 export const queues = {
-  notifications: new Queue('notifications', { connection }),
+  fulfillment: new Queue('fulfillment', { 
+    connection,
+    defaultJobOptions: {
+      attempts: 5,
+      backoff: { type: 'exponential', delay: 2000 },
+      removeOnComplete: 1000,
+      removeOnFail: 5000
+    }
+  }),
   searchSync: new Queue('search-sync', { connection }),
   analytics: new Queue('analytics', { connection }),
 }
@@ -18,11 +26,9 @@ export const emitEvent = async (event: string, data: any) => {
   try {
     switch (event) {
       case 'order.created':
-        // Decouple notification and internal tracking
-        await queues.notifications.add('send-confirmation', data, {
-           attempts: 3,
-           backoff: { type: 'exponential', delay: 1000 }
-        })
+        // Primary Fulfillment Task
+        await queues.fulfillment.add('process-fulfillment', data)
+        // Non-blocking lateral tasks
         await queues.analytics.add('process-order-data', data)
         break
 

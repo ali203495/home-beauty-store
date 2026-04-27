@@ -15,10 +15,11 @@ export default defineEventHandler(async (event) => {
 
   const orderData = result.data
 
-  // 1. BACKPRESSURE: Check Queue Depth
-  const jobCount = await (await queues.notifications.getJobCounts()).waiting
-  if (jobCount > 5000) {
-    throw createError({ statusCode: 503, statusMessage: 'System Busy. Please retry in a few seconds.' })
+  // 1. BACKPRESSURE: Check Fulfillment Queue Depth
+  // High-scale protection: fail fast if the workers are falling behind
+  const jobCount = await (await queues.fulfillment.getJobCounts()).waiting
+  if (jobCount > 2000) {
+    throw createError({ statusCode: 503, statusMessage: 'System Busy (High Load). Please retry in 30s.' })
   }
 
   // 2. ULTIMATE DURABILITY: DB-First Dual Write

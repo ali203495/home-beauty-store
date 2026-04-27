@@ -11,20 +11,27 @@ const connection = new Redis(process.env.REDIS_URL || 'redis://localhost:6379', 
 export default defineNitroPlugin(() => {
   if (process.env.START_WORKERS === 'true') {
     /**
-     * 🏗️ HORIZONTALLY SCALABLE FULFILLMENT WORKER
-     * Concurrency: 10 (Processing 10 orders per instance simultaneously)
+     * 🏗️ EXACTLY-ONCE FULFILLMENT WORKER
      */
-    new Worker('notifications', async (job) => {
-      if (job.name !== 'send-confirmation') return
+    new Worker('fulfillment', async (job) => {
+      if (job.name !== 'process-fulfillment') return
       
       const orderData = job.data
 
-      // 1. STATE MACHINE: Mark as 'processing'
-      await db.update(orders).set({ status: 'processing', updatedAt: new Date() }).where(eq(orders.id, orderData.id))
-
       try {
         await db.transaction(async (tx) => {
-          // 2. ATOMIC STOCK SETTLEMENT
+          // 1. TRANSACTIONAL GUARD: Ensure order is not already finished/processing
+          const [order] = await tx.select().from(orders).where(eq(orders.id, orderData.id)).for('update')
+          
+          if (!order || order.status === 'completed' || order.status === 'processing') {
+             console.log(`ℹ️ [Worker] Skipping already processed order: ${orderData.id}`)
+             return
+          }
+
+          // 2. STATE MACHINE: Mark as 'processing'
+          await tx.update(orders).set({ status: 'processing', updatedAt: new Date() }).where(eq(orders.id, orderData.id))
+
+          // 3. ATOMIC STOCK SETTLEMENT
           for (const item of orderData.items) {
              const [updated] = await tx
                .update(products)
@@ -35,7 +42,7 @@ export default defineNitroPlugin(() => {
              if (!updated) throw new Error(`STOCK_EXHAUSTED: ${item.productId}`)
           }
 
-          // 3. PERSIST ITEM MAPPING
+          // 4. PERSIST ITEM MAPPING
           await tx.insert(orderItems).values(
             orderData.items.map((i: any) => ({
               orderId: orderData.id,
@@ -45,21 +52,38 @@ export default defineNitroPlugin(() => {
             }))
           )
 
-          // 4. STATE MACHINE: Finalize as 'completed'
+          // 5. STATE MACHINE: Finalize as 'completed'
           await tx.update(orders).set({ status: 'completed' }).where(eq(orders.id, orderData.id))
           
-          console.log(`✨ [Worker] Fulfillment Optimized: ${orderData.id}`)
+          console.log(`✨ [Worker] Successfully fulfilled: ${orderData.id}`)
         })
       } catch (e: any) {
-        // 5. RECOVERY: Mark as 'failed' in DB for manual replay
         console.error(`❌ [Worker Error]:`, e.message)
         await db.update(orders).set({ status: 'failed' }).where(eq(orders.id, orderData.id))
-        throw e // Allow BullMQ backoff retry
+        throw e // Trigger BullMQ retry
       }
     }, { 
       connection, 
       concurrency: 10,
-      limiter: { max: 100, duration: 1000 } // Global Throttling: 100 jobs per second
+      limiter: { max: 50, duration: 1000 }
     })
+
+    /**
+     * 🏥 AUTOMATED RECOVERY JOB
+     * Scans for 'pending' orders older than 5 minutes that failed to queue
+     */
+    setInterval(async () => {
+      const fiveMinsAgo = new Date(Date.now() - 5 * 60 * 1000)
+      const pendingOrders = await db.query.orders.findMany({
+        where: (o, { and, eq, lt }) => and(eq(o.status, 'pending'), lt(o.createdAt, fiveMinsAgo)),
+        limit: 50
+      })
+
+      for (const order of pendingOrders) {
+         console.warn(`🚑 [Recovery] Rescuing stuck order: ${order.id}`)
+         await emitEvent('order.created', JSON.parse(order.metadata || '{}'))
+         await db.update(orders).set({ status: 'queued' }).where(eq(orders.id, order.id))
+      }
+    }, 60 * 1000) // Run every minute
   }
 })
