@@ -1,4 +1,4 @@
-import { db } from '../../../../../utils/db'
+import { db } from '../../../../utils/db'
 import { categories } from '../../../../database/schema'
 import { asc } from 'drizzle-orm'
 

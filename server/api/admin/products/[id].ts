@@ -1,8 +1,8 @@
-import { db } from '../../../../../utils/db'
+import { db } from '../../../../utils/db'
 import { products } from '../../../../database/schema'
 import { eq } from 'drizzle-orm'
-import { useServerCache } from '../../../../../utils/cache'
-import { emitEvent } from '../../../../../utils/bus'
+import { useServerCache } from '../../../../utils/cache'
+import { emitEvent } from '../../../../utils/bus'
 
 export default defineEventHandler(async (event) => {
   const { loggedIn, user } = await getUserSession(event)

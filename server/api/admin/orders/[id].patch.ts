@@ -1,5 +1,5 @@
 // PATCH /api/admin/orders/[id]
-import { db } from '../../../../../utils/db'
+import { db } from '../../../../utils/db'
 import { orders } from '../../../../database/schema'
 import { eq } from 'drizzle-orm'
 

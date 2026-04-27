@@ -1,5 +1,5 @@
 // GET /api/admin/orders
-import { db } from '../../../../../../utils/db'
+import { db } from '../../../../../utils/db'
 import { orders } from '../../../../../database/schema'
 import { desc } from 'drizzle-orm'
 

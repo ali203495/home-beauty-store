@@ -1,5 +1,5 @@
 // server/api/admin/stats.ts
-import { db } from '../../../utils/db'
+import { db } from '../../utils/db'
 import { users, products, orders } from '../../database/schema'
 import { count, sum } from 'drizzle-orm'
 
@@ -12,7 +12,8 @@ export default defineEventHandler(async (event) => {
   const [usersCount] = await db.select({ value: count() }).from(users)
   const [productsCount] = await db.select({ value: count() }).from(products)
   const [ordersCount] = await db.select({ value: count() }).from(orders)
-  const [salesSum] = await db.select({ value: sum(orders.total) }).from(orders)
+  // Fix: orders table total field
+  const [salesSum] = await db.select({ value: sum(orders.totalAmount) }).from(orders)
 
   return {
     totalUsers: usersCount.value,
