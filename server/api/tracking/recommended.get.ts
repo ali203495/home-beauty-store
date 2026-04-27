@@ -1,11 +1,18 @@
 import { db } from '../../utils/db'
 import { userViews, products } from '../../database/schema'
 import { eq, desc, inArray, notInArray, sql, and } from 'drizzle-orm'
+import { useServerCache } from '../../utils/cache'
 
 export default defineEventHandler(async (event) => {
   const session = await getUserSession(event)
+  const cache = useServerCache()
   
-  // 1. Get user's last 20 views
+  // 1. User-Specific Cache Key
+  const cacheKey = `recommended:${session.user?.id || 'guest'}:${session.id}`
+  const cached = await cache.get<any[]>(cacheKey)
+  if (cached) return cached
+
+  // 2. Recommendation Engine Logic
   const recentViews = await db.query.userViews.findMany({
     where: (uv, { or, eq }) => or(
        eq(uv.sessionId, session.id),
@@ -13,33 +20,33 @@ export default defineEventHandler(async (event) => {
     ),
     orderBy: [desc(userViews.viewedAt)],
     limit: 20,
-    with: {
-       product: true
-    }
+    with: { product: true }
   })
 
-  // If no history, return standard featured products
+  let recommendations = []
+
   if (recentViews.length === 0) {
-    return await db.query.products.findMany({
+    recommendations = await db.query.products.findMany({
       where: eq(products.isFeatured, true),
+      limit: 6
+    })
+  } else {
+    const productIds = recentViews.map(v => v.productId as number)
+    const categoryIds = recentViews.map(v => v.product?.categoryId).filter(id => id !== null) as number[]
+    const uniqueCats = [...new Set(categoryIds)]
+
+    recommendations = await db.query.products.findMany({
+      where: and(
+         inArray(products.categoryId, uniqueCats),
+         notInArray(products.id, productIds)
+      ),
+      orderBy: [desc(products.createdAt)],
       limit: 6
     })
   }
 
-  // 2. Identify top categories from history
-  const productIds = recentViews.map(v => v.productId as number)
-  const categoryIds = recentViews.map(v => v.product?.categoryId).filter(id => id !== null) as number[]
-  
-  // 3. Find unique category seeds
-  const uniqueCats = [...new Set(categoryIds)]
+  // 3. Cache for 5 minutes (personalization changes faster)
+  await cache.set(cacheKey, recommendations, 300)
 
-  // 4. Fetch products in those categories that the user hasn't seen yet
-  return await db.query.products.findMany({
-    where: and(
-       inArray(products.categoryId, uniqueCats),
-       notInArray(products.id, productIds)
-    ),
-    orderBy: [desc(products.createdAt)], // Use recency instead of RANDOM for scale
-    limit: 6
-  })
+  return recommendations
 })
