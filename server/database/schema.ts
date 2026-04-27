@@ -1,5 +1,5 @@
-import { pgTable, serial, text, integer, decimal, doublePrecision, timestamp, boolean } from 'drizzle-orm/pg-core'
-import { relations } from 'drizzle-orm'
+import { pgTable, serial, text, integer, decimal, doublePrecision, timestamp, boolean, index } from 'drizzle-orm/pg-core'
+import { relations, sql } from 'drizzle-orm'
 
 export const users = pgTable('users', {
   id: serial('id').primaryKey(),
@@ -57,7 +57,9 @@ export const siteSettings = pgTable('site_settings', {
   key: text('key').notNull().unique(), // 'phone', 'email', 'address', 'shipping_notice', etc.
   value: text('value').notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull()
-})
+}, (table) => ({
+  keyIdx: index('key_idx').on(table.key)
+}))
 
 // Enterprise: Activity Tracking for Recommendations
 export const userViews = pgTable('user_views', {

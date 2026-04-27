@@ -21,12 +21,18 @@ useSeoMeta({
              <span class="heart">❤️</span>
              <span>Recommandés</span>
           </div>
-          <div class="rec-scroll">
-             <NuxtLink v-for="cat in categories" :key="cat.id" :to="`/categories/${cat.slug}`" class="rec-item card">
-                <img :src="cat.image || 'https://via.placeholder.com/30'" :alt="cat.name">
-                <span>{{ cat.name }}</span>
-             </NuxtLink>
-          </div>
+           <div class="rec-scroll">
+              <NuxtLink 
+                v-for="cat in categories" 
+                :key="cat.id" 
+                :to="`/categories/${cat.slug}`" 
+                class="rec-item card"
+                :aria-label="`Browse categories for ${cat.name}`"
+              >
+                 <img :src="cat.image || 'https://via.placeholder.com/30'" :alt="`Icon for ${cat.name}`">
+                 <span>{{ cat.name }}</span>
+              </NuxtLink>
+           </div>
           <div class="rec-next">›</div>
        </div>
     </div>
@@ -99,7 +105,13 @@ useSeoMeta({
                       <span v-if="product.salePrice" class="sale-price">${{ product.salePrice }}</span>
                       <span :class="{'old-price': product.salePrice}">${{ product.price }}</span>
                    </div>
-                   <button class="btn-add-cart" @click="addToCart(product)">+</button>
+                    <button 
+                       class="btn-add-cart" 
+                       @click="addToCart(product)"
+                       :aria-label="`Add ${product.name} to your basket`"
+                    >
+                       +
+                    </button>
                 </div>
              </div>
           </div>

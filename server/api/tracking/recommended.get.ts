@@ -39,7 +39,7 @@ export default defineEventHandler(async (event) => {
        inArray(products.categoryId, uniqueCats),
        notInArray(products.id, productIds)
     ),
-    orderBy: [sql`RANDOM()`],
+    orderBy: [desc(products.createdAt)], // Use recency instead of RANDOM for scale
     limit: 6
   })
 })

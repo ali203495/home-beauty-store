@@ -10,10 +10,22 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'Product ID required' })
   }
 
-  // Record the view
+  // 1. Check if we already recorded this view in the last 10 minutes (Protect DB Writes)
+  const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000)
+  const existing = await db.query.userViews.findFirst({
+    where: (uv, { eq, and, gt }) => and(
+       eq(uv.sessionId, session.id),
+       eq(uv.productId, Number(productId)),
+       gt(uv.viewedAt, tenMinutesAgo)
+    )
+  })
+
+  if (existing) return { success: true, cached: true }
+
+  // 2. Record the view uniquely
   await db.insert(userViews).values({
-    userId: session.user?.id || null, // Handle guest views
-    sessionId: session.id, // Auth utils provided session id
+    userId: session.user?.id || null,
+    sessionId: session.id,
     productId: Number(productId)
   })
 
