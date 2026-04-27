@@ -5,7 +5,9 @@ export default defineNuxtConfig({
   modules: [
     'nuxt-auth-utils',
     'nuxt-security',
-    '@nuxt/image'
+    '@nuxt/image',
+    '@pinia/nuxt',
+    'pinia-plugin-persistedstate/nuxt'
   ],
   security: {
     csrf: true,

@@ -18,6 +18,7 @@
     "@opentelemetry/resources": "^2.7.0",
     "@opentelemetry/sdk-trace-base": "^2.7.0",
     "@opentelemetry/semantic-conventions": "^1.40.0",
+    "@pinia/nuxt": "^0.11.3",
     "@sentry/node": "^10.50.0",
     "@sentry/nuxt": "^10.50.0",
     "@sentry/tracing": "^7.120.4",
@@ -33,6 +34,8 @@
     "nuxt-security": "^2.5.1",
     "opossum": "^9.0.0",
     "pg": "^8.20.0",
+    "pinia": "^3.0.4",
+    "pinia-plugin-persistedstate": "^4.7.1",
     "vue": "^3.5.32",
     "vue-router": "^5.0.4",
     "zod": "^4.3.6"
