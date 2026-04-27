@@ -13,13 +13,14 @@ export default defineEventHandler(async (event) => {
 
   // 1. Create main Order record
   const [newOrder] = await db.insert(orders).values({
-    userId: session.user?.id || null, // Allow guest orders
+    userId: session.user?.id || null,
     customerName,
     customerEmail,
     customerPhone,
     shippingAddress,
     totalAmount: String(totalAmount),
-    status: 'pending'
+    status: 'pending',
+    whatsappConfirmed: false
   }).returning()
 
   // 2. Create Order Items
@@ -32,8 +33,12 @@ export default defineEventHandler(async (event) => {
 
   await db.insert(orderItems).values(itemsToInsert)
 
+  // 3. Return full order for frontend WhatsApp generation
   return { 
      success: true, 
-     orderId: newOrder.id 
+     order: {
+        ...newOrder,
+        items: items // Return original items for easy message generation
+     }
   }
 })

@@ -78,7 +78,9 @@ export const orders = pgTable('orders', {
   shippingAddress: text('shipping_address').notNull(),
   city: text('city').default('Marrakech').notNull(),
   totalAmount: decimal('total_amount', { precision: 10, scale: 2 }).notNull(),
-  status: text('status').default('pending').notNull(), // pending, processing, shipped, delivered, cancelled
+  status: text('status').default('pending').notNull(),
+  whatsappConfirmed: boolean('whatsapp_confirmed').default(false).notNull(),
+  whatsappConfirmedAt: timestamp('whatsapp_confirmed_at'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull()
 })

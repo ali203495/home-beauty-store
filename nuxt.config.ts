@@ -11,6 +11,9 @@ export default defineNuxtConfig({
         clientId: process.env.NUXT_OAUTH_GOOGLE_CLIENT_ID,
         clientSecret: process.env.NUXT_OAUTH_GOOGLE_CLIENT_SECRET
       }
+    },
+    public: {
+      whatsappNumber: process.env.NUXT_PUBLIC_WHATSAPP_NUMBER || '212600000000'
     }
   },
   future: {

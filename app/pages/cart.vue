@@ -5,6 +5,8 @@ const { data: settings } = await useFetch('/api/settings')
 
 const loading = ref(false)
 const orderStatus = ref<'idle' | 'success'>('idle')
+const lastOrder = ref<any>(null)
+const { redirectToWhatsApp } = useWhatsApp()
 
 const checkoutForm = ref({
   name: user.value?.name || '',
@@ -31,11 +33,12 @@ const handleCheckout = async () => {
         }))
      }
 
-     await $fetch('/api/orders', {
+     const res: any = await $fetch('/api/orders', {
         method: 'POST',
         body: orderData
      })
 
+     lastOrder.value = res.order
      orderStatus.value = 'success'
      clearCart()
   } catch (e: any) {
@@ -44,6 +47,25 @@ const handleCheckout = async () => {
      loading.value = false
   }
 }
+const confirmAndRedirect = async () => {
+  if (!lastOrder.value) return
+  
+  // Mark as confirmed in DB
+  await $fetch(`/api/orders/${lastOrder.value.id}/confirm-whatsapp`, { method: 'PATCH' })
+  
+  // Redirect
+  redirectToWhatsApp({
+     orderId: lastOrder.value.id,
+     customerName: lastOrder.value.customerName,
+     phone: lastOrder.value.customerPhone,
+     address: lastOrder.value.shippingAddress,
+     total: Number(lastOrder.value.totalAmount),
+     items: lastOrder.value.items.map((i: any) => ({
+        name: i.name || 'Product', // Assume items from API have basic info
+        quantity: i.quantity
+     }))
+  })
+}
 </script>
 
 <template>
@@ -51,8 +73,15 @@ const handleCheckout = async () => {
     <div v-if="orderStatus === 'success'" class="success-screen card">
        <div class="success-icon">🎉</div>
        <h1>Order Received!</h1>
-       <p>Thank you, {{ checkoutForm.name }}. We have received your order for the Marrakech area. Our team will contact you shortly.</p>
-       <NuxtLink to="/products" class="btn btn-primary">Continue Shopping</NuxtLink>
+       <p class="mb-2">Thank you, {{ checkoutForm.name }}. We have received your order for the Marrakech area. <strong>To speed up delivery, please confirm your order on WhatsApp below:</strong></p>
+       
+       <div class="success-actions">
+          <button @click="confirmAndRedirect" class="btn btn-whatsapp mb-1">
+             <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" />
+             Confirm via WhatsApp
+          </button>
+          <NuxtLink to="/products" class="btn btn-outline w-full">Continue Shopping</NuxtLink>
+       </div>
     </div>
 
     <template v-else>
@@ -175,6 +204,17 @@ const handleCheckout = async () => {
 .mt-1 { margin-top: 1rem; }
 .mt-2 { margin-top: 2rem; }
 .w-full { width: 100%; border-radius: 50px; padding: 1.25rem; font-size: 1.1rem; }
+
+.success-actions { max-width: 400px; margin: 0 auto; display: flex; flex-direction: column; gap: 1rem; }
+.btn-whatsapp { 
+  display: flex; align-items: center; justify-content: center; gap: 1rem;
+  background: #25D366; color: white; border: none; font-weight: 800; font-size: 1.1rem;
+  padding: 1.25rem; border-radius: 50px; cursor: pointer; transition: 0.2s;
+}
+.btn-whatsapp:hover { background: #128C7E; transform: scale(1.02); }
+.btn-whatsapp img { width: 24px; height: 24px; filter: brightness(0) invert(1); }
+
+.btn-outline { background: none; border: 2px solid var(--border); color: var(--secondary); font-weight: 700; padding: 1rem; border-radius: 50px; }
 
 @media (max-width: 968px) {
   .cart-layout { grid-template-columns: 1fr; }
