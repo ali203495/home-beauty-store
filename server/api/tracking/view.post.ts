@@ -22,12 +22,14 @@ export default defineEventHandler(async (event) => {
 
   if (existing) return { success: true, cached: true }
 
-  // 2. Record the view uniquely
-  await db.insert(userViews).values({
-    userId: session.user?.id || null,
-    sessionId: session.id,
-    productId: Number(productId)
-  })
+  // 2. Record the view uniquely (Background Execution for Speed)
+  event.waitUntil(
+    db.insert(userViews).values({
+      userId: session.user?.id || null,
+      sessionId: session.id,
+      productId: Number(productId)
+    })
+  )
 
-  return { success: true }
+  return { success: true, async: true }
 })

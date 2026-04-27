@@ -3,8 +3,18 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
   modules: [
-    'nuxt-auth-utils'
+    'nuxt-auth-utils',
+    'nuxt-security',
+    '@nuxt/image'
   ],
+  security: {
+    csrf: true,
+    headers: {
+      contentSecurityPolicy: {
+         'img-src': ["'self'", "data:", "https://via.placeholder.com", "https://upload.wikimedia.org", "https://*.googleusercontent.com"],
+      }
+    }
+  },
   runtimeConfig: {
     oauth: {
       google: {
