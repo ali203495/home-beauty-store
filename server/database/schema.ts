@@ -79,8 +79,8 @@ export const orders = pgTable('orders', {
   city: text('city').default('Marrakech').notNull(),
   totalAmount: decimal('total_amount', { precision: 10, scale: 2 }).notNull(),
   status: text('status').default('pending').notNull(),
-  whatsappConfirmed: boolean('whatsapp_confirmed').default(false).notNull(),
-  whatsappConfirmedAt: timestamp('whatsapp_confirmed_at'),
+  whatsappClicked: boolean('whatsapp_clicked').default(false).notNull(),
+  whatsappClickedAt: timestamp('whatsapp_clicked_at'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull()
 })

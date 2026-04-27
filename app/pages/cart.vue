@@ -6,7 +6,8 @@ const { data: settings } = await useFetch('/api/settings')
 const loading = ref(false)
 const orderStatus = ref<'idle' | 'success'>('idle')
 const lastOrder = ref<any>(null)
-const { redirectToWhatsApp } = useWhatsApp()
+const whatsappStatus = ref<'idle' | 'clicked'>('idle')
+const { generateMessage, getWhatsAppUrl } = useWhatsAppOrder()
 
 const checkoutForm = ref({
   name: user.value?.name || '',
@@ -47,24 +48,35 @@ const handleCheckout = async () => {
      loading.value = false
   }
 }
-const confirmAndRedirect = async () => {
+const getWhatsAppDetails = (): any => ({
+  id: lastOrder.value.id,
+  name: lastOrder.value.customerName,
+  phone: lastOrder.value.customerPhone,
+  address: lastOrder.value.shippingAddress,
+  total: Number(lastOrder.value.totalAmount),
+  items: lastOrder.value.items.map((i: any) => ({
+    name: i.name || 'Product',
+    quantity: i.quantity
+  }))
+})
+
+const handleWhatsAppClick = async () => {
   if (!lastOrder.value) return
   
-  // Mark as confirmed in DB
-  await $fetch(`/api/orders/${lastOrder.value.id}/confirm-whatsapp`, { method: 'PATCH' })
-  
-  // Redirect
-  redirectToWhatsApp({
-     orderId: lastOrder.value.id,
-     customerName: lastOrder.value.customerName,
-     phone: lastOrder.value.customerPhone,
-     address: lastOrder.value.shippingAddress,
-     total: Number(lastOrder.value.totalAmount),
-     items: lastOrder.value.items.map((i: any) => ({
-        name: i.name || 'Product', // Assume items from API have basic info
-        quantity: i.quantity
-     }))
-  })
+  loading.value = true
+  try {
+     // 1. Track click in backend (Security + Real world stats)
+     await $fetch(`/api/orders/${lastOrder.value.id}/whatsapp-click`, { method: 'PATCH' })
+     
+     // 2. State update for feedback
+     whatsappStatus.value = 'clicked'
+
+     // 3. Open WhatsApp
+     const url = getWhatsAppUrl(getWhatsAppDetails())
+     window.open(url, '_blank')
+  } finally {
+     loading.value = false
+  }
 }
 </script>
 
@@ -73,10 +85,19 @@ const confirmAndRedirect = async () => {
     <div v-if="orderStatus === 'success'" class="success-screen card">
        <div class="success-icon">🎉</div>
        <h1>Order Received!</h1>
-       <p class="mb-2">Thank you, {{ checkoutForm.name }}. We have received your order for the Marrakech area. <strong>To speed up delivery, please confirm your order on WhatsApp below:</strong></p>
+       <p class="mb-2">Thank you, <strong>{{ checkoutForm.name }}</strong>. Jina n2akdo m3ak ttalab f Marrakech.</p>
        
+       <div v-if="lastOrder" class="whatsapp-preview-box mb-2">
+          <div class="preview-header">Message Preview (Darija)</div>
+          <pre class="preview-content">{{ generateMessage(getWhatsAppDetails()) }}</pre>
+       </div>
+
+       <div v-if="whatsappStatus === 'clicked'" class="whatsapp-feedback mb-2">
+          ✅ WhatsApp opened! Please <strong>SEND</strong> the message to finalize your order.
+       </div>
+
        <div class="success-actions">
-          <button @click="confirmAndRedirect" class="btn btn-whatsapp mb-1">
+          <button @click="handleWhatsAppClick" class="btn btn-whatsapp mb-1" :disabled="loading">
              <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" />
              Confirm via WhatsApp
           </button>
@@ -206,12 +227,37 @@ const confirmAndRedirect = async () => {
 .w-full { width: 100%; border-radius: 50px; padding: 1.25rem; font-size: 1.1rem; }
 
 .success-actions { max-width: 400px; margin: 0 auto; display: flex; flex-direction: column; gap: 1rem; }
+
+.whatsapp-preview-box {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: var(--radius-sm);
+  text-align: left;
+  max-width: 400px;
+  margin: 0 auto;
+  overflow: hidden;
+}
+.preview-header { background: #dcfce7; padding: 0.5rem 1rem; font-size: 0.75rem; font-weight: 800; color: #166534; text-transform: uppercase; }
+.preview-content { padding: 1rem; font-family: inherit; font-size: 0.9rem; white-space: pre-wrap; margin: 0; color: #1e293b; }
+
+.whatsapp-feedback {
+  background: #eff6ff;
+  color: #1e40af;
+  padding: 1rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  max-width: 400px;
+  margin: 0 auto;
+  border-left: 4px solid #3b82f6;
+}
+
 .btn-whatsapp { 
   display: flex; align-items: center; justify-content: center; gap: 1rem;
   background: #25D366; color: white; border: none; font-weight: 800; font-size: 1.1rem;
   padding: 1.25rem; border-radius: 50px; cursor: pointer; transition: 0.2s;
 }
 .btn-whatsapp:hover { background: #128C7E; transform: scale(1.02); }
+.btn-whatsapp:disabled { opacity: 0.5; cursor: not-allowed; }
 .btn-whatsapp img { width: 24px; height: 24px; filter: brightness(0) invert(1); }
 
 .btn-outline { background: none; border: 2px solid var(--border); color: var(--secondary); font-weight: 700; padding: 1rem; border-radius: 50px; }

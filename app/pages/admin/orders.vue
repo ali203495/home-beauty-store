@@ -51,7 +51,12 @@ const updateStatus = async (id: number, status: string) => {
                      <span class="label">ORDER #{{ order.id }}</span>
                      <span class="date">{{ new Date(order.createdAt).toLocaleDateString() }}</span>
                   </div>
-                  <div class="order-status">
+                  </div>
+                  <div class="order-status-row">
+                     <div v-if="order.whatsappClicked" class="whatsapp-badge" title="Customer clicked WhatsApp link">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WA" />
+                        Clicked
+                     </div>
                      <select 
                        :value="order.status" 
                        @change="(e: any) => updateStatus(order.id, e.target.value)"
@@ -106,6 +111,13 @@ const updateStatus = async (id: number, status: string) => {
 .order-id { display: flex; flex-direction: column; }
 .order-id .label { font-weight: 900; font-size: 0.9rem; color: var(--secondary); }
 .order-id .date { font-size: 0.75rem; color: var(--text-muted); }
+
+.order-status-row { display: flex; align-items: center; gap: 1rem; }
+.whatsapp-badge { 
+  display: flex; align-items: center; gap: 0.4rem; background: #dcfce7; color: #166534; 
+  padding: 0.3rem 0.6rem; border-radius: 50px; font-size: 0.75rem; font-weight: 800;
+}
+.whatsapp-badge img { width: 14px; height: 14px; }
 
 .order-status select { 
   border: none; padding: 0.4rem 1rem; border-radius: 50px; 
