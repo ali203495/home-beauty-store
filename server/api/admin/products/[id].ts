@@ -1,6 +1,8 @@
 import { db } from '../../../utils/db'
 import { products } from '../../../database/schema'
 import { eq } from 'drizzle-orm'
+import { useServerCache } from '../../../utils/cache'
+import { emitEvent } from '../../../utils/bus'
 
 export default defineEventHandler(async (event) => {
   const { loggedIn, user } = await getUserSession(event)
@@ -34,15 +36,34 @@ export default defineEventHandler(async (event) => {
     if (data.specifications && typeof data.specifications !== 'string') data.specifications = JSON.stringify(data.specifications)
     if (data.tags && typeof data.tags !== 'string') data.tags = JSON.stringify(data.tags)
 
-    const [updated] = await db.update(products)
-      .set(data)
-      .where(eq(products.id, id))
-      .returning()
+       .returning()
+
+    // PRODUCTION: Invalidate caches on any product change
+    const cache = useServerCache()
+    const search = useSearch()
+    
+    await cache.invalidateAllProducts()
+    await cache.invalidatePattern('daily-deals')
+    
+    // BIG-TECH: Emit Async Sync Event
+    emitEvent('product.updated', updated)
+
     return updated
   }
 
   if (method === 'DELETE') {
     await db.delete(products).where(eq(products.id, id))
+    
+    // PRODUCTION: Invalidate caches on deletion
+    const cache = useServerCache()
+    const search = useSearch()
+    
+    await cache.invalidateAllProducts()
+    await cache.invalidatePattern('daily-deals')
+    
+    // BIG-TECH: Remove from Search Index
+    await search.deleteProduct(id)
+    
     return { success: true }
   }
 })

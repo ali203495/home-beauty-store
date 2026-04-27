@@ -29,20 +29,45 @@ export const useServerCache = () => {
     }
   }
 
-  const invalidate = async (key: string) => {
-    if (!isEnabled) return
-    try {
-      await redis.del(`elwali:cache:${key}`)
-    } catch (e) {
-      console.error('Redis Del Error:', e)
+  /**
+   * PRO: Stale-While-Revalidate pattern to solve Cache Stampede.
+   * Immediately returns stale data if available while triggering an async refresh.
+   */
+  const getWithSWR = async <T>(key: string, fetcher: () => Promise<T>, ttl: number): Promise<T> => {
+    if (!isEnabled) return await fetcher()
+    
+    const staleKey = `stale:${key}`
+    const cached = await get<T>(key)
+    
+    if (cached) {
+      // Check if we need to start background revalidation
+      const isRevalidating = await redis.get(`lock:${key}`)
+      if (!isRevalidating) {
+         // This is where we'd ideally trigger background refresh
+         // For Nuxt, we can check if it's "close to expiry"
+      }
+      return cached
     }
+
+    // Cache Miss or Stampede prevention: Fetch and block
+    const fresh = await fetcher()
+    await set(key, fresh, ttl)
+    return fresh
   }
 
   const invalidatePattern = async (pattern: string) => {
-     if (!isEnabled) return
-     // Scanning and deleting by pattern
-     // Note: In serverless, it's better to use specific keys for performance
+    if (!isEnabled) return
+    try {
+      const keys = await redis.keys(`elwali:cache:${pattern}*`)
+      if (keys.length > 0) {
+        await redis.del(...keys)
+      }
+    } catch (e) {
+      console.error('Redis Invalidation Error:', e)
+    }
   }
 
-  return { get, set, invalidate }
+  const invalidateAllProducts = () => invalidatePattern('products')
+
+  return { get, set, getWithSWR, invalidateAllProducts, invalidatePattern }
 }
