@@ -1,5 +1,5 @@
-import { db } from '../../../../utils/db'
-import { products } from '../../../../database/schema'
+import { db } from '../../../utils/db'
+import { products } from '../../../database/schema'
 
 export default defineEventHandler(async (event) => {
   const { loggedIn, user } = await getUserSession(event)
