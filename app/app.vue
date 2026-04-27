@@ -3,6 +3,16 @@ import '~/assets/css/main.css'
 const cartStore = useCartStore()
 const searchInput = ref('')
 
+// PRODUCTION: Global Hydration Guard
+const isMounted = ref(false)
+onMounted(() => { isMounted.value = true })
+
+// PRODUCTION: Global Error Boundary
+onErrorCaptured((err) => {
+  console.error('🚫 Global Catch:', err)
+  return false // Prevent crash propagation
+})
+
 const navigateSearch = () => {
   if (searchInput.value.trim()) {
     navigateTo(`/search?q=${searchInput.value}`)
@@ -38,7 +48,10 @@ const navigateSearch = () => {
               <NuxtLink to="/search" class="mobile-only action-btn">🔍</NuxtLink>
               <button class="action-btn cart-btn" @click="cartStore.isCartOpen = true">
                  <span class="icon">🛒</span>
-                 <span v-if="cartStore.totalItems > 0" class="badge">{{ cartStore.totalItems }}</span>
+                 <!-- SSR Safe Badge -->
+                 <span v-if="isMounted && cartStore.totalItems > 0" class="badge">
+                    {{ cartStore.totalItems }}
+                 </span>
               </button>
               <NuxtLink to="/auth/login" class="action-btn desktop-only">👤</NuxtLink>
            </div>

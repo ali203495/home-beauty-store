@@ -19,15 +19,17 @@ const handleAddToCart = () => {
 <template>
   <div class="product-card card hover-scale" :class="{ 'is-loading': loading }">
     <NuxtLink :to="`/products/${product.slug}`" class="image-wrapper">
-       <NuxtImg 
-         :src="mainImage" 
-         :alt="product.name" 
-         width="400" 
-         height="400" 
-         format="webp" 
-         loading="lazy"
-         class="product-image"
-       />
+       <div class="image-inner">
+          <NuxtImg 
+            :src="mainImage" 
+            :alt="product.name" 
+            width="400" 
+            height="400" 
+            format="webp" 
+            loading="lazy"
+            class="product-image"
+          />
+       </div>
        <div v-if="product.salePrice" class="badge-sale">Sale</div>
     </NuxtLink>
 
@@ -65,9 +67,20 @@ const handleAddToCart = () => {
 
 .image-wrapper {
   position: relative;
+  width: 100%;
   aspect-ratio: 1;
   overflow: hidden;
   background: #f8f8f8;
+  /* PRODUCTION: Prevent shift during image load */
+  contain: paint;
+}
+
+.image-inner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 
 .product-image {

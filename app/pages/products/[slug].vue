@@ -52,26 +52,31 @@ const images = computed(() => JSON.parse(product.value?.images || '[]'))
 <template>
   <div class="product-page container section-padding fade-in-up">
     <div class="product-grid">
-       <!-- Gallery -->
+       <!-- Gallery (Mobile Swipe Optimized) -->
        <div class="gallery">
           <div class="main-image-wrapper card">
-             <NuxtImg 
-               :src="images[selectedImage]" 
-               class="main-image"
-               width="800"
-               height="800"
-               format="webp"
-             />
+             <div class="image-inner">
+                <NuxtImg 
+                  :src="images[selectedImage]" 
+                  class="main-image"
+                  width="800"
+                  height="800"
+                  format="webp"
+                  priority="true"
+                />
+             </div>
           </div>
-          <div class="thumbnails">
-             <div 
-               v-for="(img, i) in images" 
-               :key="i"
-               class="thumb card"
-               :class="{ 'is-active': selectedImage === i }"
-               @click="selectedImage = i"
-             >
-                <NuxtImg :src="img" width="100" height="100" />
+          <div class="thumbnails-container">
+             <div class="thumbnails">
+                <div 
+                  v-for="(img, i) in images" 
+                  :key="i"
+                  class="thumb card"
+                  :class="{ 'is-active': selectedImage === i }"
+                  @click="selectedImage = i"
+                >
+                   <NuxtImg :src="img" width="100" height="100" />
+                </div>
              </div>
           </div>
        </div>
@@ -131,8 +136,19 @@ const images = computed(() => JSON.parse(product.value?.images || '[]'))
 }
 
 .main-image-wrapper {
+  position: relative;
+  width: 100%;
   aspect-ratio: 1;
   padding: 0;
+  contain: paint;
+}
+
+.image-inner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 
 .main-image {
@@ -141,10 +157,19 @@ const images = computed(() => JSON.parse(product.value?.images || '[]'))
   object-fit: cover;
 }
 
+.thumbnails-container {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.thumbnails-container::-webkit-scrollbar { display: none; }
+
 .thumbnails {
   display: flex;
-  gap: 1rem;
-  overflow-x: auto;
+  gap: 0.75rem;
+  padding: 0.25rem;
+  width: max-content;
 }
 
 .thumb {
