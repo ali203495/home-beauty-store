@@ -3,7 +3,6 @@ import Redis from 'ioredis'
 import { db } from '../utils/db'
 import { orders, orderItems, products } from '../database/schema'
 import { eq, sql, and, gte } from 'drizzle-orm'
-import { useSearch } from '../utils/search'
 
 const connection = new Redis(process.env.REDIS_URL || 'redis://localhost:6379', {
    maxRetriesPerRequest: null,
@@ -11,68 +10,56 @@ const connection = new Redis(process.env.REDIS_URL || 'redis://localhost:6379', 
 
 export default defineNitroPlugin(() => {
   if (process.env.START_WORKERS === 'true') {
-    console.log('🚀 [BIG TECH] Background Workers Online')
-
     /**
-     * 🏁 FULFILLMENT SERVICE WORKER
-     * Handles Asynchronous ACID Order Settlements
+     * 🏗️ HORIZONTALLY SCALABLE FULFILLMENT WORKER
+     * Concurrency: 10 (Processing 10 orders per instance simultaneously)
      */
     new Worker('notifications', async (job) => {
-      if (job.name !== 'send-confirmation') return // Only handle actual fulfillment here for now
+      if (job.name !== 'send-confirmation') return
       
       const orderData = job.data
 
+      // 1. STATE MACHINE: Mark as 'processing'
+      await db.update(orders).set({ status: 'processing', updatedAt: new Date() }).where(eq(orders.id, orderData.id))
+
       try {
         await db.transaction(async (tx) => {
-          // 1. Transactional Idempotency Check (Final Guard)
-          const [exists] = await tx.select().from(orders).where(eq(orders.checkoutId, orderData.checkoutId))
-          if (exists) return
-
-          // 2. Atomic Stock Verification & Decrement
+          // 2. ATOMIC STOCK SETTLEMENT
           for (const item of orderData.items) {
-            const [updated] = await tx
-              .update(products)
-              .set({ stock: sql`${products.stock} - ${item.quantity}` })
-              .where(and(
-                eq(products.id, item.productId),
-                gte(products.stock, item.quantity)
-              ))
-              .returning()
+             const [updated] = await tx
+               .update(products)
+               .set({ stock: sql`${products.stock} - ${item.quantity}` })
+               .where(and(eq(products.id, item.productId), gte(products.stock, item.quantity)))
+               .returning()
 
-            if (!updated) throw new Error(`OUT_OF_STOCK: ${item.productId}`)
+             if (!updated) throw new Error(`STOCK_EXHAUSTED: ${item.productId}`)
           }
 
-          // 3. Create Persistent Order Record
-          const [newOrder] = await tx.insert(orders).values({
-            userId: orderData.userId,
-            customerName: orderData.customerName,
-            customerEmail: orderData.customerEmail,
-            customerPhone: orderData.customerPhone,
-            shippingAddress: orderData.shippingAddress,
-            totalAmount: String(orderData.totalAmount),
-            checkoutId: orderData.checkoutId,
-            status: 'processing'
-          }).returning()
-
-          // 4. Create Order Items
+          // 3. PERSIST ITEM MAPPING
           await tx.insert(orderItems).values(
             orderData.items.map((i: any) => ({
-              orderId: newOrder.id,
+              orderId: orderData.id,
               productId: i.productId,
               quantity: i.quantity,
               priceAtTime: String(i.priceAtTime)
             }))
           )
 
-          console.log(`✅ [Worker] Order Fulfilled: ${newOrder.id} (${orderData.checkoutId})`)
+          // 4. STATE MACHINE: Finalize as 'completed'
+          await tx.update(orders).set({ status: 'completed' }).where(eq(orders.id, orderData.id))
+          
+          console.log(`✨ [Worker] Fulfillment Optimized: ${orderData.id}`)
         })
       } catch (e: any) {
-        console.error(`❌ [Fulfillment Error]:`, e.message)
-        // In real production, we would alert / log to DLQ here
-        throw e // Allow BullMQ retry
+        // 5. RECOVERY: Mark as 'failed' in DB for manual replay
+        console.error(`❌ [Worker Error]:`, e.message)
+        await db.update(orders).set({ status: 'failed' }).where(eq(orders.id, orderData.id))
+        throw e // Allow BullMQ backoff retry
       }
-    }, { connection })
-
-    // ... Other workers for Search sync and Analytics remain the same
+    }, { 
+      connection, 
+      concurrency: 10,
+      limiter: { max: 100, duration: 1000 } // Global Throttling: 100 jobs per second
+    })
   }
 })

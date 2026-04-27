@@ -80,10 +80,11 @@ export const orders = pgTable('orders', {
   shippingAddress: text('shipping_address').notNull(),
   city: text('city').default('Marrakech').notNull(),
   totalAmount: decimal('total_amount', { precision: 10, scale: 2 }).notNull(),
-  status: text('status').$type<'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled' | 'failed'>().default('pending'),
+  status: text('status').$type<'pending' | 'queued' | 'processing' | 'completed' | 'failed' | 'cancelled'>().default('pending'),
   whatsappClicked: boolean('whatsapp_clicked').default(false),
   whatsappClickedAt: timestamp('whatsapp_clicked_at'),
-  checkoutId: text('checkout_id').unique().notNull(), // Idempotency
+  checkoutId: text('checkout_id').unique().notNull(), // STRIPE-GRADE IDEMPOTENCY
+  metadata: text('metadata'), // JSON context for recovery
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull()
 })
