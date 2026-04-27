@@ -1,4 +1,5 @@
 import { Redis } from '@upstash/redis'
+import { redisBreaker } from './resilience'
 
 const redis = new Redis({
   url: process.env.UPSTASH_REDIS_REST_URL!,
@@ -11,7 +12,7 @@ export const useServerCache = () => {
   const get = async <T>(key: string): Promise<T | null> => {
     if (!isEnabled) return null
     try {
-      return await redis.get<T>(`elwali:cache:${key}`)
+      return await redisBreaker.fire(() => redis.get<T>(`elwali:cache:${key}`))
     } catch (e) {
       console.error('Redis Get Error:', e)
       return null
@@ -21,9 +22,9 @@ export const useServerCache = () => {
   const set = async (key: string, value: any, ttlSeconds: number = 3600) => {
     if (!isEnabled) return
     try {
-      await redis.set(`elwali:cache:${key}`, JSON.stringify(value), {
+      await redisBreaker.fire(() => redis.set(`elwali:cache:${key}`, JSON.stringify(value), {
         ex: ttlSeconds
-      })
+      }))
     } catch (e) {
       console.error('Redis Set Error:', e)
     }
