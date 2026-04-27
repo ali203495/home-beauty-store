@@ -13,7 +13,7 @@ useSeoMeta({
     <div class="contact-layout">
        <div class="contact-info-section">
           <h1 class="title-lg">
-             <template v-if="loggedIn">Hello, {{ user?.name?.split(' ')[0] }}!</template>
+             <template v-if="loggedIn">Hello, {{ user?.name?.split(' brahim ')[0] }}!</template>
              <template v-else>Get in Touch</template>
           </h1>
           <p class="subtitle">Our central warehouse is located in the heart of Marrakech. We pride ourselves on local delivery excellence.</p>
@@ -23,7 +23,7 @@ useSeoMeta({
                 <span class="icon">📍</span>
                 <div>
                    <label>Warehouse Address</label>
-                   <p>{{ settings?.contact_address || 'Sidi Youssef Ben Ali, Marrakech' }}</p>
+                   <p>{{ settings?.contact_address || ' Marrakech' }}</p>
                 </div>
              </div>
              
@@ -31,7 +31,7 @@ useSeoMeta({
                 <span class="icon">📞</span>
                 <div>
                    <label>Customer Support</label>
-                   <p>{{ settings?.contact_phone || '+212 000-000000' }}</p>
+                   <p>{{ settings?.contact_phone || '0699705617' }}</p>
                 </div>
              </div>
 
@@ -39,7 +39,7 @@ useSeoMeta({
                 <span class="icon">✉️</span>
                 <div>
                    <label>Business Email</label>
-                   <p>{{ settings?.contact_email || 'contact@el-wali.com' }}</p>
+                   <p>{{ settings?.contact_email || 'abdelaali.markabi@gmail.com' }}</p>
                 </div>
              </div>
 
