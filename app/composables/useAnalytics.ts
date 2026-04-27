@@ -1,41 +1,48 @@
 const eventBuffer: any[] = []
 const MAX_BUFFER = 5
-const RETRY_DELAY = 5000
 
 export const useAnalytics = () => {
-  const flush = async () => {
+  const flush = async (isClosing = false) => {
     if (eventBuffer.length === 0) return
     
     const batch = [...eventBuffer]
-    eventBuffer.length = 0 // Clear buffer
+    eventBuffer.length = 0
     
     try {
-      await $fetch('/api/tracking/batch', {
+      // PRODUCTION Hardening: Use keepalive for closing tab safety
+      await fetch('/api/tracking/batch', {
         method: 'POST',
-        body: { events: batch }
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ events: batch }),
+        keepalive: isClosing
       })
     } catch (e) {
-      console.warn('Analytics upload failed, re-buffering...')
-      eventBuffer.push(...batch) // Put back for retry
+      if (!isClosing) eventBuffer.push(...batch)
     }
   }
 
+  // 1. PRODUCTION Hardening: Prevent data loss on exit
+  if (import.meta.client) {
+    window.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden') flush(true)
+    })
+  }
+
   const trackEvent = (name: string, data: any) => {
+    // 2. PRODUCTION Hardening: Persistent Session ID
+    const sessionId = useCookie('elwali_session_id', { maxAge: 60 * 60 * 24 }).value || 
+                     (useCookie('elwali_session_id').value = Math.random().toString(36).substr(2, 9))
+
     eventBuffer.push({
       type: name,
       data,
-      sessionId: 'sess_prod_' + Math.random().toString(36).substr(2, 9),
+      sessionId,
       timestamp: new Date().toISOString()
     })
 
     if (eventBuffer.length >= MAX_BUFFER) {
-       // Nitro/Vercel: Use a background task if possible
-       // Frontend: Use idle callback
-       if (window.requestIdleCallback) {
-          window.requestIdleCallback(() => flush())
-       } else {
-          setTimeout(flush, 1000)
-       }
+       if (window.requestIdleCallback) window.requestIdleCallback(() => flush())
+       else setTimeout(flush, 1000)
     }
   }
 

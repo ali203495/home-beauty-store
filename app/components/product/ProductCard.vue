@@ -45,10 +45,12 @@ const handleAddToCart = () => {
           <button 
             class="btn-add" 
             @click.stop="handleAddToCart"
-            :class="{ 'is-active': isAdding }"
-            aria-label="Add to cart"
+            :class="{ 'is-active': isAdding, 'is-out-of-stock': product.stock <= 0 }"
+            :disabled="product.stock <= 0"
+            :aria-label="product.stock <= 0 ? 'Out of stock' : 'Add to cart'"
           >
-             <span v-if="!isAdding">+</span>
+             <span v-if="product.stock <= 0">∅</span>
+             <span v-else-if="!isAdding">+</span>
              <span v-else>✓</span>
           </button>
        </div>
@@ -150,6 +152,11 @@ const handleAddToCart = () => {
   justify-content: center;
   font-weight: 700;
   transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.btn-add.is-out-of-stock {
+  background: var(--border);
+  cursor: not-allowed;
 }
 
 .btn-add.is-active {
