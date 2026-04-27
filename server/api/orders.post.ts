@@ -1,7 +1,7 @@
-import { OrderSchema } from '../../utils/validation'
-import { emitEvent, queues } from '../../utils/bus'
-import { db } from '../../utils/db'
-import { orders } from '../../database/schema'
+import { OrderSchema } from '../utils/validation'
+import { emitEvent, queues } from '../utils/bus'
+import { db } from '../utils/db'
+import { orders } from '../database/schema'
 import { eq } from 'drizzle-orm'
 
 export default defineEventHandler(async (event) => {

@@ -49,7 +49,7 @@ const handleLogin = async () => {
         <div class="divider">OR</div>
 
         <a href="/api/auth/google" class="btn-google">
-           <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_\"G\"_logo.svg" alt="Google Logo" />
+            <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google Logo" />
            Sign in with Google
         </a>
       </form>

@@ -1,5 +1,5 @@
-import { db } from '../../../utils/db'
-import { categories } from '../../../database/schema'
+import { db } from '../../../../../utils/db'
+import { categories } from '../../../../database/schema'
 import { asc } from 'drizzle-orm'
 
 export default defineEventHandler(async (event) => {

@@ -1,5 +1,5 @@
 // server/api/admin/stats.ts
-import { db } from '../../utils/db'
+import { db } from '../../../utils/db'
 import { users, products, orders } from '../../database/schema'
 import { count, sum } from 'drizzle-orm'
 

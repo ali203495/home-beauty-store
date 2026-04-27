@@ -1,6 +1,6 @@
 // server/api/admin/products/index.get.ts
-import { db } from '../../../utils/db'
-import { products } from '../../../database/schema'
+import { db } from '../../../../../utils/db'
+import { products } from '../../../../database/schema'
 import { desc } from 'drizzle-orm'
 
 export default defineEventHandler(async (event) => {
