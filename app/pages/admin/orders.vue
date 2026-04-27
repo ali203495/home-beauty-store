@@ -51,7 +51,6 @@ const updateStatus = async (id: number, status: string) => {
                      <span class="label">ORDER #{{ order.id }}</span>
                      <span class="date">{{ new Date(order.createdAt).toLocaleDateString() }}</span>
                   </div>
-                  </div>
                   <div class="order-status-row">
                      <div v-if="order.whatsappClicked" class="whatsapp-badge" title="Customer clicked WhatsApp link">
                         <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WA" />
