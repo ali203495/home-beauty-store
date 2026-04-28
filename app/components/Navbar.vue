@@ -1,6 +1,7 @@
 <script setup lang="ts">
 const cartStore = useCartStore()
 const cartDrawer = ref()
+const searchOverlay = ref()
 const isScrolled = ref(false)
 
 if (process.client) {
@@ -42,7 +43,7 @@ if (process.client) {
 
       <!-- Actions -->
       <div class="flex items-center gap-6">
-        <button class="hidden md:block transition-colors hover:text-luxury-gold" :class="isScrolled ? 'text-luxury-black' : 'text-white'">
+        <button @click="searchOverlay?.open()" class="transition-colors hover:text-luxury-gold" :class="isScrolled ? 'text-luxury-black' : 'text-white'">
           <span class="i-heroicons-magnifying-glass text-xl" />
         </button>
         
@@ -58,5 +59,6 @@ if (process.client) {
       </div>
     </div>
     <CartDrawer ref="cartDrawer" />
+    <SearchOverlay ref="searchOverlay" />
   </header>
 </template>
