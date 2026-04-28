@@ -12,6 +12,46 @@ if (!product.value) {
 
 const images = computed(() => JSON.parse(product.value?.images || '[]'))
 const selectedImage = ref(0)
+
+// 🛡️ SEO MONSTER: JSON-LD Product Schema
+useHead({
+  title: `${product.value.name} | El Wali Beauty`,
+  meta: [
+    { name: 'description', content: product.value.description },
+    // Open Graph
+    { property: 'og:title', content: product.value.name },
+    { property: 'og:description', content: product.value.description },
+    { property: 'og:image', content: images.value[0] },
+    { property: 'og:type', content: 'product' },
+    { property: 'product:price:amount', content: product.value.salePrice || product.value.price },
+    { property: 'product:price:currency', content: 'MAD' }
+  ],
+  script: [
+    {
+      type: 'application/ld+json',
+      children: JSON.stringify({
+        '@context': 'https://schema.org/',
+        '@type': 'Product',
+        'name': product.value.name,
+        'image': images.value,
+        'description': product.value.description,
+        'sku': `EW-${product.value.id}`,
+        'brand': {
+          '@type': 'Brand',
+          'name': 'El Wali'
+        },
+        'offers': {
+          '@type': 'Offer',
+          'url': route.fullPath,
+          'priceCurrency': 'MAD',
+          'price': product.value.salePrice || product.value.price,
+          'availability': product.value.stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+          'itemCondition': 'https://schema.org/NewCondition'
+        }
+      })
+    }
+  ]
+})
 </script>
 
 <template>
