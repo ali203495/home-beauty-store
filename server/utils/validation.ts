@@ -1,17 +1,14 @@
 import { z } from 'zod'
 
 export const OrderSchema = z.object({
-  customerName: z.string().min(3).max(100),
-  customerEmail: z.string().email(),
-  customerPhone: z.string().regex(/^\+?[\d\s-]{8,20}$/, "Invalid phone format"),
-  shippingAddress: z.string().min(10),
-  totalAmount: z.union([z.number(), z.string()]),
-  checkoutId: z.string().uuid(), // PRODUCTION: Enforce UUID
-  items: z.array(z.object({
-    productId: z.number(),
-    quantity: z.number().min(1).max(50),
-    priceAtTime: z.number().positive()
-  })).min(1)
+  name: z.string().min(3).max(100),
+  email: z.string().email().optional().or(z.literal('')),
+  phone: z.string().min(8),
+  address: z.string().min(5),
+  city: z.string(),
+  total: z.number().positive(),
+  checkoutId: z.string(),
+  items: z.array(z.any()).min(1)
 })
 
 export type OrderInput = z.infer<typeof OrderSchema>

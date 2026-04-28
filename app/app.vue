@@ -5,15 +5,6 @@ const cartDrawer = ref()
 // 1. Global Overlay Provider
 provide('searchOverlay', searchOverlay)
 provide('cartDrawer', cartDrawer)
-
-// 2. Global Head Configuration (Luxury Typography)
-useHead({
-  link: [
-    { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
-    { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
-    { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap' }
-  ]
-})
 </script>
 
 <template>
@@ -36,14 +27,27 @@ useHead({
 </template>
 
 <style>
-/* Global Transition for Page Navigation */
+/* 🖋️ GLOBAL PRESTIGE TRANSITIONS */
 .page-enter-active,
 .page-leave-active {
-  transition: all 0.4s;
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.page-enter-from,
+
+.page-enter-from {
+  opacity: 0;
+  transform: translateY(20px);
+  filter: blur(10px);
+}
+
 .page-leave-to {
   opacity: 0;
-  filter: blur(1rem);
+  transform: translateY(-20px);
+  filter: blur(10px);
+}
+
+/* Scroll Smoothing */
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
 }
 </style>

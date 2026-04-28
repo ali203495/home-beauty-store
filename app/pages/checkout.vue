@@ -153,10 +153,22 @@ const placeOrder = async () => {
             <h2 class="text-[10px] font-black uppercase tracking-widest text-luxury-muted">Numéro de Commande</h2>
             <p class="text-4xl font-black">#{{ orderId }}</p>
             <p class="text-xs font-light text-luxury-muted max-w-sm mx-auto leading-relaxed">
-               Nous vous contacterons par WhatsApp dans les 30 prochaines minutes pour confirmer les détails de livraison.
+               Nous vous contacterons par WhatsApp pour confirmer les détails de livraison.
             </p>
-            <div class="pt-8">
-               <NuxtLink to="/" class="btn-primary px-12 py-4">Retour À La Boutique</NuxtLink>
+            
+            <!-- WhatsApp Action: The Conversion Closer -->
+            <div class="pt-8 space-y-4">
+               <a 
+                 :href="`https://wa.me/${useRuntimeConfig().public.whatsappNumber}?text=Bonjour, je souhaite confirmer ma commande El-Wali # ${orderId} - Nom: ${form.name}`"
+                 target="_blank"
+                 class="flex items-center justify-center gap-3 bg-[#25D366] text-white py-5 px-8 rounded-full font-black uppercase text-[10px] tracking-widest hover:scale-105 transition-transform shadow-xl"
+               >
+                  <span class="i-simple-icons-whatsapp text-2xl" />
+                  Confirmer via WhatsApp
+               </a>
+               <NuxtLink to="/" class="block text-[10px] font-bold uppercase tracking-widest text-luxury-muted hover:text-luxury-black transition-colors">
+                  Retour À La Boutique
+               </NuxtLink>
             </div>
          </div>
       </div>

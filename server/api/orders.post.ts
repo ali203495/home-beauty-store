@@ -21,34 +21,28 @@ export default defineEventHandler(async (event) => {
 
     // 2. STABILITY: DB-First Transactional Logic
     // We do NOT use complex queues. We write to PG immediately.
-    try {
-      const [newOrder] = await db.insert(orders).values({
-        userId: session.user?.id || null,
-        customerName: orderData.customerName,
-        customerEmail: orderData.customerEmail,
-        customerPhone: orderData.customerPhone,
-        shippingAddress: orderData.shippingAddress,
-        totalAmount: String(orderData.totalAmount),
-        checkoutId: orderData.checkoutId,
-        status: 'pending',
-        metadata: JSON.stringify(orderData)
-      }).onConflictDoNothing().returning()
+  // Mapping frontend names to database schema names
+  const [newOrder] = await db.insert(orders).values({
+    userId: session.user?.id || null,
+    customerName: orderData.name,
+    customerEmail: orderData.email || null,
+    customerPhone: orderData.phone,
+    shippingAddress: `${orderData.address}, ${orderData.city}`,
+    totalAmount: String(orderData.total),
+    checkoutId: orderData.checkoutId,
+    status: 'pending'
+  }).onConflictDoNothing().returning()
 
-      if (!newOrder) {
-        // Idempotency: Return existing order status if duplicate checkout_id detected
-        const existing = await db.query.orders.findFirst({ where: eq(orders.checkoutId, orderData.checkoutId) })
-        return { success: true, status: existing?.status || 'completed', checkoutId: orderData.checkoutId }
-      }
+  if (!newOrder) {
+    const existing = await db.query.orders.findFirst({ where: eq(orders.checkoutId, orderData.checkoutId) })
+    return { success: true, orderId: existing?.id, checkoutId: orderData.checkoutId }
+  }
 
-      // 3. RECOVERY ASSURANCE: Update to queued. 
-      // The worker/cron job will pick this up.
-      await db.update(orders).set({ status: 'queued' }).where(eq(orders.id, newOrder.id))
-
-      return { 
-        success: true, 
-        status: 'queued', 
-        checkoutId: orderData.checkoutId 
-      }
+  return { 
+    success: true, 
+    orderId: newOrder.id, 
+    checkoutId: orderData.checkoutId 
+  }
 
     } catch (error: any) {
       console.error('💥 [Critical] Order Database Failure:', error.message)
