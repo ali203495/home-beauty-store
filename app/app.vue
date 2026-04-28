@@ -1,5 +1,12 @@
 <script setup lang="ts">
-// 1. Global Head Configuration (Luxury Typography)
+const searchOverlay = ref()
+const cartDrawer = ref()
+
+// 1. Global Overlay Provider
+provide('searchOverlay', searchOverlay)
+provide('cartDrawer', cartDrawer)
+
+// 2. Global Head Configuration (Luxury Typography)
 useHead({
   link: [
     { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
@@ -10,7 +17,7 @@ useHead({
 </script>
 
 <template>
-  <div class="luxury-app min-h-screen flex flex-col">
+  <div class="luxury-app min-h-screen flex flex-col overflow-x-hidden">
     <Navbar />
     
     <main class="flex-grow">
@@ -18,6 +25,13 @@ useHead({
     </main>
 
     <Footer />
+    
+    <!-- Global Overlays -->
+    <SearchOverlay ref="searchOverlay" />
+    <CartDrawer ref="cartDrawer" />
+    
+    <!-- Mobile Terminal -->
+    <MobileNav />
   </div>
 </template>
 

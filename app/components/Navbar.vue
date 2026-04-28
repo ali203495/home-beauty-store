@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const cartStore = useCartStore()
-const cartDrawer = ref()
-const searchOverlay = ref()
+const searchOverlay = inject('searchOverlay') as any
+const cartDrawer = inject('cartDrawer') as any
 const isScrolled = ref(false)
 
 if (process.client) {
@@ -58,7 +58,5 @@ if (process.client) {
         </button>
       </div>
     </div>
-    <CartDrawer ref="cartDrawer" />
-    <SearchOverlay ref="searchOverlay" />
   </header>
 </template>
