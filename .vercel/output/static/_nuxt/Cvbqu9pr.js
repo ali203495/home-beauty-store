@@ -1,1 +1,0 @@
-import{a2 as r,y as s,A as t}from"./bwWjENkz.js";const u=r(async(e,n)=>{const{loggedIn:a,user:o}=s();if(!a.value||o.value?.role!=="admin")return t("/auth/login?redirect="+e.fullPath)});export{u as default};
