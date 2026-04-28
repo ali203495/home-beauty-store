@@ -21,33 +21,32 @@ export default defineEventHandler(async (event) => {
 
     // 2. STABILITY: DB-First Transactional Logic
     // We do NOT use complex queues. We write to PG immediately.
-  // Mapping frontend names to database schema names
-  const [newOrder] = await db.insert(orders).values({
-    userId: session.user?.id || null,
-    customerName: orderData.name,
-    customerEmail: orderData.email || null,
-    customerPhone: orderData.phone,
-    shippingAddress: `${orderData.address}, ${orderData.city}`,
-    totalAmount: String(orderData.total),
-    checkoutId: orderData.checkoutId,
-    status: 'pending'
-  }).onConflictDoNothing().returning()
+  try {
+    const [newOrder] = await db.insert(orders).values({
+      userId: session.user?.id || null,
+      customerName: orderData.name,
+      customerEmail: orderData.email || null,
+      customerPhone: orderData.phone,
+      shippingAddress: `${orderData.address}, ${orderData.city}`,
+      totalAmount: String(orderData.total),
+      checkoutId: orderData.checkoutId,
+      status: 'pending'
+    }).onConflictDoNothing().returning()
 
-  if (!newOrder) {
-    const existing = await db.query.orders.findFirst({ where: eq(orders.checkoutId, orderData.checkoutId) })
-    return { success: true, orderId: existing?.id, checkoutId: orderData.checkoutId }
-  }
-
-  return { 
-    success: true, 
-    orderId: newOrder.id, 
-    checkoutId: orderData.checkoutId 
-  }
-
-    } catch (error: any) {
-      console.error('💥 [Critical] Order Database Failure:', error.message)
-      throw createError({ statusCode: 500, statusMessage: 'Internal Store Error. Order not placed.' })
+    if (!newOrder) {
+      const existing = await db.query.orders.findFirst({ where: eq(orders.checkoutId, orderData.checkoutId) })
+      return { success: true, orderId: existing?.id, checkoutId: orderData.checkoutId }
     }
+
+    return { 
+      success: true, 
+      orderId: newOrder.id, 
+      checkoutId: orderData.checkoutId 
+    }
+  } catch (error: any) {
+    console.error('💥 [Critical] Order Database Failure:', error.message)
+    throw createError({ statusCode: 500, statusMessage: 'Internal Store Error. Order not placed.' })
+  }
 })
 
 

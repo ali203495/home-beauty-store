@@ -9,6 +9,7 @@ provide('cartDrawer', cartDrawer)
 
 <template>
   <div class="luxury-app min-h-screen flex flex-col overflow-x-hidden">
+    <PromoBanner />
     <Navbar />
     
     <main class="flex-grow">

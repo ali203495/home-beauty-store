@@ -1,0 +1,1 @@
+{"version":3,"file":"brands.get.mjs","sources":["../../../../../../../server/api/brands.get.ts"],"names":["brands_get","defineEventHandler","async","db","query","brands","findMany","orderBy","asc","name"],"mappings":"oeAKA,MAAAA,EAAAC,EAAAC,eACAC,EAAAC,MAAAC,OAAAC,SAAA,CACAC,QAAA,CAAAC,EAAAH,EAAAI"}

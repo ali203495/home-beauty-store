@@ -1,0 +1,1 @@
+{"version":3,"file":"status.mjs","sources":["../../../../../../../server/api/status.ts"],"names":["status","defineEventHandler","event","message","environment","timestamp","Date","toISOString","features"],"mappings":"wcAAA,MAAAA,EAAAC,EAAAC,IACA,CACAF,OAAA,UACAG,QAAA,kCACAC,YAAA,iBACAC,WAAA,IAAAC,MAAAC,cACAC,SAAA,CACA,qBACA,4BACA"}
