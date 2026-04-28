@@ -1,60 +1,37 @@
-// server/utils/metrics.ts
-import { EventEmitter } from 'events'
-
-class MetricsEngine extends EventEmitter {
-  private counters: Record<string, number> = {
-    checkout_success: 0,
-    checkout_failed: 0,
-    fulfillment_success: 0,
-    fulfillment_failed: 0,
-    dlq_quarantine: 0
+/**
+ * 📊 STATELESS METRICS ENGINE
+ * Optimized for Vercel Serverless.
+ * No global state, no EventEmitter, zero bootstrap side-effects.
+ */
+class MetricsEngine {
+  increment(metric: string) {
+    // In serverless, we emit metrics as structured logs for Sentry/Vercel
+    console.log(`[METRIC:INCREMENT] ${metric}`)
   }
 
-  private gauges: Record<string, number> = {
-    queue_depth_fulfillment: 0,
-    avg_latency_ms: 0
-  }
-
-  private latencySamples: number[] = []
-  private MAX_SAMPLES = 100
-
-  increment(metric: keyof typeof this.counters) {
-    this.counters[metric]++
-    this.emit('update', { metric, value: this.counters[metric] })
-  }
-
-  setGauge(metric: keyof typeof this.gauges, value: number) {
-    this.gauges[metric] = value
-    this.emit('update', { metric, value })
+  setGauge(metric: string, value: number) {
+    console.log(`[METRIC:GAUGE] ${metric}=${value}`)
   }
 
   recordLatency(ms: number) {
-    this.latencySamples.push(ms)
-    if (this.latencySamples.length > this.MAX_SAMPLES) {
-      this.latencySamples.shift()
+    if (ms > 1000) {
+      console.warn(`🐢 [PERF] Latency: ${ms}ms`)
     }
-    const sum = this.latencySamples.reduce((a, b) => a + b, 0)
-    this.gauges.avg_latency_ms = Math.round(sum / this.latencySamples.length)
   }
 
   getSnapshot() {
-    return {
-      counters: { ...this.counters },
-      gauges: { ...this.gauges },
-      timestamp: new Date().toISOString()
-    }
+    return { status: 'stateless', timestamp: new Date().toISOString() }
   }
 
   getPrometheusFormat() {
-    let output = ''
-    for (const [key, val] of Object.entries(this.counters)) {
-      output += `# TYPE ${key} counter\n${key} ${val}\n`
-    }
-    for (const [key, val] of Object.entries(this.gauges)) {
-      output += `# TYPE ${key} gauge\n${key} ${val}\n`
-    }
-    return output
+    return '# Metrics are stateless in this architecture.'
   }
 }
+let metrics: any
 
-export const metrics = new MetricsEngine()
+export function getMetrics() {
+  if (!metrics) {
+    metrics = new MetricsEngine()
+  }
+  return metrics
+}
