@@ -23,51 +23,47 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 503, statusMessage: 'System Busy (High Load). Please retry in 30s.' })
   }
 
-  // 2. ULTIMATE DURABILITY: DB-First Dual Write
-  // Even if Redis crashes, the order exists in PG with 'pending' status
-  try {
-    const [newOrder] = await db.insert(orders).values({
-      userId: session.user?.id || null,
-      customerName: orderData.customerName,
-      customerEmail: orderData.customerEmail,
-      customerPhone: orderData.customerPhone,
-      shippingAddress: orderData.shippingAddress,
-      totalAmount: String(orderData.totalAmount),
-      checkoutId: orderData.checkoutId,
-      status: 'pending',
-      metadata: JSON.stringify(orderData) // Backup copy of the intent
-    }).onConflictDoNothing().returning()
+    // 2. ULTIMATE DURABILITY: DB-First with Fall-Forward Buffer
+    // If the DB is unreachable, we buffer in Redis to 'never lose a sale'
+    try {
+      const [newOrder] = await db.insert(orders).values({
+        userId: session.user?.id || null,
+        customerName: orderData.customerName,
+        customerEmail: orderData.customerEmail,
+        customerPhone: orderData.customerPhone,
+        shippingAddress: orderData.shippingAddress,
+        totalAmount: String(orderData.totalAmount),
+        checkoutId: orderData.checkoutId,
+        status: 'pending',
+        metadata: JSON.stringify(orderData)
+      }).onConflictDoNothing().returning()
 
-    // 3. ATOMIC IDEMPOTENCY: If conflict (already processed)
-    if (!newOrder) {
-      const existing = await db.query.orders.findFirst({ where: eq(orders.checkoutId, orderData.checkoutId) })
-      return { success: true, status: existing?.status || 'completed', checkoutId: orderData.checkoutId }
+      if (!newOrder) {
+        const existing = await db.query.orders.findFirst({ where: eq(orders.checkoutId, orderData.checkoutId) })
+        return { success: true, status: existing?.status || 'completed', checkoutId: orderData.checkoutId }
+      }
+
+      // 4. DISPATCH: Let Inngest handle fulfillment in the background
+      await emitEvent('order.created', { ...orderData, id: newOrder.id })
+
+      return { success: true, status: 'queued', checkoutId: orderData.checkoutId }
+
+    } catch (error: any) {
+      console.error('⚠️ [Postgres Primary Down] Falling back to Persistence Buffer.')
+      
+      // FALL-FORWARD PATTERN
+      const cache = useServerCache()
+      await cache.set(`order-buffer:${orderData.checkoutId}`, orderData, 86400) // 24h safety buffer
+      
+      // Dispatch a 'recovery-only' event
+      await emitEvent('order.buffered', { checkoutId: orderData.checkoutId })
+
+      return { 
+        success: true, 
+        status: 'buffered', 
+        message: 'Order received and secured in backup storage.',
+        checkoutId: orderData.checkoutId 
+      }
     }
-
-    // 4. DISPATCH TO QUEUE: With Priority
-    // If this fails, the 'pending' recovery job will pick it up from PG later
-    await emitEvent('order.created', {
-       ...orderData,
-       id: newOrder.id,
-       userId: session.user?.id || null
-    })
-
-    // 5. UPDATE STATUS TO QUEUED (Conditional to prevent race with fast worker)
-    await db.update(orders)
-      .set({ status: 'queued' })
-      .where(and(eq(orders.id, newOrder.id), eq(orders.status, 'pending')))
-
-    // 6. TRACK METRICS
-    metrics.increment('checkout_success')
-
-    return { 
-       success: true, 
-       status: 'queued',
-       checkoutId: orderData.checkoutId
-    }
-
-  } catch (error: any) {
-    console.error('💥 Dual-Write Failure:', error)
-    throw createError({ statusCode: 500, statusMessage: 'Checkout Critical Error' })
-  }
 })
+
