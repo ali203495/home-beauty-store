@@ -10,6 +10,10 @@ export default defineEventHandler(async (event) => {
   const cache = useServerCache()
   const meilisearch = useSearch()
 
+  // Edge-Level SWR Cache (50ms catalog)
+  // Store in Vercel CDN for 1 hour, serve stale for 1 day while revalidating
+  setHeader(event, 'Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400')
+
   const cacheKey = `products:${category || 'all'}:${brand || 'all'}:${featured || 'false'}:${searchStr || 'none'}:${page}:${limit}`
   const cached = await cache.get<any>(cacheKey)
   if (cached) return cached
@@ -58,6 +62,10 @@ export default defineEventHandler(async (event) => {
     items: dbItems,
     metadata: { total, page: pageNum, limit: limitNum, totalPages: Math.ceil(total / limitNum) }
   }
+
+  // 2. Edge-Level SWR Cache (50ms catalog)
+  // Store in Vercel CDN for 1 hour, serve stale for 1 day while revalidating
+  setHeader(event, 'Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400')
 
   await cache.set(cacheKey, responseData, 600)
   return responseData

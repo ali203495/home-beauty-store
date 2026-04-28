@@ -90,38 +90,6 @@ export default defineNitroPlugin(() => {
       }
     })
 
-    /**
-     * 🏥 HARDENED RECOVERY JOB (LOOP-SAFE)
-     * Scans for 'pending' orders that missed the queue.
-     * Safeguard: recoveryCount < 3 and throttle lastAttemptAt.
-     */
-    setInterval(async () => {
-      const fiveMinsAgo = new Date(Date.now() - 5 * 60 * 1000)
-      const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000)
-
-      const stuckOrders = await db.query.orders.findMany({
-        where: (o, { and, eq, lt, or }) => and(
-          eq(o.status, 'pending'),
-          lt(o.createdAt, fiveMinsAgo),
-          lt(o.recoveryCount, 3), // Loop prevention
-          or(sql`${o.lastAttemptAt} IS NULL`, lt(o.lastAttemptAt, oneHourAgo)) // Throttle
-        ),
-        limit: 20
-      })
-
-      for (const order of stuckOrders) {
-         try {
-           console.warn(`🚑 [Recovery] Rescuing order ${order.id} (Attempt ${order.recoveryCount + 1})`)
-           await emitEvent('order.created', JSON.parse(order.metadata || '{}'))
-           await db.update(orders).set({ 
-             status: 'queued', 
-             recoveryCount: order.recoveryCount + 1,
-             lastAttemptAt: new Date()
-           }).where(eq(orders.id, order.id))
-         } catch (err) {
-           console.error(`💥 [Recovery Failed] Order ${order.id}`)
-         }
-      }
-    }, 5 * 60 * 1000) // Run every 5 minutes for production stability
+    console.log('✅ [Worker] Fulfillment Engine Active.')
   }
 })
