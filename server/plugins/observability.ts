@@ -20,26 +20,34 @@ export default defineNitroPlugin((nitroApp) => {
   })
 
   nitroApp.hooks.hook('error', async (error, { event }) => {
-    const requestId = event?.context.requestId || 'unknown'
-    const path = event?.path || 'unknown'
-    
-    console.error(`🚨 [REQ:${requestId}] Error on ${path}:`, error)
+    try {
+      const requestId = event?.context.requestId || 'unknown'
+      const path = event?.path || 'unknown'
+      
+      console.error(`🚨 [REQ:${requestId}] Error on ${path}:`, error)
 
-    if (process.env.SENTRY_DSN) {
-      Sentry.withScope(scope => {
-        scope.setTag('requestId', requestId)
-        scope.setTag('path', path)
-        Sentry.captureException(error)
-      })
+      if (process.env.SENTRY_DSN) {
+        Sentry.withScope(scope => {
+          scope.setTag('requestId', requestId)
+          scope.setTag('path', path)
+          Sentry.captureException(error)
+        })
+      }
+    } catch (e) {
+      console.error('💥 Observability Error Hook Failed:', e)
     }
   })
 
   nitroApp.hooks.hook('afterResponse', (event) => {
-    const duration = Date.now() - (event.context.startTime || 0)
-    const requestId = event.context.requestId || 'unknown'
-    
-    if (duration > 1000) {
-      console.warn(`🐢 [REQ:${requestId}] CRITICAL LATENCY [${duration}ms]: ${event.path}`)
+    try {
+      const duration = Date.now() - (event.context.startTime || 0)
+      const requestId = event.context.requestId || 'unknown'
+      
+      if (duration > 1000) {
+        console.warn(`🐢 [REQ:${requestId}] CRITICAL LATENCY [${duration}ms]: ${event.path}`)
+      }
+    } catch (e) {
+      console.error('🐢 Latency Logger Failed:', e)
     }
   })
 })
