@@ -85,6 +85,8 @@ export const orders = pgTable('orders', {
   whatsappClickedAt: timestamp('whatsapp_clicked_at'),
   checkoutId: text('checkout_id').unique().notNull(), // STRIPE-GRADE IDEMPOTENCY
   metadata: text('metadata'), // JSON context for recovery
+  recoveryCount: integer('recovery_count').default(0).notNull(),
+  lastAttemptAt: timestamp('last_attempt_at'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull()
 })

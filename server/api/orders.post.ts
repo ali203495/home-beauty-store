@@ -2,7 +2,8 @@ import { OrderSchema } from '../utils/validation'
 import { emitEvent, queues } from '../utils/bus'
 import { db } from '../utils/db'
 import { orders } from '../database/schema'
-import { eq } from 'drizzle-orm'
+import { eq, and } from 'drizzle-orm'
+import { metrics } from '../utils/metrics'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
@@ -51,8 +52,13 @@ export default defineEventHandler(async (event) => {
        userId: session.user?.id || null
     })
 
-    // 5. UPDATE STATUS TO QUEUED
-    await db.update(orders).set({ status: 'queued' }).where(eq(orders.id, newOrder.id))
+    // 5. UPDATE STATUS TO QUEUED (Conditional to prevent race with fast worker)
+    await db.update(orders)
+      .set({ status: 'queued' })
+      .where(and(eq(orders.id, newOrder.id), eq(orders.status, 'pending')))
+
+    // 6. TRACK METRICS
+    metrics.increment('checkout_success')
 
     return { 
        success: true, 

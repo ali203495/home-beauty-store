@@ -3,6 +3,8 @@ import Redis from 'ioredis'
 import { db } from '../utils/db'
 import { orders, orderItems, products } from '../database/schema'
 import { eq, sql, and, gte } from 'drizzle-orm'
+import { metrics } from '../utils/metrics'
+import { emitEvent } from '../utils/bus'
 
 const connection = new Redis(process.env.REDIS_URL || 'redis://localhost:6379', {
    maxRetriesPerRequest: null,
@@ -11,27 +13,33 @@ const connection = new Redis(process.env.REDIS_URL || 'redis://localhost:6379', 
 export default defineNitroPlugin(() => {
   if (process.env.START_WORKERS === 'true') {
     /**
-     * 🏗️ EXACTLY-ONCE FULFILLMENT WORKER
+     * 🔄 COMPATIBILITY DRAINER (MIGRATION STRATEGY)
+     * LISTENS TO OLD QUEUE AND MIGRATE JOBS TO NEW ARCHITECTURE
+     * Prevents orphaning existing jobs during deployment switch.
      */
-    new Worker('fulfillment', async (job) => {
+    new Worker('notifications', async (job) => {
+      console.warn(`🔄 [Migration] Draining legacy job ${job.id} to fulfillment queue`)
+      await emitEvent('order.created', job.data)
+    }, { connection, concurrency: 5 })
+
+    /**
+     * 🏗️ CORE fulfillment WORKER IMPLEMENTATION
+     */
+    const worker = new Worker('fulfillment', async (job) => {
       if (job.name !== 'process-fulfillment') return
-      
       const orderData = job.data
 
       try {
         await db.transaction(async (tx) => {
-          // 1. TRANSACTIONAL GUARD: Ensure order is not already finished/processing
+          // 1. TRANSACTIONAL GUARD WITH FOR UPDATE LOCK
           const [order] = await tx.select().from(orders).where(eq(orders.id, orderData.id)).for('update')
           
           if (!order || order.status === 'completed' || order.status === 'processing') {
-             console.log(`ℹ️ [Worker] Skipping already processed order: ${orderData.id}`)
              return
           }
 
-          // 2. STATE MACHINE: Mark as 'processing'
           await tx.update(orders).set({ status: 'processing', updatedAt: new Date() }).where(eq(orders.id, orderData.id))
 
-          // 3. ATOMIC STOCK SETTLEMENT
           for (const item of orderData.items) {
              const [updated] = await tx
                .update(products)
@@ -42,7 +50,6 @@ export default defineNitroPlugin(() => {
              if (!updated) throw new Error(`STOCK_EXHAUSTED: ${item.productId}`)
           }
 
-          // 4. PERSIST ITEM MAPPING
           await tx.insert(orderItems).values(
             orderData.items.map((i: any) => ({
               orderId: orderData.id,
@@ -52,38 +59,69 @@ export default defineNitroPlugin(() => {
             }))
           )
 
-          // 5. STATE MACHINE: Finalize as 'completed'
           await tx.update(orders).set({ status: 'completed' }).where(eq(orders.id, orderData.id))
           
-          console.log(`✨ [Worker] Successfully fulfilled: ${orderData.id}`)
+          // LATENCY METRIC
+          const latency = Date.now() - new Date(order.createdAt).getTime()
+          metrics.recordLatency(latency)
+          metrics.increment('fulfillment_success')
+          
+          console.log(`✨ [Worker] Fulfillment Success: ${orderData.id} (${latency}ms)`)
         })
       } catch (e: any) {
-        console.error(`❌ [Worker Error]:`, e.message)
-        await db.update(orders).set({ status: 'failed' }).where(eq(orders.id, orderData.id))
-        throw e // Trigger BullMQ retry
+        console.error(`❌ [Worker Error] Order ${orderData.id}:`, e.message)
+        throw e // Rethrow for BullMQ retry logic
       }
-    }, { 
-      connection, 
-      concurrency: 10,
-      limiter: { max: 50, duration: 1000 }
+    }, { connection, concurrency: 10, limiter: { max: 50, duration: 1000 } })
+
+    // --- JOB EVENT LISTENERS (DLQ & METRICS) ---
+    worker.on('failed', async (job, err) => {
+      if (!job) return
+      metrics.increment('fulfillment_failed')
+      
+      const orderId = job.data.id
+      const attempts = job.attemptsMade
+      
+      // AUTO-QUARANTINE (DLQ)
+      if (attempts >= (job.opts.attempts || 5)) {
+        console.error(`🚨 [DLQ] Order ${orderId} reached max retries. Quarantined.`)
+        await db.update(orders).set({ status: 'failed', updatedAt: new Date() }).where(eq(orders.id, orderId))
+        metrics.increment('dlq_quarantine')
+      }
     })
 
     /**
-     * 🏥 AUTOMATED RECOVERY JOB
-     * Scans for 'pending' orders older than 5 minutes that failed to queue
+     * 🏥 HARDENED RECOVERY JOB (LOOP-SAFE)
+     * Scans for 'pending' orders that missed the queue.
+     * Safeguard: recoveryCount < 3 and throttle lastAttemptAt.
      */
     setInterval(async () => {
       const fiveMinsAgo = new Date(Date.now() - 5 * 60 * 1000)
-      const pendingOrders = await db.query.orders.findMany({
-        where: (o, { and, eq, lt }) => and(eq(o.status, 'pending'), lt(o.createdAt, fiveMinsAgo)),
-        limit: 50
+      const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000)
+
+      const stuckOrders = await db.query.orders.findMany({
+        where: (o, { and, eq, lt, or }) => and(
+          eq(o.status, 'pending'),
+          lt(o.createdAt, fiveMinsAgo),
+          lt(o.recoveryCount, 3), // Loop prevention
+          or(sql`${o.lastAttemptAt} IS NULL`, lt(o.lastAttemptAt, oneHourAgo)) // Throttle
+        ),
+        limit: 20
       })
 
-      for (const order of pendingOrders) {
-         console.warn(`🚑 [Recovery] Rescuing stuck order: ${order.id}`)
-         await emitEvent('order.created', JSON.parse(order.metadata || '{}'))
-         await db.update(orders).set({ status: 'queued' }).where(eq(orders.id, order.id))
+      for (const order of stuckOrders) {
+         try {
+           console.warn(`🚑 [Recovery] Rescuing order ${order.id} (Attempt ${order.recoveryCount + 1})`)
+           await emitEvent('order.created', JSON.parse(order.metadata || '{}'))
+           await db.update(orders).set({ 
+             status: 'queued', 
+             recoveryCount: order.recoveryCount + 1,
+             lastAttemptAt: new Date()
+           }).where(eq(orders.id, order.id))
+         } catch (err) {
+           console.error(`💥 [Recovery Failed] Order ${order.id}`)
+         }
       }
-    }, 60 * 1000) // Run every minute
+    }, 5 * 60 * 1000) // Run every 5 minutes for production stability
   }
 })
