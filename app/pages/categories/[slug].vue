@@ -1,91 +1,93 @@
 <script setup lang="ts">
 const route = useRoute()
-const { data: category } = await useFetch(`/api/categories/${route.params.slug}`)
+const slug = route.params.slug as string
+const sortBy = ref('featured')
 
-// 1. Filter State (URL Synced)
-const filters = ref({
-  sort: 'newest',
-  priceRange: [0, 2000],
-  brand: 'all'
+// 1. Fetch products for this category
+const { data: categoryData } = await useAsyncData(`category-${slug}`, () => 
+  $fetch(`/api/categories/${slug}`)
+)
+
+const sortedProducts = computed(() => {
+  if (!categoryData.value?.products) return []
+  const items = [...categoryData.value.products]
+  
+  if (sortBy.value === 'price-asc') return items.sort((a, b) => Number(a.price) - Number(b.price))
+  if (sortBy.value === 'price-desc') return items.sort((a, b) => Number(b.price) - Number(a.price))
+  return items // default 'featured'
 })
 
-// 2. Data Fetching with Reactive Filters
-const { data: products, pending } = await useFetch('/api/products', {
-  query: computed(() => ({
-    category: category.value?.id,
-    sort: filters.value.sort,
-    minPrice: filters.value.priceRange[0],
-    maxPrice: filters.value.priceRange[1],
-    limit: 12
-  })),
-  watch: [filters] // Re-fetch on filter change
+useHead({
+  title: `${categoryData.value?.category?.name || 'Category'} | El Wali Beauty`,
+  meta: [
+    { name: 'description', content: `Découvrez notre collection exclusive de ${categoryData.value?.category?.name}. Produits de luxe, authentique et livraison express.` }
+  ]
 })
 </script>
 
 <template>
-  <div class="bg-white min-h-screen pt-32 pb-24">
-    <div class="container-sm">
-      <!-- Header -->
-      <div class="text-center mb-16 space-y-4 animate-luxury-fade">
-        <span class="text-[10px] font-black uppercase tracking-[0.4em] text-luxury-gold">Collection Exclusive</span>
-        <h1 class="text-5xl md:text-7xl font-display">{{ category?.name }}</h1>
-        <p class="text-luxury-muted max-w-xl mx-auto font-light text-sm">{{ category?.description }}</p>
+  <div v-if="categoryData" class="bg-white min-h-screen">
+    <!-- Editorial Hero -->
+    <section class="relative h-[60vh] flex items-center justify-center overflow-hidden bg-luxury-black">
+      <div class="absolute inset-0 z-0">
+        <div class="absolute inset-0 bg-black/40 z-10" />
+        <img 
+          :src="categoryData.category.image || '/img/cat-placeholder.jpg'" 
+          class="w-full h-full object-cover scale-105"
+        />
       </div>
+      
+      <div class="relative z-20 text-center text-white space-y-6 container-sm animate-luxury-fade">
+         <span class="text-[10px] uppercase font-black tracking-[0.4em] text-luxury-gold drop-shadow-lg">Store Officiel</span>
+         <h1 class="text-6xl md:text-8xl font-display uppercase tracking-widest leading-none drop-shadow-2xl">
+           {{ categoryData.category.name }}
+         </h1>
+         <div class="w-12 h-0.5 bg-luxury-gold mx-auto" />
+      </div>
+    </section>
 
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
-        <!-- Sidebar Filters (Desktop) -->
-        <aside class="hidden lg:block lg:col-span-3 space-y-10 border-r border-luxury-border pr-12">
-          <div>
-            <h3 class="text-[10px] font-black uppercase tracking-widest mb-6">Trier Par</h3>
-            <select v-model="filters.sort" class="input-luxury">
-              <option value="newest">Nouveautés</option>
-              <option value="price_asc">Prix: Croissant</option>
-              <option value="price_desc">Prix: Décroissant</option>
-              <option value="trending">Tendances</option>
-            </select>
-          </div>
-
-          <div>
-            <h3 class="text-[10px] font-black uppercase tracking-widest mb-6">Gamme de Prix</h3>
-            <div class="space-y-4">
-              <input type="range" min="0" max="2000" step="50" v-model="filters.priceRange[1]" class="w-full accent-luxury-gold" />
-              <div class="flex justify-between text-[10px] font-bold uppercase text-luxury-muted">
-                <span>0 MAD</span>
-                <span>{{ filters.priceRange[1] }} MAD</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="pt-10">
-            <TrustBadge />
-          </div>
-        </aside>
-
-        <!-- Product Grid -->
-        <div class="lg:col-span-9">
-          <!-- Mobile Filter Trigger -->
-          <div class="lg:hidden flex justify-between items-center mb-8 border-b border-luxury-border pb-4">
-            <span class="text-[10px] font-bold uppercase tracking-widest">{{ products?.length || 0 }} Articles</span>
-            <button class="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest">
-              <span class="i-heroicons-adjustments-horizontal" />
-              Filtrer
-            </button>
-          </div>
-
-          <div v-if="pending" class="grid grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16 opacity-50">
-            <div v-for="i in 6" :key="i" class="aspect-[4/5] bg-luxury-cream animate-pulse" />
-          </div>
-          
-          <div v-else class="grid grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16">
-            <ProductCard v-for="prod in products" :key="prod.id" :product="prod" />
-          </div>
-
-          <div v-if="!pending && products?.length === 0" class="py-24 text-center space-y-4">
-            <p class="text-luxury-muted uppercase text-xs tracking-widest font-light">Aucun produit ne correspond à vos filtres</p>
-            <button @click="filters.priceRange = [0, 2000]" class="text-luxury-gold underline text-[10px] uppercase font-bold">Réinitialiser</button>
-          </div>
+    <!-- Collection Control Bar -->
+    <div class="sticky top-20 z-[100] bg-white/95 backdrop-blur-md border-b border-luxury-border py-4">
+      <div class="container-sm flex justify-between items-center">
+        <div class="flex items-center gap-4">
+           <span class="text-[10px] font-black uppercase tracking-widest text-luxury-muted">
+             {{ categoryData.products.length }} Objets Trouvés
+           </span>
+        </div>
+        
+        <div class="flex items-center gap-6">
+           <select 
+             v-model="sortBy" 
+             class="bg-transparent border-none text-[10px] font-black uppercase tracking-widest cursor-pointer focus:ring-0"
+           >
+             <option value="featured">Tri: Sélection</option>
+             <option value="price-asc">Prix: Croissant</option>
+             <option value="price-desc">Prix: Décroissant</option>
+           </select>
         </div>
       </div>
     </div>
+
+    <!-- Product Grid -->
+    <section class="py-16 bg-luxury-cream/20">
+      <div class="container-sm">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-12">
+          <ProductCard 
+            v-for="product in sortedProducts" 
+            :key="product.id" 
+            :product="product" 
+          />
+        </div>
+
+        <!-- Empty State -->
+        <div v-if="sortedProducts.length === 0" class="py-32 text-center space-y-4">
+           <span class="i-heroicons-face-frown text-4xl text-luxury-muted block mx-auto" />
+           <p class="text-[10px] uppercase font-bold text-luxury-muted">Aucun produit disponible dans cette catégorie</p>
+           <NuxtLink to="/" class="btn-primary inline-block px-8 py-4">Visiter La Boutique</NuxtLink>
+        </div>
+      </div>
+    </section>
+
+    <TrustBadge />
   </div>
 </template>

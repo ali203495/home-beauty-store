@@ -90,6 +90,49 @@ const { data: categories } = await useFetch('/api/categories', {
       </div>
     </section>
 
+    <!-- Héritage Collection: High-Prestige Story -->
+    <section class="py-24 bg-white">
+      <div class="container-sm">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+           <div class="relative h-[600px] animate-luxury-fade">
+              <NuxtImg 
+                src="https://images.unsplash.com/photo-1571575173700-afb9492e6a50?q=80&w=800" 
+                class="w-[80%] h-full object-cover z-10 relative"
+              />
+              <div class="absolute top-12 right-0 w-[60%] h-[80%] bg-luxury-cream -z-0" />
+              <div class="absolute bottom-0 right-12 w-[200px] h-32 bg-white p-6 border-l-4 border-luxury-gold flex flex-col justify-center">
+                 <p class="text-[10px] font-black uppercase tracking-widest">98% Satisfaction</p>
+                 <p class="text-[8px] text-luxury-muted mt-1 uppercase">Basé sur nos 5K+ Clients</p>
+              </div>
+           </div>
+           <div class="space-y-8">
+              <span class="text-[10px] font-black uppercase tracking-[0.4em] text-luxury-gold">Découvrez L'Héritage</span>
+              <h2 class="text-5xl font-display leading-tight">Des Soins D'Exception Pour Une Peau Parfaite</h2>
+              <p class="text-luxury-muted leading-relaxed font-light">
+                Chaque produit de notre collection Héritage est sélectionné pour sa pureté et ses résultats visibles. Plus qu'un soin, c'est une promesse de luxe au quotidien.
+              </p>
+              <div class="space-y-4 pt-4">
+                 <div class="flex items-start gap-4">
+                    <span class="i-heroicons-sparkles text-xl text-luxury-gold mt-1" />
+                    <div>
+                       <p class="text-xs font-bold uppercase tracking-widest">Ingrédients Naturels</p>
+                       <p class="text-[10px] text-luxury-muted mt-1 uppercase">Extraits de plantes rares et huiles essentielles bio.</p>
+                    </div>
+                 </div>
+                 <div class="flex items-start gap-4">
+                    <span class="i-heroicons-hand-thumb-up text-xl text-luxury-gold mt-1" />
+                    <div>
+                       <p class="text-xs font-bold uppercase tracking-widest">Testé Cliniquement</p>
+                       <p class="text-[10px] text-luxury-muted mt-1 uppercase">Efficacité prouvée par des laboratoires européens.</p>
+                    </div>
+                 </div>
+              </div>
+              <NuxtLink to="/products" class="btn-primary inline-block px-12 py-5 mt-8">Voir la Collection</NuxtLink>
+           </div>
+        </div>
+      </div>
+    </section>
+
     <!-- Trending: Revenue Driver -->
     <section class="py-24 bg-luxury-cream/30">
       <div class="container-sm">
