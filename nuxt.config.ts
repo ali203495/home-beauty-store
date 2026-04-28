@@ -26,28 +26,13 @@ export default defineNuxtConfig({
 
   modules: [
     '@nuxtjs/tailwindcss',
-    'nuxt-auth-utils',
-    'nuxt-security',
     '@nuxt/image',
-    '@pinia/nuxt',
-    'pinia-plugin-persistedstate/nuxt'
+    '@nuxt/fonts',
+    '@vueuse/nuxt',
+    'nuxt-auth-utils',
+    '@sentry/nuxt',
+    '@pinia/nuxt'
   ],
-
-  // 1. Production Security (Strict but Mobile-Ready)
-  security: {
-    csrf: true,
-    rateLimiter: false,
-    headers: {
-      contentSecurityPolicy: {
-        'img-src': ["'self'", "data:", "https://*", "https://*.neon.tech"],
-        'font-src': ["'self'", "https://fonts.gstatic.com", "https://fonts.googleapis.com"],
-        'style-src': ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
-        'script-src': ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
-        'connect-src': ["'self'", "https://*", "wss://*"]
-      },
-      crossOriginEmbedderPolicy: 'none'
-    }
-  },
 
   // 2. Stateless Runtime Config
   runtimeConfig: {
