@@ -1,32 +1,42 @@
-import { defineEventHandler, createError, getRequestIP } from 'h3'
+import { Ratelimit } from "@upstash/ratelimit"
+import { Redis } from "@upstash/redis"
 
-// In-memory store for rate limiting (For production, use Redis/Upstash)
-const rateLimitStore = new Map<string, { count: number, resetAt: number }>()
+/**
+ * ARCHITECT NOTE: High-Concurrency Global Rate Limiter
+ * Uses Upstash Redis (HTTP) to coordinate rate limits across multiple Vercel Lambda instances.
+ * Stateless, Edge-Ready, No Memory Leaks.
+ */
 
-const LIMIT = 50 // requests
-const WINDOW = 60 * 1000 // 1 minute
+const redis = new Redis({
+  url: process.env.UPSTASH_REDIS_REST_URL!,
+  token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+})
+
+// Create a new ratelimiter, that allows 10 requests per 10 seconds
+const ratelimit = new Ratelimit({
+  redis: redis,
+  limiter: Ratelimit.slidingWindow(60, "1 m"),
+  analytics: true,
+  prefix: "@elwali/ratelimit",
+})
 
 export default defineEventHandler(async (event) => {
   const path = event.path
   
-  // Only target sensitive routes
+  // High-value targets: Auth, Tracking, Orders
   if (path.startsWith('/api/auth') || path.startsWith('/api/tracking') || path.startsWith('/api/orders')) {
     const ip = getRequestIP(event, { xForwardedFor: true }) || 'anonymous'
-    const key = `${ip}:${path}`
-    const now = Date.now()
-    
-    const record = rateLimitStore.get(key)
-    
-    if (record && now < record.resetAt) {
-      if (record.count >= LIMIT) {
-        throw createError({
-          statusCode: 429,
-          statusMessage: 'Bzeff d ttalabat (Too many requests). Please wait a minute.'
-        })
-      }
-      record.count++
-    } else {
-      rateLimitStore.set(key, { count: 1, resetAt: now + WINDOW })
+    const { success, limit, reset, remaining } = await ratelimit.limit(ip)
+
+    if (!success) {
+      setHeader(event, 'X-RateLimit-Limit', limit.toString())
+      setHeader(event, 'X-RateLimit-Remaining', remaining.toString())
+      setHeader(event, 'X-RateLimit-Reset', reset.toString())
+
+      throw createError({
+        statusCode: 429,
+        statusMessage: 'Bzeff d ttalabat (Too many requests). Please slow down.'
+      })
     }
   }
 })

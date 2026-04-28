@@ -1,40 +1,45 @@
 import * as Sentry from '@sentry/node'
 
 export default defineNitroPlugin((nitroApp) => {
-  // 1. Sentry Initialization (Big-Tech Readiness)
   if (process.env.SENTRY_DSN) {
     Sentry.init({
       dsn: process.env.SENTRY_DSN,
       environment: process.env.NODE_ENV,
-      tracesSampleRate: 1.0,
+      tracesSampleRate: 0.1, // Reduced for high traffic cost control
     })
-    console.log('🛡️ [Observability] Sentry Armed & Ready.')
   }
 
-  // 2. Global Error Capture
-  nitroApp.hooks.hook('error', async (error, { event }) => {
-    const timestamp = new Date().toISOString()
-    const path = event?.path || 'unknown'
-    const method = event?.method || 'unknown'
+  nitroApp.hooks.hook('request', (event) => {
+    // 1. Assign Global Request ID for tracing
+    const requestId = crypto.randomUUID()
+    event.context.requestId = requestId
+    event.context.startTime = Date.now()
     
+    // Add Request ID to context for logging
+    setHeader(event, 'x-request-id', requestId)
+  })
+
+  nitroApp.hooks.hook('error', async (error, { event }) => {
+    const requestId = event?.context.requestId || 'unknown'
+    const path = event?.path || 'unknown'
+    
+    console.error(`🚨 [REQ:${requestId}] Error on ${path}:`, error)
+
     if (process.env.SENTRY_DSN) {
       Sentry.withScope(scope => {
+        scope.setTag('requestId', requestId)
         scope.setTag('path', path)
-        scope.setTag('method', method)
         Sentry.captureException(error)
       })
     }
   })
 
-  // 2. Request Performance Monitoring
-  nitroApp.hooks.hook('request', (event) => {
-    (event as any).context.startTime = Date.now()
-  })
-
   nitroApp.hooks.hook('afterResponse', (event) => {
-    const duration = Date.now() - ((event as any).context.startTime || 0)
-    if (duration > 500) {
-      console.warn(`🐢 Slow Request [${duration}ms]: ${event.path}`)
+    const duration = Date.now() - (event.context.startTime || 0)
+    const requestId = event.context.requestId || 'unknown'
+    
+    if (duration > 1000) {
+      console.warn(`🐢 [REQ:${requestId}] CRITICAL LATENCY [${duration}ms]: ${event.path}`)
     }
   })
 })
