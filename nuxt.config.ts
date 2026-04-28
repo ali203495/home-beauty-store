@@ -45,11 +45,7 @@ export default defineNuxtConfig({
   nitro: {
     preset: 'vercel',
     compressPublicAssets: true,
-    minify: true,
-    // Explicitly exclude native modules that crash serverless
-    externals: {
-      external: ['better-sqlite3', 'hiredis']
-    }
+    minify: true
   }
 })
 
