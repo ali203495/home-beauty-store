@@ -62,9 +62,9 @@ export default defineNuxtConfig({
     }
   },
 
-  // 3. Serverless Optimization
+  // 3. Serverless Optimization (Hardened for Vercel Serverless/Node)
   nitro: {
-    preset: 'vercel',
+    preset: 'vercel-serverless',
     compressPublicAssets: true,
     minify: true
   }

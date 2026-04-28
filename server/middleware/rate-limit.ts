@@ -1,24 +1,20 @@
 import { Ratelimit } from "@upstash/ratelimit"
 import { Redis } from "@upstash/redis"
 
-/**
- * ARCHITECT NOTE: High-Concurrency Global Rate Limiter
- * Uses Upstash Redis (HTTP) to coordinate rate limits across multiple Vercel Lambda instances.
- * Stateless, Edge-Ready, No Memory Leaks.
- */
-
-import { Ratelimit } from "@upstash/ratelimit"
-import { Redis } from "@upstash/redis"
-
 let _ratelimit: Ratelimit | null = null
 
 const getRatelimit = () => {
   if (_ratelimit) return _ratelimit
   
-  const redis = new Redis({
-    url: process.env.UPSTASH_REDIS_REST_URL!,
-    token: process.env.UPSTASH_REDIS_REST_TOKEN!,
-  })
+  const url = process.env.UPSTASH_REDIS_REST_URL
+  const token = process.env.UPSTASH_REDIS_REST_TOKEN
+  
+  if (!url || !token) {
+    console.warn('🛡️ [Rate Limit] Keys missing. Bypassing protection.')
+    return null
+  }
+  
+  const redis = new Redis({ url, token })
 
   _ratelimit = new Ratelimit({
     redis,
@@ -36,8 +32,11 @@ export default defineEventHandler(async (event) => {
   // High-value targets: Auth, Tracking, Orders
   if (path.startsWith('/api/auth') || path.startsWith('/api/tracking') || path.startsWith('/api/orders')) {
     try {
+      const limiter = getRatelimit()
+      if (!limiter) return // Skip if misconfigured
+
       const ip = getRequestIP(event, { xForwardedFor: true }) || 'anonymous'
-      const { success, limit, reset, remaining } = await getRatelimit().limit(ip)
+      const { success, limit, reset, remaining } = await limiter.limit(ip)
 
       if (!success) {
         setHeader(event, 'X-RateLimit-Limit', limit.toString())
