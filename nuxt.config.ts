@@ -12,14 +12,19 @@ export default defineNuxtConfig({
     'pinia-plugin-persistedstate/nuxt'
   ],
 
-  // 1. Production Security (Strict)
+  // 1. Production Security (Strict but Mobile-Ready)
   security: {
     csrf: true,
-    rateLimiter: false, // Disabling built-in memory limiter; we move to Global Redis
+    rateLimiter: false,
     headers: {
       contentSecurityPolicy: {
-        'img-src': ["'self'", "data:", "https://*.googleusercontent.com", "https://*.neon.tech", "https://via.placeholder.com"],
-      }
+        'img-src': ["'self'", "data:", "https://*", "https://*.neon.tech"],
+        'font-src': ["'self'", "https://fonts.gstatic.com", "https://fonts.googleapis.com"],
+        'style-src': ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+        'script-src': ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+        'connect-src': ["'self'", "https://*", "wss://*"]
+      },
+      crossOriginEmbedderPolicy: 'none'
     }
   },
 
