@@ -29,6 +29,8 @@ export default defineNuxtConfig({
     sessionPassword: process.env.NUXT_SESSION_PASSWORD,
     upstashRedisRestUrl: process.env.UPSTASH_REDIS_REST_URL,
     upstashRedisRestToken: process.env.UPSTASH_REDIS_REST_TOKEN,
+    edgeConfigId: process.env.EDGE_CONFIG_ID,
+    edgeConfigToken: process.env.EDGE_CONFIG_TOKEN,
     public: {
       whatsappNumber: process.env.NUXT_PUBLIC_WHATSAPP_NUMBER
     }

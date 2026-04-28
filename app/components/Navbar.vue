@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const cartStore = useCartStore()
+const cartDrawer = ref()
 const isScrolled = ref(false)
 
 if (process.client) {
@@ -45,7 +46,7 @@ if (process.client) {
           <span class="i-heroicons-magnifying-glass text-xl" />
         </button>
         
-        <NuxtLink to="/checkout" class="relative group flex items-center gap-2">
+        <button @click="cartDrawer?.open()" class="relative group flex items-center gap-2">
           <span class="i-heroicons-shopping-bag text-xl group-hover:text-luxury-gold transition-colors" :class="isScrolled ? 'text-luxury-black' : 'text-white'" />
           <span 
             v-if="cartStore.itemCount > 0" 
@@ -53,8 +54,9 @@ if (process.client) {
           >
             {{ cartStore.itemCount }}
           </span>
-        </NuxtLink>
+        </button>
       </div>
     </div>
+    <CartDrawer ref="cartDrawer" />
   </header>
 </template>

@@ -9,9 +9,26 @@ export default defineEventHandler(async (event) => {
   const { category, brand, featured, search: searchStr, page = 1, limit = 20 } = query
   const cache = useServerCache()
   const meilisearch = useSearch()
+  const config = useRuntimeConfig()
 
-  // Edge-Level SWR Cache (50ms catalog)
-  // Store in Vercel CDN for 1 hour, serve stale for 1 day while revalidating
+  // 0. ELITE TIER: Edge Config Bypass (10ms lookup)
+  // If we have an Edge Config URL, check it first for 'Hot Deals' 
+  // bypassing Postgres entirely for our top 1% traffic items.
+  if (config.edgeConfigId && !searchStr) {
+     try {
+       const hotProducts = await $fetch(`https://edge-config.vercel.com/${config.edgeConfigId}/get/hot_products`, {
+          headers: { Authorization: `Bearer ${config.edgeConfigToken}` }
+       })
+       if (hotProducts && (hotProducts as any)[String(category) || 'all']) {
+          console.log('⚡ [Edge Config] Serving Hot Catalog')
+          return (hotProducts as any)[String(category) || 'all']
+       }
+     } catch (e) {
+       // Graceful degradation: Fall back to standard SWR + Postgres
+     }
+  }
+
+  // 1. Edge-Level SWR Cache (Standard Path)
   setHeader(event, 'Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400')
 
   const cacheKey = `products:${category || 'all'}:${brand || 'all'}:${featured || 'false'}:${searchStr || 'none'}:${page}:${limit}`
