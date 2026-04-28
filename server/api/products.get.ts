@@ -9,22 +9,24 @@ export default defineEventHandler(async (event) => {
   const { category, brand, featured, search: searchStr, page = 1, limit = 20 } = query
   const cache = useServerCache()
   const meilisearch = useSearch()
-  const config = useRuntimeConfig()
+  const config = useRuntimeConfig(event)
+  const edgeId = config.edgeConfigId || process.env.EDGE_CONFIG_ID
+  const edgeToken = config.edgeConfigToken || process.env.EDGE_CONFIG_TOKEN
 
-  // 0. ELITE TIER: Edge Config Bypass (10ms lookup)
-  // If we have an Edge Config URL, check it first for 'Hot Deals' 
-  // bypassing Postgres entirely for our top 1% traffic items.
-  if (config.edgeConfigId && !searchStr) {
+  // 0. ELITE TIER: Edge Config Bypass (Safety Gated)
+  if (edgeId && edgeToken && !searchStr) {
      try {
-       const hotProducts = await $fetch(`https://edge-config.vercel.com/${config.edgeConfigId}/get/hot_products`, {
-          headers: { Authorization: `Bearer ${config.edgeConfigToken}` }
+       const hotProducts = await $fetch(`https://edge-config.vercel.com/${edgeId}/get/hot_products`, {
+          headers: { Authorization: `Bearer ${edgeToken}` },
+          timeout: 2000
        })
        if (hotProducts && (hotProducts as any)[String(category) || 'all']) {
           console.log('⚡ [Edge Config] Serving Hot Catalog')
           return (hotProducts as any)[String(category) || 'all']
        }
-     } catch (e) {
-       // Graceful degradation: Fall back to standard SWR + Postgres
+     } catch (e: any) {
+        console.warn('⚠️ [Edge Bypass] Failed or Timed Out:', e.message)
+        // Fall back gracefully to standard Postgres path
      }
   }
 
