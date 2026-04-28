@@ -1,170 +1,111 @@
 <script setup lang="ts">
-// 1. Concurrent SSR Data Fetching
-const { data: categories } = await useFetch('/api/categories')
-const { data: flashDeals } = await useFetch('/api/deals')
-const { data: recommended } = await useFetch('/api/tracking/recommended')
+// 1. Parallel Fetching for Landing Speed
+const { data: featured } = await useFetch('/api/products', { 
+  query: { featured: 'true', limit: 4 },
+  lazy: true
+})
 
-useSeoMeta({
-  title: 'EL-WALI SHOP | Premium Warehouse Marrakech',
-  description: 'Shop high-quality beauty and home products from Marrakech. Fast local delivery, best prices, and authentic quality.'
+const { data: categories } = await useFetch('/api/categories', { 
+  lazy: true 
 })
 </script>
 
 <template>
-  <div class="home-page">
-    <!-- HERO: Conversion Focused -->
-    <section class="hero section-padding">
-       <div class="container hero-grid">
-          <div class="hero-content fade-in-up">
-             <div class="tagline">Exclusive Selection</div>
-             <h1 class="display-title">Elevate Your Lifestyle in Marrakech</h1>
-             <p class="subtitle">Discover premium beauty and home essentials curated for the modern Moroccan household. Delivered directly from our warehouse to your door.</p>
-             <div class="hero-actions">
-                <AppButton to="/products" variant="primary">Shop Catalog</AppButton>
-                <AppButton to="/about" variant="outline">Learn More</AppButton>
-             </div>
-          </div>
-          <div class="hero-visual desktop-only">
-             <div class="visual-stack">
-                <div class="visual-card card fade-in-up">✨ Authentic Quality</div>
-                <div class="visual-card card fade-in-up" style="animation-delay: 0.2s">🚚 Fast Delivery</div>
-             </div>
-          </div>
-       </div>
-    </section>
-
-    <!-- CATEGORIES: Discovery -->
-    <section class="categories-section container">
-       <div class="section-header">
-          <h2 class="title-md">Browse by Category</h2>
-          <NuxtLink to="/products" class="link-more">View All →</NuxtLink>
-       </div>
-       <div class="categories-grid">
-          <NuxtLink 
-            v-for="cat in categories" 
-            :key="cat.id" 
-            :to="`/categories/${cat.slug}`"
-            class="cat-card card hover-scale"
-          >
-             <div class="cat-icon">📂</div>
-             <h3>{{ cat.name }}</h3>
-             <span>{{ cat.description }}</span>
+  <main>
+    <!-- Hero Section: Prestige Focus -->
+    <section class="relative h-[85vh] flex items-center overflow-hidden bg-luxury-black">
+      <div class="absolute inset-0 opacity-60">
+        <NuxtImg 
+          src="https://images.unsplash.com/photo-1596462502278-27bfdc4023c6?q=80&w=1920" 
+          class="w-full h-full object-cover"
+          priority
+        />
+      </div>
+      
+      <div class="container-sm relative z-10 text-white">
+        <div class="max-w-2xl animate-luxury-fade">
+          <span class="text-xs font-bold uppercase tracking-[0.5em] mb-4 block">Nouvelle Collection</span>
+          <h1 class="text-6xl md:text-8xl font-display mb-8">Révélez Votre Éclat Naturel</h1>
+          <p class="text-lg mb-10 text-white/80 font-light max-w-lg leading-relaxed">
+            Découvrez une sélection exclusive de soins de luxe conçus pour sublimer votre beauté unique.
+          </p>
+          <NuxtLink to="/products" class="btn-primary bg-white text-luxury-black hover:bg-luxury-gold hover:text-white border-none">
+            Acheter Maintenant
           </NuxtLink>
-       </div>
+        </div>
+      </div>
     </section>
 
-    <!-- FLASH DEALS: Real-time Pressure -->
-    <section class="deals-section section-padding">
-       <div class="container">
-          <div class="section-header white">
-             <div>
-                <span class="badge-flash">Limited Time</span>
-                <h2 class="title-md">Today's Flash Deals</h2>
-             </div>
-             <div class="countdown">Ends in: <strong>04:22:15</strong></div>
+    <!-- Trust Bar: Quick Validation -->
+    <section class="py-12 border-b border-luxury-border bg-luxury-cream">
+      <div class="container-sm flex flex-wrap justify-center md:justify-between gap-8 text-center md:text-left">
+        <div class="flex items-center gap-4">
+          <span class="i-heroicons-truck text-2xl text-luxury-gold" />
+          <div>
+            <p class="text-[10px] font-bold uppercase tracking-widest">Livraison Gratuite</p>
+            <p class="text-[10px] text-luxury-muted">À partir de 500 MAD d'achat</p>
           </div>
-          <div class="products-grid">
-             <ProductCard 
-               v-for="product in flashDeals" 
-               :key="product.id" 
-               :product="product" 
-             />
+        </div>
+        <div class="flex items-center gap-4">
+          <span class="i-heroicons-shield-check text-2xl text-luxury-gold" />
+          <div>
+            <p class="text-[10px] font-bold uppercase tracking-widest">Paiement Sécurisé</p>
+            <p class="text-[10px] text-luxury-muted">Transaction 100% chiffrée</p>
           </div>
-       </div>
+        </div>
+        <div class="flex items-center gap-4">
+          <span class="i-heroicons-sparkles text-2xl text-luxury-gold" />
+          <div>
+            <p class="text-[10px] font-bold uppercase tracking-widest">Qualité Premium</p>
+            <p class="text-[10px] text-luxury-muted">Sélectionnée par nos experts</p>
+          </div>
+        </div>
+      </div>
     </section>
 
-    <!-- RECOMMENDED: Personalization -->
-    <section class="recommended-section container section-padding">
-       <div class="section-header">
-          <h2 class="title-md">Recommended For You</h2>
-       </div>
-       <div class="products-grid">
-          <ProductCard 
-            v-for="product in recommended" 
-            :key="product.id" 
-            :product="product" 
+    <!-- Categories: Visual Navigation -->
+    <section class="py-24 container-sm">
+      <div class="flex flex-col md:flex-row justify-between items-end mb-12">
+        <div class="max-w-md">
+          <h2 class="text-4xl mb-4">Parcourir Par Catégorie</h2>
+          <p class="text-xs text-luxury-muted uppercase tracking-widest">Sublimez chaque aspect de votre routine</p>
+        </div>
+      </div>
+      
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <NuxtLink 
+          v-for="cat in categories" 
+          :key="cat.id"
+          :to="`/categories/${cat.slug}`"
+          class="relative h-[400px] group overflow-hidden bg-luxury-cream"
+        >
+          <NuxtImg 
+            :src="cat.image || 'https://via.placeholder.com/400x600'" 
+            class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105"
           />
-       </div>
+          <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex flex-col justify-end p-6">
+            <span class="text-white font-bold uppercase text-xs tracking-[0.3em]">{{ cat.name }}</span>
+          </div>
+        </NuxtLink>
+      </div>
     </section>
-  </div>
+
+    <!-- Trending: Revenue Driver -->
+    <section class="py-24 bg-luxury-cream/30">
+      <div class="container-sm">
+        <div class="text-center mb-16">
+          <h2 class="text-4xl mb-4">Tendances Actuelles</h2>
+          <div class="w-20 h-[1px] bg-luxury-gold mx-auto"></div>
+        </div>
+        
+        <div v-if="featured" class="grid grid-cols-2 lg:grid-cols-4 gap-8">
+          <ProductCard 
+            v-for="prod in featured" 
+            :key="prod.id" 
+            :product="prod" 
+          />
+        </div>
+      </div>
+    </section>
+  </main>
 </template>
-
-<style scoped>
-.hero {
-  background: var(--secondary);
-  color: white;
-  min-height: 70vh;
-  display: flex;
-  align-items: center;
-}
-
-.hero-grid {
-  display: grid;
-  grid-template-columns: 1.2fr 1fr;
-  gap: 4rem;
-  align-items: center;
-}
-
-.display-title {
-  font-size: clamp(2.5rem, 5vw, 4rem);
-  line-height: 1.1;
-  margin: 1rem 0 2rem;
-}
-
-.tagline {
-  color: var(--primary);
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-}
-
-.subtitle {
-  font-size: 1.25rem;
-  color: var(--text-muted);
-  max-width: 500px;
-  margin-bottom: 3rem;
-}
-
-.hero-actions { display: flex; gap: 1rem; }
-
-.visual-stack { display: flex; flex-direction: column; gap: 2rem; }
-.visual-card { 
-  background: rgba(255,255,255,0.05); 
-  backdrop-filter: blur(10px);
-  padding: 2rem;
-  border: 1px solid rgba(255,255,255,0.1);
-  color: white;
-  font-size: 1.5rem;
-  font-weight: 700;
-}
-
-.section-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  margin-bottom: 3rem;
-}
-
-.section-header.white { color: var(--text-dark); }
-.badge-flash { background: var(--primary); color: white; padding: 0.25rem 0.5rem; font-size: 0.7rem; font-weight: 800; border-radius: 4px; }
-
-.categories-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 2rem;
-}
-
-.cat-card h3 { margin: 0.5rem 0; }
-.cat-card span { font-size: 0.85rem; color: var(--text-muted); }
-
-.products-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 2rem;
-}
-
-@media (max-width: 800px) {
-  .hero-grid { grid-template-columns: 1fr; }
-  .display-title { font-size: 2.5rem; }
-}
-</style>

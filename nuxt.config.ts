@@ -4,6 +4,7 @@ export default defineNuxtConfig({
   future: { compatibilityVersion: 4 },
   
   modules: [
+    '@nuxtjs/tailwindcss',
     'nuxt-auth-utils',
     'nuxt-security',
     '@nuxt/image',
