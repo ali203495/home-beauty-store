@@ -1,0 +1,214 @@
+
+> build
+> nuxt build
+
+┌  Building Nuxt for production...
+│
+●  Nuxt 4.4.2 (with Nitro 2.13.3, Vite 7.3.2 and Vue 3.5.33)
+[nuxt:tailwindcss] ℹ Using default Tailwind CSS file
+│
+●  Nitro preset: vercel
+ℹ Building client...
+ℹ vite v7.3.2 building client environment for production...
+
+ WARN  [plugin nuxt:module-preload-polyfill] Sourcemap is likely to be incorrect: a plugin (nuxt:module-preload-polyfill) was used to transform files, but didn't generate a sourcemap for the transformation. Consult the plugin documentation for help
+
+ℹ transforming...
+ℹ ✓ 291 modules transformed.
+ℹ rendering chunks...
+ℹ computing gzip size...
+ℹ ../node_modules/.cache/nuxt/.nuxt/dist/client/manifest.json                         6.85 kB │ gzip:  1.07 kB
+ℹ ../node_modules/.cache/nuxt/.nuxt/dist/client/_nuxt/tracking.CV2v4dWC.css           0.18 kB │ gzip:  0.12 kB
+ℹ ../node_modules/.cache/nuxt/.nuxt/dist/client/_nuxt/AddToCartButton.Bssuj-4J.css    0.26 kB │ gzip:  0.15 kB
+ℹ ../node_modules/.cache/nuxt/.nuxt/dist/client/_nuxt/index.C2_4xBT7.css              0.67 kB │ gzip:  0.33 kB
+ℹ ../node_modules/.cache/nuxt/.nuxt/dist/client/_nuxt/search.DX5TwAGc.css             0.73 kB │ gzip:  0.37 kB
+ℹ ../node_modules/.cache/nuxt/.nuxt/dist/client/_nuxt/index.DONlAwyw.css              1.17 kB │ gzip:  0.47 kB
+ℹ ../node_modules/.cache/nuxt/.nuxt/dist/client/_nuxt/settings.DOSJd2CF.css           1.43 kB │ gzip:  0.57 kB
+ℹ ../node_modules/.cache/nuxt/.nuxt/dist/client/_nuxt/brands.D12r5zV8.css             1.55 kB │ gzip:  0.52 kB
+ℹ ../node_modules/.cache/nuxt/.nuxt/dist/client/_nuxt/categories.DHo-_CjY.css         1.55 kB │ gzip:  0.52 kB
+ℹ ../node_modules/.cache/nuxt/.nuxt/dist/client/_nuxt/login.pmuNB9aj.css              1.69 kB │ gzip:  0.60 kB
+ℹ ../node_modules/.cache/nuxt/.nuxt/dist/client/_nuxt/register.D7a3ew8t.css           1.87 kB │ gzip:  0.64 kB
+ℹ ../node_modules/.cache/nuxt/.nuxt/dist/client/_nuxt/contact.BQFeTLpJ.css            1.94 kB │ gzip:  0.66 kB
+ℹ ../node_modules/.cache/nuxt/.nuxt/dist/client/_nuxt/products.DDkGMhDt.css           2.37 kB │ gzip:  0.74 kB
+ℹ ../node_modules/.cache/nuxt/.nuxt/dist/client/_nuxt/orders.CaE1OFZL.css             2.51 kB │ gzip:  0.78 kB
+ℹ ../node_modules/.cache/nuxt/.nuxt/dist/client/_nuxt/account.CJz2och3.css            2.90 kB │ gzip:  0.97 kB
+ℹ ../node_modules/.cache/nuxt/.nuxt/dist/client/_nuxt/index.D6NkCqKo.css              3.67 kB │ gzip:  1.15 kB
+ℹ ../node_modules/.cache/nuxt/.nuxt/dist/client/_nuxt/cart.DI26J8m9.css               4.26 kB │ gzip:  1.21 kB
+ℹ ../node_modules/.cache/nuxt/.nuxt/dist/client/_nuxt/entry.C4GCcIrJ.css             20.60 kB │ gzip:  4.94 kB
+ℹ ../node_modules/.cache/nuxt/.nuxt/dist/client/_nuxt/Cvbqu9pr.js                     0.21 kB │ gzip:  0.19 kB
+ℹ ../node_modules/.cache/nuxt/.nuxt/dist/client/_nuxt/gs0y_EAo.js                     1.22 kB │ gzip:  0.77 kB
+ℹ ../node_modules/.cache/nuxt/.nuxt/dist/client/_nuxt/DOvdK2WU.js                     1.89 kB │ gzip:  1.11 kB
+ℹ ../node_modules/.cache/nuxt/.nuxt/dist/client/_nuxt/DKUNPp0K.js                     1.97 kB │ gzip:  1.11 kB
+ℹ ../node_modules/.cache/nuxt/.nuxt/dist/client/_nuxt/Du4YUOjA.js                     1.98 kB │ gzip:  0.99 kB
+ℹ ../node_modules/.cache/nuxt/.nuxt/dist/client/_nuxt/LAUY-VsN.js                     2.25 kB │ gzip:  1.20 kB
+ℹ ../node_modules/.cache/nuxt/.nuxt/dist/client/_nuxt/DhSEMZZ-.js                     2.35 kB │ gzip:  0.92 kB
+ℹ ../node_modules/.cache/nuxt/.nuxt/dist/client/_nuxt/DdpKkCxj.js                     2.51 kB │ gzip:  1.33 kB
+ℹ ../node_modules/.cache/nuxt/.nuxt/dist/client/_nuxt/ClgTTt0j.js                     2.65 kB │ gzip:  1.31 kB
+ℹ ../node_modules/.cache/nuxt/.nuxt/dist/client/_nuxt/CVtiigEg.js                     3.10 kB │ gzip:  1.34 kB
+ℹ ../node_modules/.cache/nuxt/.nuxt/dist/client/_nuxt/D_jV3MCw.js                     3.33 kB │ gzip:  1.55 kB
+ℹ ../node_modules/.cache/nuxt/.nuxt/dist/client/_nuxt/Dsv_O68n.js                     3.33 kB │ gzip:  1.49 kB
+ℹ ../node_modules/.cache/nuxt/.nuxt/dist/client/_nuxt/poMPrFVg.js                     3.85 kB │ gzip:  1.71 kB
+ℹ ../node_modules/.cache/nuxt/.nuxt/dist/client/_nuxt/CKv2lp-6.js                     4.02 kB │ gzip:  1.81 kB
+ℹ ../node_modules/.cache/nuxt/.nuxt/dist/client/_nuxt/NnSjo-8k.js                     4.02 kB │ gzip:  1.69 kB
+ℹ ../node_modules/.cache/nuxt/.nuxt/dist/client/_nuxt/ZqsNNxm7.js                     4.25 kB │ gzip:  1.85 kB
+ℹ ../node_modules/.cache/nuxt/.nuxt/dist/client/_nuxt/CeAeIDIK.js                     4.84 kB │ gzip:  2.02 kB
+ℹ ../node_modules/.cache/nuxt/.nuxt/dist/client/_nuxt/D-2G4wAu.js                     5.03 kB │ gzip:  2.08 kB
+ℹ ../node_modules/.cache/nuxt/.nuxt/dist/client/_nuxt/BCeBzCWX.js                     5.32 kB │ gzip:  2.15 kB
+ℹ ../node_modules/.cache/nuxt/.nuxt/dist/client/_nuxt/DZxl8hBi.js                     7.08 kB │ gzip:  3.17 kB
+ℹ ../node_modules/.cache/nuxt/.nuxt/dist/client/_nuxt/NyV-3HJ9.js                     7.46 kB │ gzip:  2.77 kB
+ℹ ../node_modules/.cache/nuxt/.nuxt/dist/client/_nuxt/B7Ku8RFV.js                     9.13 kB │ gzip:  3.91 kB
+ℹ ../node_modules/.cache/nuxt/.nuxt/dist/client/_nuxt/bwWjENkz.js                   230.14 kB │ gzip: 85.51 kB
+ℹ ✓ built in 20.94s
+✔ Client built in 21041ms
+ℹ Building server...
+ℹ vite v7.3.2 building ssr environment for production...
+ℹ transforming...
+ℹ ✓ 236 modules transformed.
+ℹ rendering chunks...
+ℹ ✓ built in 9.75s
+✔ Server built in 9806ms
+[nitro] ✔ Generated public .vercel/output/static
+[nitro] ℹ Building Nuxt Nitro server (preset: vercel, compatibility date: 2025-05-15)
+
+[nitro]  ERROR  RollupError: server/api/orders.post.ts (2:0): "queues" is not exported by "server/utils/bus.ts", imported by "server/api/orders.post.ts".
+
+
+1: import { OrderSchema } from '../utils/validation'
+2: import { emitEvent, queues } from '../utils/bus'
+   ^
+3: import { db } from '../utils/db'
+4: import { orders } from '../database/schema'
+
+Error [RollupError]: server/api/orders.post.ts (2:0): "queues" is not exported by "server/utils/bus.ts", imported by "server/api/orders.post.ts".
+    at getRollupError (file:///home/xyz/Documents/home-beauty-store/node_modules/rollup/dist/es/shared/parseAst.js:406:41)
+    at error (file:///home/xyz/Documents/home-beauty-store/node_modules/rollup/dist/es/shared/parseAst.js:402:42)
+    at Module.error (file:///home/xyz/Documents/home-beauty-store/node_modules/rollup/dist/es/shared/node-entry.js:17384:16)
+    at Module.traceVariable (file:///home/xyz/Documents/home-beauty-store/node_modules/rollup/dist/es/shared/node-entry.js:17817:29)
+    at ModuleScope.findVariable (file:///home/xyz/Documents/home-beauty-store/node_modules/rollup/dist/es/shared/node-entry.js:15407:39)
+    at ReturnValueScope.findVariable (file:///home/xyz/Documents/home-beauty-store/node_modules/rollup/dist/es/shared/node-entry.js:5676:38)
+    at FunctionBodyScope.findVariable (file:///home/xyz/Documents/home-beauty-store/node_modules/rollup/dist/es/shared/node-entry.js:5676:38)
+    at MemberExpression.bind (file:///home/xyz/Documents/home-beauty-store/node_modules/rollup/dist/es/shared/node-entry.js:7395:49)
+    at CallExpression.bind (file:///home/xyz/Documents/home-beauty-store/node_modules/rollup/dist/es/shared/node-entry.js:2832:23)
+    at CallExpression.bind (file:///home/xyz/Documents/home-beauty-store/node_modules/rollup/dist/es/shared/node-entry.js:12516:15) {
+  binding: 'queues',
+  code: 'MISSING_EXPORT',
+  exporter: '/home/xyz/Documents/home-beauty-store/server/utils/bus.ts',
+  id: '/home/xyz/Documents/home-beauty-store/server/api/orders.post.ts',
+  url: 'https://rollupjs.org/troubleshooting/#error-name-is-not-exported-by-module',
+  pos: 262,
+  loc: {
+    column: 0,
+    file: '/home/xyz/Documents/home-beauty-store/server/api/orders.post.ts',
+    line: 2
+  },
+  frame: "1: import { OrderSchema } from '../utils/validation'\n" +
+    "2: import { emitEvent, queues } from '../utils/bus'\n" +
+    '   ^\n' +
+    "3: import { db } from '../utils/db'\n" +
+    "4: import { orders } from '../database/schema'",
+  watchFiles: [
+    '/home/xyz/Documents/home-beauty-store/node_modules/nitropack/dist/presets/vercel/runtime/vercel.mjs',
+    '/home/xyz/Documents/home-beauty-store/node_modules/nitropack/dist/presets/vercel/runtime/consts.mjs',
+    '/home/xyz/Documents/home-beauty-store/node_modules/nitropack/dist/runtime/internal/index.mjs',
+    '/home/xyz/Documents/home-beauty-store/node_modules/nitropack/dist/runtime/index.mjs',
+    '/home/xyz/Documents/home-beauty-store/node_modules/ufo/dist/index.mjs',
+    '/home/xyz/Documents/home-beauty-store/node_modules/h3/dist/index.mjs',
+    '/home/xyz/Documents/home-beauty-store/node_modules/nitropack/dist/runtime/internal/utils.lambda.mjs',
+    '/home/xyz/Documents/home-beauty-store/node_modules/nitropack/dist/runtime/internal/utils.mjs',
+    '/home/xyz/Documents/home-beauty-store/node_modules/nitropack/dist/runtime/internal/utils.azure.mjs',
+    '/home/xyz/Documents/home-beauty-store/node_modules/nitropack/dist/runtime/internal/task.mjs',
+    '/home/xyz/Documents/home-beauty-store/node_modules/nitropack/dist/runtime/internal/shutdown.mjs',
+    '/home/xyz/Documents/home-beauty-store/node_modules/nitropack/dist/runtime/internal/route-rules.mjs',
+    '/home/xyz/Documents/home-beauty-store/node_modules/nitropack/dist/runtime/internal/app.mjs',
+    '/home/xyz/Documents/home-beauty-store/node_modules/nitropack/dist/runtime/internal/storage.mjs',
+    '/home/xyz/Documents/home-beauty-store/node_modules/nitropack/dist/runtime/internal/config.mjs',
+    '/home/xyz/Documents/home-beauty-store/node_modules/nitropack/dist/runtime/internal/plugin.mjs',
+    '/home/xyz/Documents/home-beauty-store/node_modules/nitropack/dist/runtime/internal/meta.mjs',
+    '/home/xyz/Documents/home-beauty-store/node_modules/nitropack/dist/runtime/internal/renderer.mjs',
+    '/home/xyz/Documents/home-beauty-store/node_modules/nitropack/dist/runtime/internal/context.mjs',
+    '/home/xyz/Documents/home-beauty-store/node_modules/nitropack/dist/runtime/internal/cache.mjs',
+    '/home/xyz/Documents/home-beauty-store/node_modules/nitropack/dist/runtime/internal/database.mjs',
+    '/home/xyz/Documents/home-beauty-store/node_modules/nitropack/dist/runtime/internal/error/utils.mjs',
+    '/home/xyz/Documents/home-beauty-store/node_modules/defu/dist/defu.mjs',
+    '/home/xyz/Documents/home-beauty-store/node_modules/uncrypto/dist/crypto.node.mjs',
+    '/home/xyz/Documents/home-beauty-store/node_modules/radix3/dist/index.mjs',
+    '/home/xyz/Documents/home-beauty-store/node_modules/iron-webcrypto/dist/index.js',
+    '/home/xyz/Documents/home-beauty-store/node_modules/destr/dist/index.mjs',
+    '/home/xyz/Documents/home-beauty-store/node_modules/node-mock-http/dist/index.mjs',
+    '/home/xyz/Documents/home-beauty-store/node_modules/h3/node_modules/cookie-es/dist/index.mjs',
+    '/home/xyz/Documents/home-beauty-store/node_modules/nitropack/dist/runtime/internal/lib/http-graceful-shutdown.mjs',
+    '/home/xyz/Documents/home-beauty-store/node_modules/nitropack/dist/runtime/internal/utils.env.mjs',
+    '/home/xyz/Documents/home-beauty-store/node_modules/nitropack/dist/runtime/internal/hash.mjs',
+    '/home/xyz/Documents/home-beauty-store/server/plugins/observability.ts',
+    '/home/xyz/Documents/home-beauty-store/server/middleware/rate-limit.ts',
+    '/home/xyz/Documents/home-beauty-store/server/api/deals.get.ts',
+    '/home/xyz/Documents/home-beauty-store/server/api/categories.get.ts',
+    '/home/xyz/Documents/home-beauty-store/server/api/brands.get.ts',
+    '/home/xyz/Documents/home-beauty-store/server/api/health.get.ts',
+    '/home/xyz/Documents/home-beauty-store/server/api/orders.post.ts',
+    '/home/xyz/Documents/home-beauty-store/server/api/products.get.ts',
+    '/home/xyz/Documents/home-beauty-store/server/api/settings.ts',
+    '/home/xyz/Documents/home-beauty-store/server/api/status.ts',
+    '/home/xyz/Documents/home-beauty-store/server/api/admin/metrics.get.ts',
+    '/home/xyz/Documents/home-beauty-store/server/api/admin/migrate.post.ts',
+    '/home/xyz/Documents/home-beauty-store/server/api/auth/google.get.ts',
+    '/home/xyz/Documents/home-beauty-store/server/api/admin/stats.ts',
+    '/home/xyz/Documents/home-beauty-store/server/api/auth/login.post.ts',
+    '/home/xyz/Documents/home-beauty-store/server/api/auth/me.get.ts',
+    '/home/xyz/Documents/home-beauty-store/server/api/categories/[slug].get.ts',
+    '/home/xyz/Documents/home-beauty-store/server/api/cron/fulfillment-health.post.ts',
+    '/home/xyz/Documents/home-beauty-store/server/api/auth/logout.post.ts',
+    '/home/xyz/Documents/home-beauty-store/server/api/auth/register.post.ts',
+    '/home/xyz/Documents/home-beauty-store/server/api/orders/track.get.ts',
+    '/home/xyz/Documents/home-beauty-store/server/api/products/[slug].get.ts',
+    '/home/xyz/Documents/home-beauty-store/server/api/products/social-proof.get.ts',
+    '/home/xyz/Documents/home-beauty-store/server/api/tracking/recommended.get.ts',
+    '/home/xyz/Documents/home-beauty-store/server/api/tracking/view.post.ts',
+    '/home/xyz/Documents/home-beauty-store/node_modules/unstorage/dist/index.mjs',
+    '/home/xyz/Documents/home-beauty-store/node_modules/unstorage/drivers/fs-lite.mjs',
+    '/home/xyz/Documents/home-beauty-store/node_modules/unstorage/drivers/lru-cache.mjs',
+    '/home/xyz/Documents/home-beauty-store/server/api/admin/brands/[id].ts',
+    '/home/xyz/Documents/home-beauty-store/server/api/admin/brands/index.post.ts',
+    '/home/xyz/Documents/home-beauty-store/server/api/admin/categories/index.get.ts',
+    '/home/xyz/Documents/home-beauty-store/server/api/admin/brands/index.get.ts',
+    '/home/xyz/Documents/home-beauty-store/server/api/admin/categories/[id].ts',
+    '/home/xyz/Documents/home-beauty-store/server/api/admin/orders/[id].patch.ts',
+    '/home/xyz/Documents/home-beauty-store/server/api/admin/orders/index.get.ts',
+    '/home/xyz/Documents/home-beauty-store/server/api/admin/categories/index.post.ts',
+    '/home/xyz/Documents/home-beauty-store/server/api/admin/products/[id].ts',
+    '/home/xyz/Documents/home-beauty-store/server/api/orders/[id]/whatsapp-click.patch.ts',
+    '/home/xyz/Documents/home-beauty-store/server/api/admin/products/index.post.ts',
+    '/home/xyz/Documents/home-beauty-store/server/api/admin/products/index.get.ts',
+    '/home/xyz/Documents/home-beauty-store/node_modules/nitropack/dist/runtime/internal/error/prod.mjs',
+    '/home/xyz/Documents/home-beauty-store/node_modules/croner/dist/croner.js',
+    '/home/xyz/Documents/home-beauty-store/node_modules/std-env/dist/index.mjs',
+    '/home/xyz/Documents/home-beauty-store/node_modules/cookie-es/dist/index.mjs',
+    '/home/xyz/Documents/home-beauty-store/node_modules/ofetch/dist/node.mjs',
+    '/home/xyz/Documents/home-beauty-store/node_modules/@nuxt/nitro-server/dist/runtime/handlers/renderer.mjs',
+    '/home/xyz/Documents/home-beauty-store/node_modules/@nuxt/nitro-server/dist/runtime/handlers/error.mjs',
+    '/home/xyz/Documents/home-beauty-store/node_modules/klona/dist/index.mjs',
+    '/home/xyz/Documents/home-beauty-store/node_modules/unctx/dist/index.mjs',
+    '/home/xyz/Documents/home-beauty-store/node_modules/db0/dist/index.mjs',
+    '/home/xyz/Documents/home-beauty-store/node_modules/nitropack/node_modules/hookable/dist/index.mjs',
+    '/home/xyz/Documents/home-beauty-store/node_modules/nuxt-auth-utils/dist/runtime/server/api/session.get.js',
+    '/home/xyz/Documents/home-beauty-store/node_modules/nuxt-auth-utils/dist/runtime/server/plugins/oauth.js',
+    '/home/xyz/Documents/home-beauty-store/node_modules/nuxt-auth-utils/dist/runtime/server/api/session.delete.js',
+    '/home/xyz/Documents/home-beauty-store/node_modules/nuxt-security/dist/runtime/nitro/plugins/20-subresourceIntegrity.js',
+    '/home/xyz/Documents/home-beauty-store/node_modules/nuxt-security/dist/runtime/nitro/plugins/30-cspSsgHashes.js',
+    '/home/xyz/Documents/home-beauty-store/node_modules/nuxt-security/dist/runtime/nitro/plugins/00-routeRules.js',
+    '/home/xyz/Documents/home-beauty-store/node_modules/nuxt-security/dist/runtime/nitro/plugins/60-recombineHtml.js',
+    '/home/xyz/Documents/home-beauty-store/node_modules/nuxt-security/dist/runtime/nitro/plugins/40-cspSsrNonce.js',
+    '/home/xyz/Documents/home-beauty-store/node_modules/nuxt-security/dist/runtime/nitro/plugins/50-updateCsp.js',
+    '/home/xyz/Documents/home-beauty-store/node_modules/nuxt-security/dist/runtime/nitro/plugins/70-securityHeaders.js',
+    '/home/xyz/Documents/home-beauty-store/node_modules/nuxt-security/dist/runtime/nitro/plugins/80-hidePoweredBy.js',
+    '/home/xyz/Documents/home-beauty-store/node_modules/nuxt-security/dist/runtime/server/middleware/requestSizeLimiter.js',
+    '/home/xyz/Documents/home-beauty-store/node_modules/nuxt-security/dist/runtime/nitro/plugins/90-prerenderedHeaders.js',
+    '/home/xyz/Documents/home-beauty-store/node_modules/nuxt-security/dist/runtime/server/middleware/allowedMethodsRestricter.js',
+    '/home/xyz/Documents/home-beauty-store/node_modules/nuxt-security/dist/runtime/server/middleware/corsHandler.js',
+    '/home/xyz/Documents/home-beauty-store/node_modules/nuxt-security/dist/runtime/server/middleware/xssValidator.js',
+    '/home/xyz/Documents/home-beauty-store/node_modules/nuxt-security/dist/runtime/server/middleware/rateLimiter.js',
+    ... 176 more items
+  ],
+  [Symbol(augmented)]: true
+} 
+
