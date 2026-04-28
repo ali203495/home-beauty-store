@@ -12,7 +12,14 @@ if (error.value || !product.value) {
    throw createError({ statusCode: 404, statusMessage: 'Produit introuvable' })
 }
 
-// 2. SEO & Schema
+// 2. SOCIAL PROOF (Revenue Engine)
+const { data: socialProof } = await useFetch(`/api/products/social-proof`, {
+  query: { productId: product.value?.id },
+  lazy: true,
+  server: false // Clientside only for real-time feel
+})
+
+// 3. SEO & Schema
 useSeoMeta({
   title: `${product.value.name} | EL-WALI SHOP`,
   description: product.value.description,
@@ -84,8 +91,16 @@ const images = computed(() => JSON.parse(product.value?.images || '[]'))
        <!-- Info -->
        <div class="info">
           <div class="breadcrumb">Home / {{ product.category?.name }} / {{ product.name }}</div>
+          <div v-if="socialProof?.isHot" class="hot-badge animate-pulse">
+             🔥 Current Interest: <span>{{ socialProof.popularity }} viewing now</span>
+          </div>
+          
           <h1 class="title-lg">{{ product.name }}</h1>
           
+          <div v-if="socialProof?.recentlyBought > 0" class="social-trust">
+             🤝 {{ socialProof.recentlyBought }} orders in the last 24h
+          </div>
+
           <div class="price-section">
              <span class="price-main">${{ product.salePrice || product.price }}</span>
              <span v-if="product.salePrice" class="price-discount">-${{ Math.round((1 - product.salePrice/product.price)*100) }}%</span>
@@ -263,6 +278,34 @@ const images = computed(() => JSON.parse(product.value?.images || '[]'))
   align-items: center;
   box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
   z-index: 1000;
+}
+
+.hot-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #ef4444;
+  background: #fef2f2;
+  padding: 0.4rem 0.8rem;
+  border-radius: var(--radius-sm);
+  width: fit-content;
+}
+
+.social-trust {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .7; }
 }
 
 @media (max-width: 1024px) {
