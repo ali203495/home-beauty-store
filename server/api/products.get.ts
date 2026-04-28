@@ -1,10 +1,11 @@
-import { db } from '../utils/db'
+import { useDb } from '../utils/db'
 import { products } from '../database/schema'
 import { eq, and, sql } from 'drizzle-orm'
 import { useServerCache } from '../utils/cache'
 import { useSearch } from '../utils/search'
 
 export default defineEventHandler(async (event) => {
+  const db = useDb()
   const query = getQuery(event)
   const { category, brand, featured, search: searchStr, page = 1, limit = 20 } = query
   const cache = useServerCache()

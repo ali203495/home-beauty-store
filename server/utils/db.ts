@@ -31,11 +31,11 @@ const getDb = () => {
   return _dbInstance
 }
 
-// 🛡️ The Indestructible Handle
-// This is synchronous and safe for top-level export
-export const db = new Proxy({} as any, {
-  get(_, prop) {
-    return (getDb() as any)[prop]
-  }
-})
+/**
+ * 🛡️ The Indestructible Handle
+ * Use useDb() instead of a global const to ensure 100% serverless stability.
+ */
+export function useDb() {
+  return getDb() as ReturnType<typeof drizzle<typeof schema>>
+}
 

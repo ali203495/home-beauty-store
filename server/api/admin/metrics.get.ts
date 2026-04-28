@@ -1,8 +1,9 @@
-import { db } from '../../utils/db'
+import { useDb } from '../../utils/db'
 import { orders } from '../../database/schema'
 import { sql, count, sum } from 'drizzle-orm'
 
 export default defineEventHandler(async (event) => {
+  const db = useDb()
   // 1. ADMIN AUTH
   const session = await getUserSession(event)
   if (session.user?.role !== 'admin') {

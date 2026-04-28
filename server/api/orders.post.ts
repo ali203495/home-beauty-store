@@ -1,11 +1,12 @@
 import { OrderSchema } from '../utils/validation'
 import { emitEvent } from '../utils/bus'
-import { db } from '../utils/db'
+import { useDb } from '../utils/db'
 import { orders } from '../database/schema'
 import { eq } from 'drizzle-orm'
 import { metrics } from '../utils/metrics'
 
 export default defineEventHandler(async (event) => {
+  const db = useDb()
   const body = await readBody(event)
   const session = await getUserSession(event)
   
