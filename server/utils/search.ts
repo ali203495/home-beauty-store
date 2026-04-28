@@ -1,12 +1,18 @@
 import { MeiliSearch } from 'meilisearch'
 
-const client = new MeiliSearch({
-  host: process.env.MEILISEARCH_HOST || 'http://localhost:7700',
-  apiKey: process.env.MEILISEARCH_KEY || '',
-})
+let _client: MeiliSearch | null = null
+
+const getSearchClient = () => {
+  if (_client) return _client
+  _client = new MeiliSearch({
+    host: process.env.MEILISEARCH_HOST || 'http://localhost:7700',
+    apiKey: process.env.MEILISEARCH_KEY || '',
+  })
+  return _client
+}
 
 export const useSearch = () => {
-  const index = client.index('products')
+  const index = getSearchClient().index('products')
   
   // 1. Sync Product to Search Engine
   const syncProduct = async (product: any) => {

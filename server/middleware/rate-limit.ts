@@ -7,18 +7,28 @@ import { Redis } from "@upstash/redis"
  * Stateless, Edge-Ready, No Memory Leaks.
  */
 
-const redis = new Redis({
-  url: process.env.UPSTASH_REDIS_REST_URL!,
-  token: process.env.UPSTASH_REDIS_REST_TOKEN!,
-})
+import { Ratelimit } from "@upstash/ratelimit"
+import { Redis } from "@upstash/redis"
 
-// Create a new ratelimiter, that allows 10 requests per 10 seconds
-const ratelimit = new Ratelimit({
-  redis: redis,
-  limiter: Ratelimit.slidingWindow(60, "1 m"),
-  analytics: true,
-  prefix: "@elwali/ratelimit",
-})
+let _ratelimit: Ratelimit | null = null
+
+const getRatelimit = () => {
+  if (_ratelimit) return _ratelimit
+  
+  const redis = new Redis({
+    url: process.env.UPSTASH_REDIS_REST_URL!,
+    token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+  })
+
+  _ratelimit = new Ratelimit({
+    redis,
+    limiter: Ratelimit.slidingWindow(60, "1 m"),
+    analytics: true,
+    prefix: "@elwali/ratelimit",
+  })
+  
+  return _ratelimit
+}
 
 export default defineEventHandler(async (event) => {
   const path = event.path
@@ -27,7 +37,7 @@ export default defineEventHandler(async (event) => {
   if (path.startsWith('/api/auth') || path.startsWith('/api/tracking') || path.startsWith('/api/orders')) {
     try {
       const ip = getRequestIP(event, { xForwardedFor: true }) || 'anonymous'
-      const { success, limit, reset, remaining } = await ratelimit.limit(ip)
+      const { success, limit, reset, remaining } = await getRatelimit().limit(ip)
 
       if (!success) {
         setHeader(event, 'X-RateLimit-Limit', limit.toString())
