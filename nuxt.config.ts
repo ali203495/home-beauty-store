@@ -62,6 +62,20 @@ export default defineNuxtConfig({
     }
   },
 
+  // 2. Global Security & Monitoring (Passive Mode)
+  sentry: {
+    enabled: true,
+    clientConfig: {
+      dsn: process.env.NUXT_PUBLIC_SENTRY_DSN
+    },
+    serverConfig: {
+      dsn: process.env.NUXT_PUBLIC_SENTRY_DSN,
+      // 🛡️ CRITICAL: Disable automated global-hooks that crash Vercel
+      instrumenter: 'sentry',
+      autoInstrumentServerFunctions: false
+    }
+  },
+
   // 3. Serverless Optimization (Hardened for Vercel Serverless/Node)
   nitro: {
     preset: 'vercel-serverless',
