@@ -1,8 +1,8 @@
 import { OrderSchema } from '../utils/validation'
-import { emitEvent, queues } from '../utils/bus'
+import { emitEvent } from '../utils/bus'
 import { db } from '../utils/db'
 import { orders } from '../database/schema'
-import { eq, and } from 'drizzle-orm'
+import { eq } from 'drizzle-orm'
 import { metrics } from '../utils/metrics'
 
 export default defineEventHandler(async (event) => {
@@ -16,12 +16,8 @@ export default defineEventHandler(async (event) => {
 
   const orderData = result.data
 
-  // 1. BACKPRESSURE: Check Fulfillment Queue Depth
-  // High-scale protection: fail fast if the workers are falling behind
-  const jobCount = await (await queues.fulfillment.getJobCounts()).waiting
-  if (jobCount > 2000) {
-    throw createError({ statusCode: 503, statusMessage: 'System Busy (High Load). Please retry in 30s.' })
-  }
+  // High-scale protection: We rely on the established Edge rate-limiting 
+  // and Postgres performance rather than complex persistent queues.
 
     // 2. STABILITY: DB-First Transactional Logic
     // We do NOT use complex queues. We write to PG immediately.
