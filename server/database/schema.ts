@@ -49,7 +49,11 @@ export const products = pgTable('products', {
   isActive: boolean('is_active').default(true),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull()
-})
+}, (table) => ({
+  slugIdx: index('slug_idx').on(table.slug),
+  categoryIdx: index('category_idx').on(table.categoryId),
+  isFeaturedIdx: index('featured_idx').on(table.isFeatured)
+}))
 
 // Enterprise: Site Metadata & Global Config
 export const siteSettings = pgTable('site_settings', {
@@ -68,7 +72,10 @@ export const userViews = pgTable('user_views', {
   sessionId: text('session_id'),
   productId: integer('product_id').references(() => products.id),
   viewedAt: timestamp('viewed_at').defaultNow().notNull()
-})
+}, (table) => ({
+  viewedAtIdx: index('viewed_at_idx').on(table.viewedAt),
+  sessionIdIdx: index('session_id_idx').on(table.sessionId)
+}))
 
 // Enterprise: Orders & Fulfillment
 export const orders = pgTable('orders', {
@@ -87,9 +94,12 @@ export const orders = pgTable('orders', {
   metadata: text('metadata'), // JSON context for recovery
   recoveryCount: integer('recovery_count').default(0).notNull(),
   lastAttemptAt: timestamp('last_attempt_at'),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull()
-})
+}, (table) => ({
+  statusIdx: index('status_idx').on(table.status),
+  checkoutIdIdx: index('checkout_id_idx').on(table.checkoutId),
+  recoveryIdx: index('recovery_idx').on(table.lastAttemptAt)
+}))
 
 export const orderItems = pgTable('order_items', {
   id: serial('id').primaryKey(),

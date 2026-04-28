@@ -23,8 +23,8 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 503, statusMessage: 'System Busy (High Load). Please retry in 30s.' })
   }
 
-    // 2. ULTIMATE DURABILITY: DB-First with Fall-Forward Buffer
-    // If the DB is unreachable, we buffer in Redis to 'never lose a sale'
+    // 2. STABILITY: DB-First Transactional Logic
+    // We do NOT use complex queues. We write to PG immediately.
     try {
       const [newOrder] = await db.insert(orders).values({
         userId: session.user?.id || null,
@@ -39,31 +39,25 @@ export default defineEventHandler(async (event) => {
       }).onConflictDoNothing().returning()
 
       if (!newOrder) {
+        // Idempotency: Return existing order status if duplicate checkout_id detected
         const existing = await db.query.orders.findFirst({ where: eq(orders.checkoutId, orderData.checkoutId) })
         return { success: true, status: existing?.status || 'completed', checkoutId: orderData.checkoutId }
       }
 
-      // 4. DISPATCH: Let Inngest handle fulfillment in the background
-      await emitEvent('order.created', { ...orderData, id: newOrder.id })
-
-      return { success: true, status: 'queued', checkoutId: orderData.checkoutId }
-
-    } catch (error: any) {
-      console.error('⚠️ [Postgres Primary Down] Falling back to Persistence Buffer.')
-      
-      // FALL-FORWARD PATTERN
-      const cache = useServerCache()
-      await cache.set(`order-buffer:${orderData.checkoutId}`, orderData, 86400) // 24h safety buffer
-      
-      // Dispatch a 'recovery-only' event
-      await emitEvent('order.buffered', { checkoutId: orderData.checkoutId })
+      // 3. RECOVERY ASSURANCE: Update to queued. 
+      // The worker/cron job will pick this up.
+      await db.update(orders).set({ status: 'queued' }).where(eq(orders.id, newOrder.id))
 
       return { 
         success: true, 
-        status: 'buffered', 
-        message: 'Order received and secured in backup storage.',
+        status: 'queued', 
         checkoutId: orderData.checkoutId 
       }
+
+    } catch (error: any) {
+      console.error('💥 [Critical] Order Database Failure:', error.message)
+      throw createError({ statusCode: 500, statusMessage: 'Internal Store Error. Order not placed.' })
     }
 })
+
 
