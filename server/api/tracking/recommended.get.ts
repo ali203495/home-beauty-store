@@ -7,21 +7,27 @@ export default defineEventHandler(async (event) => {
   const session = await getUserSession(event)
   const cache = useServerCache()
   
+  // session.id may be undefined for anonymous users with no session cookie
+  const sessionId = session?.id ?? null
+  const userId = session?.user?.id ?? null
+
   // 1. User-Specific Cache Key
-  const cacheKey = `recommended:${session.user?.id || 'guest'}:${session.id}`
+  const cacheKey = `recommended:${userId || 'guest'}:${sessionId || 'anon'}`
   const cached = await cache.get<any[]>(cacheKey)
   if (cached) return cached
 
-  // 2. Recommendation Engine Logic
-  const recentViews = await db.query.userViews.findMany({
-    where: (uv, { or, eq }) => or(
-       eq(uv.sessionId, session.id),
-       session.user?.id ? eq(uv.userId, session.user.id) : undefined
-    ),
-    orderBy: [desc(userViews.viewedAt)],
-    limit: 20,
-    with: { product: true }
-  })
+  // 2. Recommendation Engine Logic — guard: only query views when we have a lookup key
+  const recentViews = (sessionId || userId)
+    ? await db.query.userViews.findMany({
+        where: (uv, { or, eq }) => or(
+          sessionId ? eq(uv.sessionId, sessionId) : undefined,
+          userId ? eq(uv.userId, userId) : undefined
+        ),
+        orderBy: [desc(userViews.viewedAt)],
+        limit: 20,
+        with: { product: true }
+      })
+    : []
 
   let recommendations = []
 

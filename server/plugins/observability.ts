@@ -24,6 +24,7 @@ export default defineNitroPlugin((nitroApp) => {
         Sentry.captureException(error)
       })
     }
+  })
 
   // 2. Request Performance Monitoring
   nitroApp.hooks.hook('request', (event) => {
