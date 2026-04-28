@@ -25,18 +25,25 @@ export default defineEventHandler(async (event) => {
   
   // High-value targets: Auth, Tracking, Orders
   if (path.startsWith('/api/auth') || path.startsWith('/api/tracking') || path.startsWith('/api/orders')) {
-    const ip = getRequestIP(event, { xForwardedFor: true }) || 'anonymous'
-    const { success, limit, reset, remaining } = await ratelimit.limit(ip)
+    try {
+      const ip = getRequestIP(event, { xForwardedFor: true }) || 'anonymous'
+      const { success, limit, reset, remaining } = await ratelimit.limit(ip)
 
-    if (!success) {
-      setHeader(event, 'X-RateLimit-Limit', limit.toString())
-      setHeader(event, 'X-RateLimit-Remaining', remaining.toString())
-      setHeader(event, 'X-RateLimit-Reset', reset.toString())
+      if (!success) {
+        setHeader(event, 'X-RateLimit-Limit', limit.toString())
+        setHeader(event, 'X-RateLimit-Remaining', remaining.toString())
+        setHeader(event, 'X-RateLimit-Reset', reset.toString())
 
-      throw createError({
-        statusCode: 429,
-        statusMessage: 'Bzeff d ttalabat (Too many requests). Please slow down.'
-      })
+        throw createError({
+          statusCode: 429,
+          statusMessage: 'Bzeff d ttalabat (Too many requests). Please slow down.'
+        })
+      }
+    } catch (e: any) {
+      if (e.statusCode === 429) throw e
+      
+      // FAIL-OPEN: Don't let a Redis timeout kill a potential sale.
+      console.error('🛡️ [Rate Limit] Service Unavailable:', e.message)
     }
   }
 })
