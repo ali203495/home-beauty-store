@@ -66,7 +66,7 @@ useSeoMeta({
        <div class="empty-icon">📂</div>
        <h3>No results for "{{ searchInput }}"</h3>
        <p>Try checking your spelling or using more general terms.</p>
-       <AppButton to="/" variant="outline">Browse All Products</AppButton>
+       <NuxtLink to="/" class="btn-primary inline-block">Browse All Products</NuxtLink>
     </div>
   </div>
 </template>

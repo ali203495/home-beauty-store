@@ -22,10 +22,10 @@ onMounted(() => {
           Error: {{ error.statusCode }}
        </div>
 
-       <div class="actions">
-          <AppButton @click="handleError" variant="primary">Refresh & Retry</AppButton>
-          <AppButton to="/contact" variant="outline">Contact Support</AppButton>
-       </div>
+        <div class="flex flex-col gap-4">
+          <button @click="handleError" class="btn-primary">Refresh & Retry</button>
+          <NuxtLink to="/contact" class="text-[10px] uppercase font-bold tracking-widest text-luxury-muted text-center hover:text-luxury-black transition-colors">Contact Support</NuxtLink>
+        </div>
     </div>
   </div>
 </template>
